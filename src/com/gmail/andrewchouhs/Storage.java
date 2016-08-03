@@ -19,9 +19,9 @@ import javafx.stage.Stage;
 public class Storage
 {
     public static final ObservableList<MusicInfo> musicInfoList = FXCollections.observableArrayList();
-    public static final ObjectProperty<File> musicDirProperty = new SimpleObjectProperty<File>();
+    public static final ObjectProperty<MusicInfo> musicInfo = new SimpleObjectProperty<MusicInfo>();
+    public static final ObjectProperty<File> musicDir = new SimpleObjectProperty<File>();
     public static final MusicPlayer player = new MusicPlayer();
-    public static final ObjectProperty<MusicInfo> musicInfoProperty = new SimpleObjectProperty<MusicInfo>();
     private static Stage stage;
     
     public static void init(Stage stage)
@@ -39,12 +39,12 @@ public class Storage
         {
         	e.printStackTrace();
         }
-    	musicDirProperty.addListener((observable, oldValue, newValue)->refreshMusicInfoList());
+    	musicDir.addListener((observable, oldValue, newValue)->refreshMusicInfoList());
     }
     
     private static void refreshMusicInfoList()
     {
-    	File[] musicFileList = musicDirProperty.get().listFiles(new MusicFileFilter());
+    	File[] musicFileList = musicDir.get().listFiles(new MusicFileFilter());
     	for(File musicFile : musicFileList)
     	{
     		Media media = new Media(musicFile.toURI().toString());
@@ -54,7 +54,6 @@ public class Storage
 			musicInfoList.add(new MusicInfo(musicFile.toURI().toString(), title, 
 					(String)media.getMetadata().get("artist"), (String)media.getMetadata().get("album"),
 					(Image)media.getMetadata().get("image")));
-    		//toURI need to be learned
     	}
     }
     	

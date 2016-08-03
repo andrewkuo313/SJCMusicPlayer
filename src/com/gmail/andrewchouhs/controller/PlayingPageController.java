@@ -51,7 +51,7 @@ public class PlayingPageController
     	musicInfoTable.setItems(Storage.musicInfoList);
     	musicInfoTable.getSelectionModel().selectedItemProperty().addListener
     	( (observable, oldValue, newValue) -> playMusic(newValue) );
-    	Storage.musicInfoProperty.addListener((observable , oldValue , newValue) -> setComponent(newValue));
+    	Storage.musicInfo.addListener((observable , oldValue , newValue) -> setComponent(newValue));
     }
     
     private void playMusic(MusicInfo musicInfo)

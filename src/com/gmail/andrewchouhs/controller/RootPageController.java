@@ -17,6 +17,6 @@ public class RootPageController
 		DirectoryChooser dirChooser = new DirectoryChooser();
 		File selectedDir = dirChooser.showDialog(Storage.getStage());
 		if(selectedDir != null)
-			Storage.musicDirProperty.set(new File(selectedDir.getAbsolutePath()));
+			Storage.musicDir.set(new File(selectedDir.getAbsolutePath()));
 	}
 }
