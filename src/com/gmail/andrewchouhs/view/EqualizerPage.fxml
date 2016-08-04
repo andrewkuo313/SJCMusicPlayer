@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefHeight="343.0" prefWidth="-1.0" styleClass="background" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="com.gmail.andrewchouhs.controller.EqualizerPageController">
+  <!-- TODO Add Nodes -->
+  <children>
+    <SplitPane disable="false" dividerPositions="0.501466275659824" focusTraversable="true" mouseTransparent="true" orientation="VERTICAL" prefHeight="-1.0" prefWidth="-1.0" styleClass="background" visible="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <items>
+        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="-1.0" prefWidth="-1.0">
+          <children>
+            <HBox fx:id="rectBox" alignment="BOTTOM_CENTER" minHeight="-1.0" prefHeight="-1.0" prefWidth="-1.0" spacing="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+          </children>
+        </AnchorPane>
+        <AnchorPane prefHeight="-1.0" prefWidth="-1.0">
+          <children>
+            <HBox alignment="TOP_LEFT" prefHeight="-1.0" prefWidth="-1.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+              <children>
+                <ImageView fitHeight="150.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true" />
+                <VBox prefHeight="-1.0" prefWidth="-1.0">
+                  <children>
+                    <Label text="NOISESTORM" textFill="WHITE">
+                      <font>
+                        <Font name="System Bold" size="64.0" />
+                      </font>
+                    </Label>
+                    <Label text="ECLIPSE" textFill="WHITE">
+                      <font>
+                        <Font size="25.0" />
+                      </font>
+                    </Label>
+                  </children>
+                </VBox>
+              </children>
+            </HBox>
+          </children>
+        </AnchorPane>
+      </items>
+    </SplitPane>
+  </children>
+  <stylesheets>
+    <URL value="@Page.css" />
+  </stylesheets>
+</AnchorPane>

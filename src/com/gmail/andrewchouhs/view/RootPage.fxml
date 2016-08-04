@@ -5,27 +5,47 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.BorderPane?>
 
-<BorderPane prefHeight="600.0" prefWidth="800.0" rotate="0.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="com.gmail.andrewchouhs.controller.RootPageController">
+<BorderPane prefHeight="-1.0" prefWidth="-1.0" rotate="0.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="com.gmail.andrewchouhs.controller.RootPageController">
   <!-- TODO Add Nodes -->
   <top>
-    <MenuBar>
-      <menus>
-        <Menu mnemonicParsing="false" text="檔案">
-          <items>
-            <MenuItem mnemonicParsing="false" onAction="#setDir" text="選擇資料夾" fx:id="chooseFolder" />
-          </items>
-        </Menu>
-        <Menu mnemonicParsing="false" text="設定">
-          <items>
-            <MenuItem mnemonicParsing="false" text="選項" />
-          </items>
-        </Menu>
-        <Menu mnemonicParsing="false" text="幫助">
-          <items>
-            <MenuItem mnemonicParsing="false" text="關於..." />
-          </items>
-        </Menu>
-      </menus>
-    </MenuBar>
+    <BorderPane prefHeight="-1.0" prefWidth="-1.0">
+      <bottom>
+        <TabPane prefHeight="-1.0" prefWidth="-1.0" rotateGraphic="false" side="TOP" tabClosingPolicy="UNAVAILABLE">
+          <tabs>
+            <Tab fx:id="playing" text="選單">
+              <content>
+                <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="-1.0" prefWidth="-1.0" />
+              </content>
+            </Tab>
+            <Tab fx:id="equalizer" text="等化器">
+              <content>
+                <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="-1.0" prefWidth="-1.0" />
+              </content>
+            </Tab>
+          </tabs>
+        </TabPane>
+      </bottom>
+      <top>
+        <MenuBar>
+          <menus>
+            <Menu mnemonicParsing="false" text="檔案">
+              <items>
+                <MenuItem mnemonicParsing="false" onAction="#setDir" text="選擇資料夾" />
+              </items>
+            </Menu>
+            <Menu mnemonicParsing="false" text="設定">
+              <items>
+                <MenuItem mnemonicParsing="false" text="Delete" />
+              </items>
+            </Menu>
+            <Menu mnemonicParsing="false" text="幫助">
+              <items>
+                <MenuItem mnemonicParsing="false" text="About" />
+              </items>
+            </Menu>
+          </menus>
+        </MenuBar>
+      </top>
+    </BorderPane>
   </top>
 </BorderPane>

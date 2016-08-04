@@ -4,8 +4,9 @@ import java.io.File;
 import com.gmail.andrewchouhs.Storage;
 import com.gmail.andrewchouhs.model.MusicInfo;
 import com.gmail.andrewchouhs.utils.MusicFileFilter;
+import com.gmail.andrewchouhs.utils.Page;
 import javafx.fxml.FXML;
-import javafx.scene.control.MenuItem;
+import javafx.scene.control.Tab;
 import javafx.scene.image.Image;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
@@ -14,12 +15,16 @@ import javafx.stage.DirectoryChooser;
 public class RootPageController
 {
 	@FXML
-	private MenuItem chooseFolder;
+	private Tab equalizer;
+	@FXML
+	private Tab playing;
 	
 	@FXML
 	private void initialize()
 	{
     	Storage.musicDir.addListener((observable, oldValue, newValue)->refreshMusicInfoList());
+    	equalizer.setOnSelectionChanged((event)->Storage.setPage(Page.EQUALIZER));
+    	playing.setOnSelectionChanged((event)->Storage.setPage(Page.PLAYING));
 	}
 	
 	@FXML
