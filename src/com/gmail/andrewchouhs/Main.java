@@ -8,7 +8,7 @@ public class Main extends Application
     @Override
     public void start(Stage stage) 
     {
-        Storage.init(stage);
+    	Storage.init(stage);
     }
   
     public static void main(String[] args) 

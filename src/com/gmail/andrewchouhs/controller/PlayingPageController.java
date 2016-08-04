@@ -44,25 +44,26 @@ public class PlayingPageController
     @FXML
     private void initialize() 
     {
+    	musicInfoTable.setItems(Storage.musicInfoList);
+    	//setCellValueFactory need to be learned
     	nameColumn.setCellValueFactory(cellData -> cellData.getValue().name);
     	artistColumn.setCellValueFactory(cellData -> cellData.getValue().artist);
     	albumColumn.setCellValueFactory(cellData -> cellData.getValue().album);
-    	//setCellValueFactory need to be learned
-    	musicInfoTable.setItems(Storage.musicInfoList);
     	musicInfoTable.getSelectionModel().selectedItemProperty().addListener
     	( (observable, oldValue, newValue) -> playMusic(newValue) );
-    	Storage.musicInfo.addListener((observable , oldValue , newValue) -> setComponent(newValue));
+    	Storage.musicInfo.addListener((observable , oldValue , newValue) -> refreshMusicInfo(newValue));
     }
     
     private void playMusic(MusicInfo musicInfo)
     {
-    	Storage.player.play(musicInfo.path.get());
+    	Storage.musicInfo.set(musicInfo);
     	//Focus had no answer
     	musicInfoTable.scrollTo(musicInfoTable.getSelectionModel().getSelectedIndex());
     }
     
-    private void setComponent(MusicInfo musicInfo)
+    private void refreshMusicInfo(MusicInfo musicInfo)
     {
+    	Storage.player.play(musicInfo.path.get());
     	titleLabel.setText("Title: " + musicInfo.name.get());
     	albumLabel.setText("Album: " + musicInfo.album.get());
     	artistLabel.setText("Artist: " + musicInfo.artist.get());

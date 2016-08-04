@@ -10,14 +10,12 @@ public class MusicInfo
 {
     public final StringProperty path = new SimpleStringProperty();
     public final StringProperty name = new SimpleStringProperty();
-    public final StringProperty artist = new SimpleStringProperty();
-    public final StringProperty album = new SimpleStringProperty();
+    public final StringProperty artist = new SimpleStringProperty("無");
+    public final StringProperty album = new SimpleStringProperty("無");
     public final ObjectProperty<Image> image = new SimpleObjectProperty<Image>();
 
     public MusicInfo(String path, String name , String artist , String album , Image image) 
     {
-    	this.path.addListener((observable, oldValue, newValue) -> checkNull(this.path));
-        this.name.addListener((observable, oldValue, newValue) -> checkNull(this.name));
         this.artist.addListener((observable, oldValue, newValue) -> checkNull(this.artist));
         this.album.addListener((observable, oldValue, newValue) -> checkNull(this.album));
     	
