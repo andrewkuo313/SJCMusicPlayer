@@ -25,11 +25,11 @@ public class RootPageController
     	list.setOnSelectionChanged((event)->Storage.setPage(Page.LIST));
     	Storage.musicTime.addListener( (observable, oldValue, newValue) -> 
     	{
-    		if(oldValue.intValue() != newValue.intValue())
+    		if(oldValue.longValue() != newValue.longValue())
     		{
-    			int time = newValue.intValue();
-    			int minute = time / 60;
-    			int second = time % 60;
+    			long time = newValue.longValue();
+    			int minute = (int) (time / 60L);
+    			int second = (int) (time % 60L);
     			playAndPause.setText((minute < 10 ? "0" + minute : minute)+ ":" + (second < 10 ? "0" + second : second));
     		}
     	});
@@ -45,6 +45,9 @@ public class RootPageController
 	@FXML
 	private void playAndPause()
 	{
-		Storage.player.get().playAndPause();
+		if(Storage.musicPlayer.isRunning())
+			Storage.musicPlayer.stop();
+		else
+			Storage.musicPlayer.start();
 	}
 }
