@@ -8,6 +8,7 @@ import com.gmail.andrewchouhs.model.MusicInfo;
 import com.gmail.andrewchouhs.utils.MP3Player;
 import com.gmail.andrewchouhs.utils.MusicFileFilter;
 import com.gmail.andrewchouhs.utils.MusicPlayer;
+import com.gmail.andrewchouhs.utils.MusicThread;
 import com.gmail.andrewchouhs.utils.Page;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
@@ -33,7 +34,7 @@ public class Storage
     private static Stage mainStage;
     private static final Stage settingStage = new Stage();
     private static EnumMap<Page , Pane> pageMap = new EnumMap<Page , Pane>(Page.class);
-    private static Thread musicThread;
+    private static MusicThread musicThread;
     
     public static void init(Stage stage)
     {
@@ -69,18 +70,26 @@ public class Storage
     			player.get().stop();
     			musicThread.interrupt();
     		}
-    		player.set(new MP3Player());
-    		musicThread = new Thread()
-    		{
-    			public void run()
-    			{
-    				if(newValue != null)
-    					player.get().play(newValue.path.get());
-    			}
-    		};
-    		musicThread.setDaemon(true);
+    		player.set(new MP3Player(newValue.path.get()));
+    		musicThread = new MusicThread();
     		musicThread.start();
     	});
+    }
+    
+    public static void resetMusicThread()
+    {
+    	if(musicThread != null)
+		{
+			musicThread.interrupt();
+			musicThread = new MusicThread();
+    		musicThread.start();
+		}
+    	
+    }
+    
+    public static Thread getMusicThread()
+    {
+    	return musicThread;
     }
     
     public static void refreshMusicInfoList()

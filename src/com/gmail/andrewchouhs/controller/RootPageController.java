@@ -25,7 +25,13 @@ public class RootPageController
     	list.setOnSelectionChanged((event)->Storage.setPage(Page.LIST));
     	Storage.musicTime.addListener( (observable, oldValue, newValue) -> 
     	{
-    		playAndPause.setText(newValue.toString());
+    		if(oldValue.intValue() != newValue.intValue())
+    		{
+    			int time = newValue.intValue();
+    			int minute = time / 60;
+    			int second = time % 60;
+    			playAndPause.setText((minute < 10 ? "0" + minute : minute)+ ":" + (second < 10 ? "0" + second : second));
+    		}
     	});
 	}
 	
