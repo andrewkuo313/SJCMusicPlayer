@@ -1,58 +1,44 @@
 package com.gmail.andrewchouhs.controller;
 
-import java.io.File;
 import com.gmail.andrewchouhs.Storage;
-import com.gmail.andrewchouhs.model.MusicInfo;
-import com.gmail.andrewchouhs.utils.MusicFileFilter;
 import com.gmail.andrewchouhs.utils.Page;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.Tab;
-import javafx.scene.image.Image;
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
-import javafx.stage.DirectoryChooser;
 
 public class RootPageController
 {
 	@FXML
-	private Tab equalizer;
+	private Tab album;
 	@FXML
-	private Tab playing;
+	private Tab statistics;
+	@FXML
+	private Tab list;
+	@FXML
+	private Button playAndPause;
 	
 	@FXML
 	private void initialize()
 	{
-    	Storage.musicDir.addListener((observable, oldValue, newValue)->refreshMusicInfoList());
-    	equalizer.setOnSelectionChanged((event)->Storage.setPage(Page.EQUALIZER));
-    	playing.setOnSelectionChanged((event)->Storage.setPage(Page.PLAYING));
+    	album.setOnSelectionChanged((event)->Storage.setPage(Page.ALBUM));
+    	statistics.setOnSelectionChanged((event)->Storage.setPage(Page.STATISTICS));
+    	list.setOnSelectionChanged((event)->Storage.setPage(Page.LIST));
+    	Storage.musicTime.addListener( (observable, oldValue, newValue) -> 
+    	{
+    		playAndPause.setText(newValue.toString());
+    	});
 	}
 	
 	@FXML
-	private void setDir()
+	private void openSetting()
 	{
-		DirectoryChooser dirChooser = new DirectoryChooser();
-		File selectedDir = dirChooser.showDialog(Storage.getStage());
-		if(selectedDir != null)
-			Storage.musicDir.set(new File(selectedDir.getAbsolutePath()));
+		Storage.getSettingStage().show();
+		Storage.getSettingStage().toFront();
 	}
-    
-    private static void refreshMusicInfoList()
-    {
-    	File[] musicFileList = Storage.musicDir.get().listFiles(new MusicFileFilter());
-    	for(File musicFile : musicFileList)
-    	{
-    		Media media = new Media(musicFile.toURI().toString());
-    		new MediaPlayer(media).setOnReady(()->
-    		{
-				String title;
-				if(media.getMetadata().get("title") != null)
-					title = (String)media.getMetadata().get("title");
-				else
-					title = musicFile.getName().substring(0, musicFile.getName().lastIndexOf('.'));
-				Storage.musicInfoList.add(new MusicInfo(musicFile.toURI().toString(), title, 
-						(String)media.getMetadata().get("artist"), (String)media.getMetadata().get("album"),
-						(Image)media.getMetadata().get("image")));
-    		});
-    	}
-    }
+	
+	@FXML
+	private void playAndPause()
+	{
+		Storage.player.get().playAndPause();
+	}
 }

@@ -2,40 +2,62 @@
 
 <?import java.lang.*?>
 <?import java.net.*?>
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.effect.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="343.0" prefWidth="-1.0" styleClass="background" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="com.gmail.andrewchouhs.controller.EqualizerPageController">
+<AnchorPane id="" prefHeight="343.0" prefWidth="-1.0" style="" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="com.gmail.andrewchouhs.controller.EqualizerPageController">
   <!-- TODO Add Nodes -->
   <children>
-    <SplitPane disable="false" dividerPositions="0.501466275659824" focusTraversable="true" mouseTransparent="true" orientation="VERTICAL" prefHeight="-1.0" prefWidth="-1.0" styleClass="background" visible="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+    <SplitPane disable="false" dividerPositions="0.49560117302052786" focusTraversable="true" mouseTransparent="true" orientation="VERTICAL" prefHeight="-1.0" prefWidth="-1.0" styleClass="background" visible="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
       <items>
         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="-1.0" prefWidth="-1.0">
           <children>
-            <HBox fx:id="rectBox" alignment="BOTTOM_CENTER" minHeight="-1.0" prefHeight="-1.0" prefWidth="-1.0" spacing="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+            <HBox fx:id="rectBox" alignment="BOTTOM_CENTER" layoutX="0.0" minHeight="-1.0" prefHeight="-1.0" prefWidth="658.0" spacing="5.0" AnchorPane.bottomAnchor="20.0">
+              <padding>
+                <Insets fx:id="x1" />
+              </padding>
+            </HBox>
           </children>
         </AnchorPane>
         <AnchorPane prefHeight="-1.0" prefWidth="-1.0">
           <children>
-            <HBox alignment="TOP_LEFT" prefHeight="-1.0" prefWidth="-1.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <HBox fx:id="infoBox" alignment="TOP_LEFT" layoutX="0.0" padding="$x1" prefHeight="-1.0" prefWidth="-1.0" spacing="17.0" AnchorPane.topAnchor="20.0">
               <children>
-                <ImageView fitHeight="150.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true" />
-                <VBox prefHeight="-1.0" prefWidth="-1.0">
+                <ImageView fitHeight="150.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true">
+                  <image>
+                    <Image url="file:/C:/Users/andrewkuo313/Desktop/zx.png" />
+                  </image>
+                </ImageView>
+                <VBox prefHeight="-1.0" prefWidth="-1.0" spacing="-18.0">
                   <children>
-                    <Label text="NOISESTORM" textFill="WHITE">
+                    <Label id="big" contentDisplay="LEFT" graphicTextGap="4.0" labelFor="$rectBox" minHeight="-1.0" prefHeight="-1.0" prefWidth="-1.0" styleClass="big" text="PIXL" textFill="WHITE" wrapText="false">
                       <font>
-                        <Font name="System Bold" size="64.0" />
+                        <Font name="Gotham-Bold" size="70.0" />
                       </font>
                     </Label>
-                    <Label text="ECLIPSE" textFill="WHITE">
+                    <Label id="small" graphicTextGap="4.0" prefHeight="-1.0" prefWidth="-1.0" text="SUGAR RUSH" textFill="WHITE" underline="false" wrapText="false">
+                      <effect>
+                        <BoxBlur height="1.5" iterations="3" width="1.5" />
+                      </effect>
                       <font>
-                        <Font size="25.0" />
+                        <Font name="Gotham-Light" size="40.0" />
                       </font>
+                      <VBox.margin>
+                        <Insets left="5.0" />
+                      </VBox.margin>
                     </Label>
                   </children>
+                  <padding>
+                    <Insets top="6.0" />
+                  </padding>
+                  <HBox.margin>
+                    <Insets fx:id="x1" />
+                  </HBox.margin>
                 </VBox>
               </children>
             </HBox>

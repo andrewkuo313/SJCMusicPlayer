@@ -2,5 +2,5 @@ package com.gmail.andrewchouhs.utils;
 
 public enum Page
 {
-	PLAYING,EQUALIZER,ROOT
+	ROOT,ALBUM,STATISTICS,LIST
 }

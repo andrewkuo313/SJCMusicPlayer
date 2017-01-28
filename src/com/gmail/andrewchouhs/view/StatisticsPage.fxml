@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.chart.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefHeight="2500.0" prefWidth="800.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2">
+  <!-- TODO Add Nodes -->
+  <children>
+    <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" pannable="true" prefHeight="-1.0" prefWidth="-1.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <content>
+        <VBox alignment="TOP_LEFT" fillWidth="true" prefHeight="-1.0" prefWidth="-1.0" spacing="20.0">
+          <children>
+            <FlowPane alignment="TOP_LEFT" columnHalignment="CENTER" hgap="30.0" prefHeight="-1.0" prefWidth="-1.0" rowValignment="CENTER" vgap="30.0">
+              <children>
+                <Circle radius="100.0" smooth="true" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0">
+                  <fill>
+                    <Color blue="0.000" green="0.960" red="1.000" fx:id="x3" />
+                  </fill>
+                </Circle>
+                <Label graphicTextGap="4.0" styleClass="titleFont" text="andrewkuo313" textAlignment="LEFT" textFill="WHITE" wrapText="false">
+                  <effect>
+                    <Reflection fraction="0.5" topOffset="-35.0">
+                      <input>
+                        <DropShadow spread="0.5">
+                          <color>
+                            <Color blue="0.788" green="0.588" red="0.000" fx:id="x1" />
+                          </color>
+                        </DropShadow>
+                      </input>
+                    </Reflection>
+                  </effect>
+                  <font>
+                    <Font size="32.0" fx:id="x2" />
+                  </font>
+                </Label>
+              </children>
+              <VBox.margin>
+                <Insets bottom="40.0" left="50.0" right="50.0" top="50.0" />
+              </VBox.margin>
+            </FlowPane>
+            <Label font="$x2" graphicTextGap="4.0" styleClass="titleFont" text="Level" textAlignment="LEFT" textFill="WHITE" wrapText="false">
+              <effect>
+                <Reflection fraction="0.5" topOffset="-35.0">
+                  <input>
+                    <DropShadow color="$x1" spread="0.5" />
+                  </input>
+                </Reflection>
+              </effect>
+              <VBox.margin>
+                <Insets bottom="10.0" left="50.0" right="50.0" top="10.0" fx:id="x4" />
+              </VBox.margin>
+            </Label>
+            <FlowPane columnHalignment="LEFT" hgap="10.0" orientation="HORIZONTAL" prefHeight="-1.0" prefWidth="-1.0" vgap="10.0">
+              <children>
+                <Label font="$x2" graphicTextGap="4.0" styleClass="smallTitleFont" text="Lv 9 55%" textAlignment="LEFT" textFill="WHITE" wrapText="false">
+                  <effect>
+                    <Reflection fraction="0.5" topOffset="-35.0">
+                      <input>
+                        <DropShadow color="$x1" spread="0.5" />
+                      </input>
+                    </Reflection>
+                  </effect>
+                </Label>
+                <Line endX="100.0" startX="-100.0" stroke="WHITE" strokeLineCap="ROUND" strokeLineJoin="ROUND" strokeWidth="5.0">
+                  <effect>
+                    <DropShadow color="$x3" height="31.0" radius="15.0" spread="0.5" width="31.0" />
+                  </effect>
+                </Line>
+              </children>
+              <VBox.margin>
+                <Insets left="70.0" right="70.0" />
+              </VBox.margin>
+            </FlowPane>
+            <Label alignment="CENTER_LEFT" contentDisplay="LEFT" font="$x2" graphicTextGap="4.0" styleClass="titleFont" text="Play Count" textAlignment="LEFT" textFill="WHITE" wrapText="false" VBox.margin="$x4">
+              <effect>
+                <Reflection fraction="0.5" topOffset="-35.0">
+                  <input>
+                    <DropShadow color="$x1" spread="0.5" />
+                  </input>
+                </Reflection>
+              </effect>
+            </Label>
+            <BarChart>
+              <xAxis>
+                <CategoryAxis side="BOTTOM" />
+              </xAxis>
+              <yAxis>
+                <NumberAxis side="LEFT" />
+              </yAxis>
+              <VBox.margin>
+                <Insets left="70.0" right="70.0" />
+              </VBox.margin>
+            </BarChart>
+          </children>
+        </VBox>
+      </content>
+    </ScrollPane>
+  </children>
+  <stylesheets>
+    <URL value="@StatisticsPage.css" />
+  </stylesheets>
+</AnchorPane>

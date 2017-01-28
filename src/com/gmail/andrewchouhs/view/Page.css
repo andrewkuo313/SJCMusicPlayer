@@ -5,26 +5,47 @@
 /*
 .label {
     -fx-font-size: 11pt;
-    -fx-font-family: "Segoe UI Semibold";
+    -fx-font-family: "Noto Sans", "Noto Sans CJK JP", sans-serif;
     -fx-text-fill: white;
     -fx-opacity: 0.6;
 }
 
 .label-bright {
     -fx-font-size: 11pt;
-    -fx-font-family: "Segoe UI Semibold";
+    -fx-font-family: "Noto Sans", "Noto Sans CJK JP", sans-serif;
     -fx-text-fill: white;
     -fx-opacity: 1;
 }
 
 .label-header {
     -fx-font-size: 32pt;
-    -fx-font-family: "Segoe UI Light";
+    -fx-font-family: "Noto Sans", "Noto Sans CJK JP", sans-serif;
     -fx-text-fill: white;
     -fx-opacity: 1;
 }
- 
 */
+ 
+ 
+#big{
+	-fx-font-size: 68pt;
+    -fx-font-family: "Gotham" , "Noto Sans", "Noto Sans CJK JP", sans-serif;
+    -fx-text-fill: white;
+    -fx-background-color: transparent;
+}
+
+#small{
+	-fx-font-size: 28pt;
+    -fx-font-family: "Gotham Light" , "Noto Sans", "Noto Sans CJK JP", sans-serif;
+    -fx-text-fill: white;
+    -fx-background-color: transparent;
+
+}
+
+.tab-pane .tab
+{
+    -fx-background-color: #686868;
+
+}
 
 .table-view {
     -fx-base: #0C0C0C;
@@ -52,8 +73,10 @@
 }
 
 .table-view .column-header .label {
+	/* 
     -fx-font-size: 20pt;
-    -fx-font-family: "Segoe UI Light";
+    -fx-font-family: "Noto Sans", "Noto Sans CJK JP", sans-serif;
+    */
     -fx-text-fill: white;
     -fx-alignment: center-left;
     -fx-opacity: 1;
@@ -78,8 +101,10 @@
 }
 
 .menu-bar .label {
+	/* 
     -fx-font-size: 14pt;
-    -fx-font-family: "Segoe UI Light";
+    -fx-font-family: "Noto Sans", "Noto Sans CJK JP", sans-serif;
+    */
     -fx-text-fill: white;
     -fx-opacity: 0.9;
 }
@@ -88,10 +113,15 @@
     -fx-background-color: black;
 }
 
+/* 
 .text-field {
     -fx-font-size: 12pt;
-    -fx-font-family: "Segoe UI Semibold";
+    -fx-font-family: "Noto Sans", "Noto Sans CJK JP", sans-serif;
 }
+
+*/
+
+
 
 /* 
  * Metro style Push Button
@@ -104,8 +134,10 @@
     -fx-border-width: 2;
     -fx-background-radius: 0;
     -fx-background-color: #0C0C0C;
-    -fx-font-family: "Segoe UI", Helvetica, Arial, sans-serif;
+    /* 
+    -fx-font-family: "Noto Sans", "Noto Sans CJK JP", sans-serif;
     -fx-font-size: 11pt;
+    */
     -fx-text-fill: #d8d8d8;
     -fx-background-insets: 0 0 0 0, 0, 1, 2;
 }

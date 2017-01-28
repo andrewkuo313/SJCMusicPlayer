@@ -10,7 +10,7 @@ public class Main extends Application
     {
     	Storage.init(stage);
     }
-  
+    
     public static void main(String[] args) 
     {
         launch(args);

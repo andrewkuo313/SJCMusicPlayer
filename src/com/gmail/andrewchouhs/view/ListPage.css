@@ -1,0 +1,101 @@
+.scroll-bar:vertical .thumb
+{
+    -fx-background-color: #484848;
+    -fx-background-insets: 5;
+    -fx-padding: 20 , 0 , 20 , 0;
+    -fx-background-radius: 35;
+}
+
+/* fucking horizontal scroll bar should be resolved */
+
+.decrement-button , .increment-button , .scroll-bar:horizontal
+{
+    visibility: hidden;
+    -fx-opacity: 0;
+    -fx-background-color: transparent;
+}
+
+.scroll-bar:vertical
+{
+	-fx-background-color: transparent;
+}
+
+.scroll-pane , .scroll-pane .viewport , .table-view , .table-column
+{
+	-fx-background-color: #202020;
+}
+
+.tab-header-background
+{
+	-fx-background-color: #303030;
+}
+
+.tab
+{
+	-fx-padding: 0 20 7 20;
+    -fx-background-insets: 0 3 7 3;
+    -fx-background-radius: 5;
+    -fx-background-color: transparent;
+    -fx-faint-focus-color: transparent;
+    -fx-focus-color: transparent;
+}
+
+.tab:selected
+{
+	-fx-background-color: #0096C9;
+	-fx-padding: 0 20 7 20;
+	-fx-border-width: 0;
+}
+
+.tab:hover , .button:hover
+{
+	-fx-background-color: #0096C9;
+}
+
+.tab-label , .button , .label , .table-cell
+{
+	-fx-text-fill: #FFFFFF;
+	-fx-text-overrun: clip;
+}
+
+.hbox , .button
+{
+	-fx-background-color: #2c2c2c;
+}
+
+.button:hover , .button:pressed
+{
+	-fx-background-radius: 5;
+}
+
+.button:pressed
+{
+	-fx-background-color: #008cbe;
+}
+
+.button
+{
+	-fx-border-color: #0096C9;
+	-fx-border-width: 1;
+	-fx-border-radius: 5;
+	-fx-padding: 5;
+}
+
+.column-header , .table-view .filler
+{
+	-fx-border-color: #2c2c2c;
+	-fx-background-color: #2c2c2c;
+}
+
+.split-pane
+{
+	-fx-padding: 0;
+}
+
+.split-pane-divider
+{
+	-fx-padding: 2;
+	-fx-background-color: #404040;
+    -fx-border-color: #404040;
+
+}
