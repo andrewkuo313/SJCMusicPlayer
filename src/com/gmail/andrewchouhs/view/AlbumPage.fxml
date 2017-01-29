@@ -8,43 +8,13 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="700.0" prefWidth="900.0" styleClass="anchor-pane" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2">
+<AnchorPane prefHeight="700.0" prefWidth="900.0" styleClass="anchor-pane" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="com.gmail.andrewchouhs.controller.AlbumPageController">
   <!-- TODO Add Nodes -->
   <children>
-    <TextField prefWidth="200.0" AnchorPane.leftAnchor="40.0" AnchorPane.rightAnchor="40.0" AnchorPane.topAnchor="15.0" />
-    <ScrollPane fitToHeight="false" fitToWidth="true" hbarPolicy="NEVER" pannable="true" prefHeight="550.0" prefWidth="800.0" vbarPolicy="AS_NEEDED" visible="true" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="65.0">
+    <TextField fx:id="searchTextField" prefWidth="-1.0" AnchorPane.leftAnchor="40.0" AnchorPane.rightAnchor="40.0" AnchorPane.topAnchor="15.0" />
+    <ScrollPane fitToHeight="false" fitToWidth="true" hbarPolicy="NEVER" pannable="true" prefHeight="-1.0" prefWidth="-1.0" vbarPolicy="AS_NEEDED" visible="true" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="65.0">
       <content>
-        <FlowPane alignment="TOP_CENTER" columnHalignment="LEFT" hgap="10.0" orientation="HORIZONTAL" prefHeight="701.0" prefWidth="705.0" rowValignment="CENTER" styleClass="flow-pane" vgap="10.0">
-          <children>
-            <ImageView fitHeight="250.0" fitWidth="250.0" pickOnBounds="true" preserveRatio="true">
-              <image>
-                <Image url="file:/C:/Users/andrewkuo313/Desktop/cover.jpg" />
-              </image>
-              <FlowPane.margin>
-                <Insets />
-              </FlowPane.margin>
-            </ImageView>
-            <ImageView fitHeight="250.0" fitWidth="250.0" pickOnBounds="true" preserveRatio="true">
-              <image>
-                <Image url="file:/C:/Users/andrewkuo313/Desktop/Cover2.jpg" />
-              </image>
-            </ImageView>
-            <ImageView fitHeight="250.0" fitWidth="250.0" pickOnBounds="true" preserveRatio="true">
-              <image>
-                <Image url="file:/C:/Users/andrewkuo313/Desktop/Cover3.jpg" />
-              </image>
-            </ImageView>
-            <ImageView fitHeight="250.0" fitWidth="250.0" pickOnBounds="true" preserveRatio="true">
-              <image>
-                <Image url="file:/C:/Users/andrewkuo313/Desktop/cover4.jpg" />
-              </image>
-            </ImageView>
-            <ImageView fitHeight="250.0" fitWidth="250.0" pickOnBounds="true" preserveRatio="true" smooth="true">
-              <image>
-                <Image url="file:/C:/Users/andrewkuo313/Desktop/cover5.jpg" />
-              </image>
-            </ImageView>
-          </children>
+        <FlowPane id="searchTextField" fx:id="albumCoverPane" alignment="TOP_CENTER" columnHalignment="LEFT" hgap="10.0" orientation="HORIZONTAL" prefHeight="-1.0" prefWidth="-1.0" rowValignment="CENTER" styleClass="flow-pane" vgap="10.0">
           <padding>
             <Insets />
           </padding>

@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.EnumMap;
 import com.gmail.andrewchouhs.model.DirInfo;
 import com.gmail.andrewchouhs.model.MusicInfo;
+import com.gmail.andrewchouhs.utils.AlbumCoverFilter;
 import com.gmail.andrewchouhs.utils.DirXMLParser;
 import com.gmail.andrewchouhs.utils.MusicFileFilter;
 import com.gmail.andrewchouhs.utils.MusicPlayingService;
@@ -17,6 +18,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
@@ -30,6 +32,7 @@ public class Storage
     public static final IntegerProperty musicTime = new SimpleIntegerProperty(0);
     public static final IntegerProperty musicTotalTime = new SimpleIntegerProperty(0);
     public static final ObservableList<DirInfo> dirList = FXCollections.observableArrayList();
+    public static final ObservableList<Image> albumCoverList = FXCollections.observableArrayList();
     public static final ObjectProperty<MusicPlayingService> musicPlayer = new SimpleObjectProperty<MusicPlayingService>();
     private static Stage mainStage;
     private static final Stage settingStage = new Stage();
@@ -87,13 +90,19 @@ public class Storage
     public static void refreshMusicInfoList()
     {
     	musicInfoList.clear();
+    	albumCoverList.add(null);
+    	albumCoverList.clear();
     	for(DirInfo dirInfo : dirList)
     	{
     		File dirFile = new File(dirInfo.path.get());
     		for(File file : dirFile.listFiles(new MusicFileFilter()))
     			musicInfoList.add
     			(new MusicInfo(file.getAbsolutePath() , file.getName().substring(0, file.getName().lastIndexOf('.')), null , null , null));
+    		for(File file : dirFile.listFiles(new AlbumCoverFilter()))
+    			albumCoverList.add(new Image(file.toURI().toString()));
     	}
+		albumCoverList.add(null);
+		albumCoverList.remove(albumCoverList.size() - 1);
     }
     
     public static Stage getMainStage()

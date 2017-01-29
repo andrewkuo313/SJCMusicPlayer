@@ -10,9 +10,9 @@ public class MusicFileFilter implements FileFilter
 	@Override
 	public boolean accept(File file) 
 	{
-	    for(int i= 0 ; i< filter.length ; i++)
+	    for(String s : filter)
 	    {
-		    if(file.getName().endsWith(filter[i]) && !file.isDirectory())
+		    if(file.getName().endsWith(s) && !file.isDirectory())
 		    	return true;
 	    }
 	    return false;
