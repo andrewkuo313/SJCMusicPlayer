@@ -5,6 +5,7 @@ import java.util.Iterator;
 import com.gmail.andrewchouhs.Storage;
 import com.gmail.andrewchouhs.model.DirInfo;
 import com.gmail.andrewchouhs.utils.DirFilter;
+import com.gmail.andrewchouhs.utils.DirXMLParser;
 import com.gmail.andrewchouhs.utils.MusicFileFilter;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
@@ -22,13 +23,13 @@ public class SettingPageController
     private void initialize() 
     {
     	dirInfoTable.setItems(Storage.dirList);
-    	//setCellValueFactory need to be learned
     	pathColumn.setCellValueFactory(cellData -> cellData.getValue().path);
     }
     
     @FXML
     private void okDir()
     {
+    	DirXMLParser.save();
     	Storage.refreshMusicInfoList();
     	Storage.getSettingStage().close();
     }
@@ -36,6 +37,7 @@ public class SettingPageController
     @FXML
     private void cancelDir()
     {
+    	DirXMLParser.load();
     	Storage.getSettingStage().close();
     }
     

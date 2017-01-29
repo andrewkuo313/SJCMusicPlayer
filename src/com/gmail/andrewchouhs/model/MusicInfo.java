@@ -30,6 +30,6 @@ public class MusicInfo
     private void checkNull(StringProperty stringProperty)
     {
     	if(stringProperty.get() == null)
-    		stringProperty.set("�L");
+    		stringProperty.set("無");
     }
 }

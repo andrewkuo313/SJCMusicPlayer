@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.EnumMap;
 import com.gmail.andrewchouhs.model.DirInfo;
 import com.gmail.andrewchouhs.model.MusicInfo;
+import com.gmail.andrewchouhs.utils.DirXMLParser;
 import com.gmail.andrewchouhs.utils.MusicFileFilter;
 import com.gmail.andrewchouhs.utils.MusicPlayingService;
 import com.gmail.andrewchouhs.utils.Page;
@@ -54,12 +55,22 @@ public class Storage
             mainStage.setScene(new Scene(rootPage));
             settingStage.setScene(new Scene(settingPage));
             settingStage.initOwner(stage);
+            settingStage.setOnCloseRequest((event)->DirXMLParser.load());
             mainStage.show();
         } 
         catch (IOException e) 
         {
         	e.printStackTrace();
         }
+    	
+    	File fileDir = new File(System.getenv("APPDATA") + "\\SJCMusicPlayer");
+    	if(!fileDir.exists())
+    		fileDir.mkdirs();
+    	else
+    	{
+    		DirXMLParser.load();
+    		refreshMusicInfoList();
+    	}
     	
     	musicInfo.addListener((observable, oldValue, newValue) -> 
     	{
@@ -69,9 +80,7 @@ public class Storage
     			musicPlayer.set(null);
     		}
     		if(newValue != null)
-    		{
     			musicPlayer.set(new MusicPlayingService(newValue.path.get() , 0L , true));
-    		}
     	});
     }
     
