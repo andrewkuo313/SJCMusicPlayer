@@ -3,6 +3,7 @@ package com.gmail.andrewchouhs.controller;
 import com.gmail.andrewchouhs.Storage;
 import com.gmail.andrewchouhs.utils.MusicPlayingService;
 import com.gmail.andrewchouhs.utils.Page;
+import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -37,13 +38,17 @@ public class RootPageController
     	{
     		if(oldValue.intValue() != newValue.intValue())
     		{
-    			int time = newValue.intValue();
     			if(!isHoldingSlider)
-    				timeSlider.setValue(time);
-    			int minute = time / 60;
-    			int second = time % 60;
-    			playAndPauseButton.setText((minute < 10 ? "0" + minute : minute)+ ":" + (second < 10 ? "0" + second : second));
+    				timeSlider.setValue(newValue.intValue());
     		}
+    	});
+    	
+    	timeSlider.valueProperty().addListener((observable, oldValue, newValue) ->
+    	{
+    		int time = newValue.intValue();
+    		int minute = time / 60;
+			int second = time % 60;
+			playAndPauseButton.setText((minute < 10 ? "0" + minute : minute)+ ":" + (second < 10 ? "0" + second : second));
     	});
     	
     	Storage.musicTotalTime.addListener((observable, oldValue, newValue) -> 
@@ -69,6 +74,8 @@ public class RootPageController
 	@FXML
 	private void onTimeSliderReleased()
 	{
+		if(Storage.musicPlayer.get() == null)
+			return;
 		Storage.musicPlayer.get().seek((int)timeSlider.getValue());
 		isHoldingSlider = false;
 	}
@@ -96,6 +103,8 @@ public class RootPageController
 	private void previousMusic()
 	{
 		int index = Storage.musicInfoList.indexOf(Storage.musicInfo.get());
+		if(index == -1)
+			return;
 		if(index == 0)
 			index = Storage.musicInfoList.size();
 		Storage.musicInfo.set(Storage.musicInfoList.get(index - 1));
@@ -105,6 +114,8 @@ public class RootPageController
 	private void nextMusic()
 	{
 		int index = Storage.musicInfoList.indexOf(Storage.musicInfo.get());
+		if(index == -1)
+			return;
 		if(index == Storage.musicInfoList.size() - 1)
 			index = -1;
 		Storage.musicInfo.set(Storage.musicInfoList.get(index + 1));

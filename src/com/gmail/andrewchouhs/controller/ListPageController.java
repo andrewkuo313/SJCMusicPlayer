@@ -9,16 +9,16 @@ import javafx.scene.control.TableView;
 public class ListPageController
 {
 	@FXML
-    private TableView<MusicInfo> musicInfoTable;
-    @FXML
-    private TableColumn<MusicInfo, String> nameColumn;
-    @FXML
-    private TableColumn<MusicInfo, String> artistColumn;
-    @FXML
-    private TableColumn<MusicInfo, String> albumColumn;
+	private TableView<MusicInfo> musicInfoTable;
+	@FXML
+	private TableColumn<MusicInfo, String> nameColumn;
+	@FXML
+	private TableColumn<MusicInfo, String> artistColumn;
+	@FXML
+	private TableColumn<MusicInfo, String> albumColumn;
     
     @FXML
-    private void initialize() 
+	private void initialize() 
     {
     	musicInfoTable.setItems(Storage.musicInfoList);
     	nameColumn.setCellValueFactory(cellData -> cellData.getValue().name);
@@ -26,5 +26,5 @@ public class ListPageController
     	albumColumn.setCellValueFactory(cellData -> cellData.getValue().album);
     	musicInfoTable.getSelectionModel().selectedItemProperty().addListener
     	( (observable, oldValue, newValue) -> Storage.musicInfo.set(newValue));
-    }
+	}
 }

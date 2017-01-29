@@ -23,10 +23,12 @@ public class MusicPlayingService extends Service<Long>
 	private SourceDataLine dataLine;
 	private long bytesPerSecond;
 	private long totalReadBytes;
+	private long totalSkippedBytes;
+	private long bitrate;
 	private boolean paused = false;
 	private boolean stopped = false;
-	private int seekSecond = 2147483647;
 	private boolean startDirectly = false;
+	private int seekSecond = 2147483647;
 	
 	public MusicPlayingService(String filePath , long seekMillis , boolean startDirectly)
 	{
@@ -56,7 +58,8 @@ public class MusicPlayingService extends Service<Long>
 			if (baseFormat instanceof TAudioFormat)
 			{
 			     Map<String , Object> properties = ((TAudioFormat)baseFormat).properties();
-			     audioIn.skip((Integer) properties.get("bitrate") * seekMillis / 8000L);
+			     bitrate =  (Integer) properties.get("bitrate");
+			     totalSkippedBytes = bitrate * seekMillis / 8000L;
 			}
 		} 
 		catch (Exception e)
@@ -87,6 +90,7 @@ public class MusicPlayingService extends Service<Long>
 		startDirectly = true;
 		paused = true;
 		this.seekSecond = seekSecond;
+		totalReadBytes = bytesPerSecond * seekSecond;
 	}
 	
 	@Override
@@ -98,8 +102,8 @@ public class MusicPlayingService extends Service<Long>
             {
 				try
 				{
+					audioIn.skip(totalSkippedBytes);
 					byte[] data = new byte[4096];
-					
 					DataLine.Info dataLineInfo = new DataLine.Info(SourceDataLine.class, audioFormat);
 					dataLine = (SourceDataLine) AudioSystem.getLine(dataLineInfo);
 					dataLine.open(audioFormat);
@@ -116,6 +120,21 @@ public class MusicPlayingService extends Service<Long>
 								totalReadBytes += nBytesRead;
 								Platform.runLater(()->Storage.musicTime.set((int)(totalReadBytes / bytesPerSecond)));
 							}
+							else
+							{
+								dataLine.flush();
+								dataLine.stop();
+								dataLine.close();
+								audioIn.close();
+								Platform.runLater(()->
+								{
+									int index = Storage.musicInfoList.indexOf(Storage.musicInfo.get());
+									if(index == Storage.musicInfoList.size() - 1)
+										index = -1;
+									Storage.musicInfo.set(Storage.musicInfoList.get(index + 1));
+								});
+								cancel();
+							}
 						}
 						dataLine.flush();
 						dataLine.stop();
@@ -123,6 +142,7 @@ public class MusicPlayingService extends Service<Long>
 						audioIn.close();
 						if(stopped == true)
 							cancel();
+							
 					}
 					else
 						audioIn.close();

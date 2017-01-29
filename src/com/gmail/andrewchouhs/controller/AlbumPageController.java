@@ -17,8 +17,8 @@ public class AlbumPageController
 	private int albumCoverCount = -4;
 	
 	@FXML
-    private void initialize() 
-    {
+	private void initialize() 
+	{
 		Storage.albumCoverList.addListener((ListChangeListener<Image>)(c -> 
 		{
 			albumCoverCount++;
@@ -35,5 +35,5 @@ public class AlbumPageController
 				albumCoverCount = -4;
 			}
 		}));
-    }
+	}
 }

@@ -3,6 +3,10 @@ package com.gmail.andrewchouhs;
 import java.io.File;
 import java.io.IOException;
 import java.util.EnumMap;
+import java.util.Map;
+import javax.sound.sampled.AudioFileFormat;
+import javax.sound.sampled.AudioSystem;
+import org.tritonus.share.sampled.file.TAudioFileFormat;
 import com.gmail.andrewchouhs.model.DirInfo;
 import com.gmail.andrewchouhs.model.MusicInfo;
 import com.gmail.andrewchouhs.utils.AlbumCoverFilter;
@@ -37,6 +41,7 @@ public class Storage
     private static Stage mainStage;
     private static final Stage settingStage = new Stage();
     private static EnumMap<Page , Pane> pageMap = new EnumMap<Page , Pane>(Page.class);
+//    private static final String[] trackNumberPrefix = {"\\(\\d+\\).*"}; 
     
     public static void init(Stage stage)
     {
@@ -84,25 +89,53 @@ public class Storage
     		}
     		if(newValue != null)
     			musicPlayer.set(new MusicPlayingService(newValue.path.get() , 0L , true));
+    		else
+    			musicTotalTime.set(0);
     	});
     }
     
     public static void refreshMusicInfoList()
     {
-    	musicInfoList.clear();
-    	albumCoverList.add(null);
-    	albumCoverList.clear();
-    	for(DirInfo dirInfo : dirList)
+    	try
     	{
-    		File dirFile = new File(dirInfo.path.get());
-    		for(File file : dirFile.listFiles(new MusicFileFilter()))
-    			musicInfoList.add
-    			(new MusicInfo(file.getAbsolutePath() , file.getName().substring(0, file.getName().lastIndexOf('.')), null , null , null));
-    		for(File file : dirFile.listFiles(new AlbumCoverFilter()))
-    			albumCoverList.add(new Image(file.toURI().toString()));
+	    	musicInfoList.clear();
+	    	albumCoverList.add(null);
+	    	albumCoverList.clear();
+	    	for(DirInfo dirInfo : dirList)
+	    	{
+	    		File dirFile = new File(dirInfo.path.get());
+	    		for(File file : dirFile.listFiles(new MusicFileFilter()))
+	    		{
+	    			String musicName = file.getName().substring(0, file.getName().lastIndexOf('.'));
+	//    			for(String s : trackNumberPrefix)
+	//    			{
+	//    				if(musicName.matches(s))
+	//    					musicName.replaceFirst("\\(\\d+\\)", "0");
+	//    			}
+	    			
+	    			String artistName = null;
+	    			String albumName = null;
+//	    			AudioFileFormat baseFileFormat = AudioSystem.getAudioFileFormat(file);
+//	    			if (baseFileFormat instanceof TAudioFileFormat)
+//	    			{
+//	    			    Map<String , Object> properties = ((TAudioFileFormat)baseFileFormat).properties();
+//	    			    artistName = (String)properties.get("artist");
+//	    			    albumName = (String)properties.get("album");
+//	    			}
+	    			
+	    			musicInfoList.add
+	    			(new MusicInfo(file.getAbsolutePath() , musicName , artistName , albumName , null));
+	    		}
+	    		for(File file : dirFile.listFiles(new AlbumCoverFilter()))
+	    			albumCoverList.add(new Image(file.toURI().toString()));
+	    	}
+			albumCoverList.add(null);
+			albumCoverList.remove(albumCoverList.size() - 1);
     	}
-		albumCoverList.add(null);
-		albumCoverList.remove(albumCoverList.size() - 1);
+    	catch(Exception e)
+    	{
+    		e.printStackTrace();
+    	}
     }
     
     public static Stage getMainStage()
