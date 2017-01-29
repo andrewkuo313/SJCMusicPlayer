@@ -1,11 +1,13 @@
 package com.gmail.andrewchouhs.utils;
 
 import java.io.File;
+import java.util.Map;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.DataLine;
 import javax.sound.sampled.SourceDataLine;
+import org.tritonus.share.sampled.TAudioFormat;
 import com.gmail.andrewchouhs.Storage;
 import javafx.application.Platform;
 import javafx.concurrent.Service;
@@ -18,7 +20,7 @@ public class MusicPlayingService extends Service<Long>
 	private AudioFormat audioFormat;
 	private SourceDataLine dataLine;
 	private long bytesPerSecond;
-	private long totalReadBytes = 0L;
+	private long totalReadBytes;
 	private boolean stopped = false;
 	
 	public MusicPlayingService(String filePath , long seekMillis)
@@ -37,9 +39,18 @@ public class MusicPlayingService extends Service<Long>
 			                                                                                  false);
 			    audioIn = AudioSystem.getAudioInputStream(audioFormat, baseAudioIn);
 				bytesPerSecond = (long)(audioFormat.getFrameSize() * audioFormat.getFrameRate());
-				long bytesSkipped = bytesPerSecond * seekMillis / 1000L; 
-				totalReadBytes = bytesSkipped;
-				audioIn.skip(totalReadBytes);
+				totalReadBytes = bytesPerSecond * seekMillis / 1000L;
+				
+				long byteRate = 0;
+				if (baseFormat instanceof TAudioFormat)
+				{
+				     Map properties = ((TAudioFormat)baseFormat).properties();
+				     String key = "bitrate";
+				     byteRate = (Integer) properties.get(key) / 8L;
+				}
+				System.out.println(byteRate);
+				long bytesSkipped = byteRate * seekMillis / 1000L; 
+				audioIn.skip(bytesSkipped);
 				
 		} 
 		catch (Exception e)
@@ -74,7 +85,6 @@ public class MusicPlayingService extends Service<Long>
 					DataLine.Info dataLineInfo = new DataLine.Info(SourceDataLine.class, audioFormat);
 					dataLine = (SourceDataLine) AudioSystem.getLine(dataLineInfo);
 					dataLine.open(audioFormat);
-					
 					if (dataLine != null)
 					{
 						dataLine.start();
@@ -100,7 +110,6 @@ public class MusicPlayingService extends Service<Long>
 				catch(Exception e)
 				{
 				}
-				System.out.println(totalReadBytes * 1000L / bytesPerSecond);
 				return totalReadBytes * 1000L / bytesPerSecond;  
             }
         };
