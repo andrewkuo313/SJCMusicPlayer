@@ -8,9 +8,9 @@ import com.gmail.andrewchouhs.model.MusicInfo;
 import com.gmail.andrewchouhs.utils.MusicFileFilter;
 import com.gmail.andrewchouhs.utils.MusicPlayingService;
 import com.gmail.andrewchouhs.utils.Page;
-import javafx.beans.property.LongProperty;
+import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleLongProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -26,10 +26,10 @@ public class Storage
 	//should prevent object repeat in observable list
     public static final ObservableList<MusicInfo> musicInfoList = FXCollections.observableArrayList();
     public static final ObjectProperty<MusicInfo> musicInfo = new SimpleObjectProperty<MusicInfo>();
-    public static final LongProperty musicTime = new SimpleLongProperty(0L);
+    public static final IntegerProperty musicTime = new SimpleIntegerProperty(0);
+    public static final IntegerProperty musicTotalTime = new SimpleIntegerProperty(0);
     public static final ObservableList<DirInfo> dirList = FXCollections.observableArrayList();
-    //maybe final
-    public static MusicPlayingService musicPlayer;
+    public static final ObjectProperty<MusicPlayingService> musicPlayer = new SimpleObjectProperty<MusicPlayingService>();
     private static Stage mainStage;
     private static final Stage settingStage = new Stage();
     private static EnumMap<Page , Pane> pageMap = new EnumMap<Page , Pane>(Page.class);
@@ -63,13 +63,15 @@ public class Storage
     	
     	musicInfo.addListener((observable, oldValue, newValue) -> 
     	{
-    		if(musicPlayer != null)
+    		if(musicPlayer.get() != null)
     		{
-    			musicPlayer.stop();
+    			musicPlayer.get().stop();
+    			musicPlayer.set(null);
     		}
-    		musicPlayer = new MusicPlayingService(newValue.path.get() , 0L);
-    		musicPlayer.start();
-
+    		if(newValue != null)
+    		{
+    			musicPlayer.set(new MusicPlayingService(newValue.path.get() , 0L , true));
+    		}
     	});
     }
     

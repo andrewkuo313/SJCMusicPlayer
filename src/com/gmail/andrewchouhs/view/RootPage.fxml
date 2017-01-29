@@ -14,14 +14,14 @@
       <bottom>
         <TabPane focusTraversable="true" prefHeight="-1.0" prefWidth="-1.0" rotateGraphic="false" side="TOP" tabClosingPolicy="UNAVAILABLE" tabMaxHeight="1.7976931348623157E308">
           <tabs>
-            <Tab fx:id="list" content="$null" text="列表" />
-            <Tab fx:id="album" content="$null" text="專輯" />
-            <Tab fx:id="statistics" content="$null" text="統計" />
+            <Tab fx:id="listTab" content="$null" text="列表" />
+            <Tab fx:id="albumTab" content="$null" text="專輯" />
+            <Tab fx:id="statisticsTab" content="$null" text="統計" />
           </tabs>
         </TabPane>
       </bottom>
       <center>
-        <Slider BorderPane.alignment="CENTER">
+        <Slider fx:id="timeSlider" onMousePressed="#onTimeSliderPressed" onMouseReleased="#onTimeSliderReleased" BorderPane.alignment="CENTER">
           <BorderPane.margin>
             <Insets bottom="10.0" left="10.0" right="10.0" />
           </BorderPane.margin>
@@ -30,11 +30,11 @@
       <top>
         <HBox alignment="CENTER" prefHeight="-1.0" prefWidth="-1.0" spacing="10.0" BorderPane.alignment="CENTER">
           <children>
-            <Label text="曲名" />
-            <Button id="previousMusic" mnemonicParsing="false" text="上一首" />
-            <Button fx:id="playAndPause" mnemonicParsing="false" onMouseClicked="#playAndPause" text="00:00" />
-            <Button id="nextMusic" mnemonicParsing="false" text="下一首" />
-            <Label text="專輯" />
+            <Label fx:id="nameLabel" text="曲名" />
+            <Button id="previousMusic" mnemonicParsing="false" onMouseClicked="#previousMusic" text="上一首" />
+            <Button id="playAndPause" fx:id="playAndPauseButton" mnemonicParsing="false" onMouseClicked="#playAndPause" text="00:00" />
+            <Button id="nextMusic" mnemonicParsing="false" onMouseClicked="#nextMusic" text="下一首" />
+            <Label fx:id="albumLabel" text="專輯" />
           </children>
           <padding>
             <Insets />

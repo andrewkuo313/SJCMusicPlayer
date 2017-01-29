@@ -21,7 +21,6 @@ public class ListPageController
     private void initialize() 
     {
     	musicInfoTable.setItems(Storage.musicInfoList);
-    	//setCellValueFactory need to be learned
     	nameColumn.setCellValueFactory(cellData -> cellData.getValue().name);
     	artistColumn.setCellValueFactory(cellData -> cellData.getValue().artist);
     	albumColumn.setCellValueFactory(cellData -> cellData.getValue().album);
