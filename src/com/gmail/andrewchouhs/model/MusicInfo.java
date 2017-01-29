@@ -10,8 +10,8 @@ public class MusicInfo
 {
     public final StringProperty path = new SimpleStringProperty();
     public final StringProperty name = new SimpleStringProperty();
-    public final StringProperty artist = new SimpleStringProperty("µL");
-    public final StringProperty album = new SimpleStringProperty("µL");
+    public final StringProperty artist = new SimpleStringProperty("ç„¡");
+    public final StringProperty album = new SimpleStringProperty("ç„¡");
     public final ObjectProperty<Image> image = new SimpleObjectProperty<Image>();
 
     public MusicInfo(String path, String name , String artist , String album , Image image) 
@@ -30,6 +30,6 @@ public class MusicInfo
     private void checkNull(StringProperty stringProperty)
     {
     	if(stringProperty.get() == null)
-    		stringProperty.set("µL");
+    		stringProperty.set("ï¿½L");
     }
 }

@@ -38,7 +38,7 @@ public class Storage
     {
     	mainStage = stage;
         stage.setTitle("SJC's Music Player");
-        settingStage.setTitle("³]©w");
+        settingStage.setTitle("è¨­å®š");
     	try 
         {
             BorderPane rootPage = FXMLLoader.load(Main.class.getResource("view/RootPage.fxml"));

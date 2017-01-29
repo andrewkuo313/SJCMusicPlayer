@@ -56,7 +56,7 @@ public class RootPageController
     		if(newValue != null)
     			nameLabel.setText(newValue.name.get());
     		else
-    			nameLabel.setText("¶±¶W");
+    			nameLabel.setText("Êõ≤Âêç");
     	});
 	}
 	
