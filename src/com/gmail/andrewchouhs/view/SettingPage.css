@@ -31,6 +31,11 @@
 	-fx-text-overrun: clip;
 }
 
+.table-row-cell:selected .table-cell
+{
+	-fx-border-color: #FFFFFF;
+}
+
 .button:hover , .button:pressed
 {
 	-fx-background-radius: 5;

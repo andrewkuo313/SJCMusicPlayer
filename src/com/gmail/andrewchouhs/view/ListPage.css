@@ -25,6 +25,11 @@
 	-fx-background-color: #202020;
 }
 
+.table-row-cell:selected .table-cell
+{
+	-fx-border-color: #FFFFFF;
+}
+
 .tab-header-background
 {
 	-fx-background-color: #303030;

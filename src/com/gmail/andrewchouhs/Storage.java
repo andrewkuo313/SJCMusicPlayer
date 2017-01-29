@@ -3,10 +3,6 @@ package com.gmail.andrewchouhs;
 import java.io.File;
 import java.io.IOException;
 import java.util.EnumMap;
-import java.util.Map;
-import javax.sound.sampled.AudioFileFormat;
-import javax.sound.sampled.AudioSystem;
-import org.tritonus.share.sampled.file.TAudioFileFormat;
 import com.gmail.andrewchouhs.model.DirInfo;
 import com.gmail.andrewchouhs.model.MusicInfo;
 import com.gmail.andrewchouhs.utils.AlbumCoverFilter;
@@ -30,7 +26,8 @@ import javafx.stage.Stage;
 
 public class Storage
 {
-	//should prevent object repeat in observable list
+	//to next song timing seems too short
+	//should prevent object repeat in observable list , maybe throw to set first
     public static final ObservableList<MusicInfo> musicInfoList = FXCollections.observableArrayList();
     public static final ObjectProperty<MusicInfo> musicInfo = new SimpleObjectProperty<MusicInfo>();
     public static final IntegerProperty musicTime = new SimpleIntegerProperty(0);
@@ -124,7 +121,7 @@ public class Storage
 //	    			}
 	    			
 	    			musicInfoList.add
-	    			(new MusicInfo(file.getAbsolutePath() , musicName , artistName , albumName , null));
+	    			(new MusicInfo(file.getAbsolutePath() , musicName , artistName , albumName));
 	    		}
 	    		for(File file : dirFile.listFiles(new AlbumCoverFilter()))
 	    			albumCoverList.add(new Image(file.toURI().toString()));

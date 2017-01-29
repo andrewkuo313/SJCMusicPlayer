@@ -3,7 +3,6 @@ package com.gmail.andrewchouhs.controller;
 import com.gmail.andrewchouhs.Storage;
 import com.gmail.andrewchouhs.utils.MusicPlayingService;
 import com.gmail.andrewchouhs.utils.Page;
-import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -36,19 +35,20 @@ public class RootPageController
     	listTab.setOnSelectionChanged((event)->Storage.setPage(Page.LIST));
     	Storage.musicTime.addListener( (observable, oldValue, newValue) -> 
     	{
-    		if(oldValue.intValue() != newValue.intValue())
-    		{
-    			if(!isHoldingSlider)
-    				timeSlider.setValue(newValue.intValue());
-    		}
+    		if(!isHoldingSlider)
+    			timeSlider.setValue(newValue.intValue());
     	});
     	
     	timeSlider.valueProperty().addListener((observable, oldValue, newValue) ->
     	{
-    		int time = newValue.intValue();
-    		int minute = time / 60;
-			int second = time % 60;
-			playAndPauseButton.setText((minute < 10 ? "0" + minute : minute)+ ":" + (second < 10 ? "0" + second : second));
+    		if(oldValue.intValue() != newValue.intValue())
+    		{
+	    		int time = newValue.intValue();
+	    		int minute = time / 60;
+				int second = time % 60;
+				playAndPauseButton.setText((minute < 10 ? "0" + minute : minute)+ ":" + (second < 10 ? "0" + second : second));
+				timeSlider.setValue(newValue.intValue());
+    		}
     	});
     	
     	Storage.musicTotalTime.addListener((observable, oldValue, newValue) -> 
@@ -74,10 +74,11 @@ public class RootPageController
 	@FXML
 	private void onTimeSliderReleased()
 	{
-		if(Storage.musicPlayer.get() == null)
+		isHoldingSlider = false;
+		//this fucking bug didn't get fixed in fact
+		if(Storage.musicPlayer.get() == null || ((int)timeSlider.getValue()) == Storage.musicTime.get())
 			return;
 		Storage.musicPlayer.get().seek((int)timeSlider.getValue());
-		isHoldingSlider = false;
 	}
 	
 	@FXML

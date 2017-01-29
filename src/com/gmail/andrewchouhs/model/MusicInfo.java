@@ -1,10 +1,8 @@
 package com.gmail.andrewchouhs.model;
 
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
+import java.util.HashSet;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import javafx.scene.image.Image;
 
 public class MusicInfo
 {
@@ -12,9 +10,9 @@ public class MusicInfo
     public final StringProperty name = new SimpleStringProperty();
     public final StringProperty artist = new SimpleStringProperty("無");
     public final StringProperty album = new SimpleStringProperty("無");
-    public final ObjectProperty<Image> image = new SimpleObjectProperty<Image>();
-
-    public MusicInfo(String path, String name , String artist , String album , Image image) 
+    public final HashSet<String> tags = new HashSet<String>();
+    
+    public MusicInfo(String path, String name , String artist , String album) 
     {
 //        this.artist.addListener((observable, oldValue, newValue) -> checkNull(this.artist));
 //        this.album.addListener((observable, oldValue, newValue) -> checkNull(this.album));
@@ -22,7 +20,6 @@ public class MusicInfo
         this.name.set(name);
         this.artist.set(artist);
         this.album.set(album);
-        this.image.set(image);
         checkNull(this.artist);
         checkNull(this.album);
     }
