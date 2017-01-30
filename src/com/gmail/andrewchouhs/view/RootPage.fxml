@@ -14,9 +14,9 @@
       <bottom>
         <TabPane focusTraversable="true" prefHeight="-1.0" prefWidth="-1.0" rotateGraphic="false" side="TOP" tabClosingPolicy="UNAVAILABLE" tabMaxHeight="1.7976931348623157E308">
           <tabs>
-            <Tab fx:id="listTab" content="$null" text="列表" />
-            <Tab fx:id="albumTab" content="$null" text="專輯" />
-            <Tab fx:id="statisticsTab" content="$null" text="統計" />
+            <Tab fx:id="listTab" content="$null" text="%RootPage.ListPage" />
+            <Tab fx:id="albumTab" content="$null" text="%RootPage.AlbumPage" />
+            <Tab fx:id="statisticsTab" content="$null" text="%RootPage.StatisticsPage" />
           </tabs>
         </TabPane>
       </bottom>
@@ -30,11 +30,11 @@
       <top>
         <HBox alignment="CENTER" prefHeight="-1.0" prefWidth="-1.0" spacing="10.0" BorderPane.alignment="CENTER">
           <children>
-            <Label fx:id="nameLabel" text="曲名" />
-            <Button id="previousMusic" mnemonicParsing="false" onMouseClicked="#previousMusic" text="上一首" />
+            <Label fx:id="nameLabel" text="%RootPage.Name" />
+            <Button id="previousMusic" mnemonicParsing="false" onMouseClicked="#previousMusic" text="%RootPage.PreviousMusic" />
             <Button id="playAndPause" fx:id="playAndPauseButton" mnemonicParsing="false" onMouseClicked="#playAndPause" text="00:00" />
-            <Button id="nextMusic" mnemonicParsing="false" onMouseClicked="#nextMusic" text="下一首" />
-            <Label fx:id="albumLabel" text="專輯" />
+            <Button id="nextMusic" mnemonicParsing="false" onMouseClicked="#nextMusic" text="%RootPage.NextMusic" />
+            <Label fx:id="albumLabel" text="%RootPage.Album" />
           </children>
           <padding>
             <Insets />
@@ -52,9 +52,9 @@
   <top>
     <MenuBar>
       <menus>
-        <Menu mnemonicParsing="false" text="設定">
+        <Menu mnemonicParsing="false" text="%RootPage.Settings">
           <items>
-            <MenuItem mnemonicParsing="false" onAction="#openSetting" text="設定" />
+            <MenuItem mnemonicParsing="false" onAction="#openSettings" text="%RootPage.Settings.Settings" />
           </items>
         </Menu>
       </menus>

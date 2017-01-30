@@ -61,7 +61,7 @@ public class RootPageController
     		if(newValue != null)
     			nameLabel.setText(newValue.name.get());
     		else
-    			nameLabel.setText("曲名");
+    			nameLabel.setText(Storage.bundle.getString("ListPage.Name"));
     	});
 	}
 	
@@ -82,10 +82,10 @@ public class RootPageController
 	}
 	
 	@FXML
-	private void openSetting()
+	private void openSettings()
 	{
-		Storage.getSettingStage().show();
-		Storage.getSettingStage().toFront();
+		Storage.getSettingsStage().show();
+		Storage.getSettingsStage().toFront();
 	}
 	
 	@FXML

@@ -3,6 +3,9 @@ package com.gmail.andrewchouhs;
 import java.io.File;
 import java.io.IOException;
 import java.util.EnumMap;
+import java.util.Locale;
+import java.util.Properties;
+import java.util.ResourceBundle;
 import com.gmail.andrewchouhs.model.DirInfo;
 import com.gmail.andrewchouhs.model.MusicInfo;
 import com.gmail.andrewchouhs.utils.AlbumCoverFilter;
@@ -10,6 +13,7 @@ import com.gmail.andrewchouhs.utils.DirXMLParser;
 import com.gmail.andrewchouhs.utils.MusicFileFilter;
 import com.gmail.andrewchouhs.utils.MusicPlayingService;
 import com.gmail.andrewchouhs.utils.Page;
+import com.gmail.andrewchouhs.utils.PreferencesParser;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -36,31 +40,33 @@ public class Storage
     public static final ObservableList<Image> albumCoverList = FXCollections.observableArrayList();
     public static final ObjectProperty<MusicPlayingService> musicPlayer = new SimpleObjectProperty<MusicPlayingService>();
     private static Stage mainStage;
-    private static final Stage settingStage = new Stage();
+    private static final Stage settingsStage = new Stage();
+    public static final Properties prefs = new Properties();
     private static EnumMap<Page , Pane> pageMap = new EnumMap<Page , Pane>(Page.class);
+    public static final ResourceBundle bundle = ResourceBundle.getBundle("com.gmail.andrewchouhs.i18n.text" , new Locale("en" , "US"));
 //    private static final String[] trackNumberPrefix = {"\\(\\d+\\).*"}; 
     
     public static void init(Stage stage)
     {
     	mainStage = stage;
         stage.setTitle("SJC's Music Player");
-        settingStage.setTitle("設定");
+        settingsStage.setTitle(bundle.getString("SettingsPage.Title"));
     	try 
         {
-            BorderPane rootPage = FXMLLoader.load(Main.class.getResource("view/RootPage.fxml"));
-            AnchorPane albumPage = FXMLLoader.load(Main.class.getResource("view/AlbumPage.fxml"));
-            AnchorPane statisticsPage = FXMLLoader.load(Main.class.getResource("view/StatisticsPage.fxml"));
-            AnchorPane listPage = FXMLLoader.load(Main.class.getResource("view/ListPage.fxml"));
-            AnchorPane settingPage = FXMLLoader.load(Main.class.getResource("view/SettingPage.fxml"));
+            BorderPane rootPage = FXMLLoader.load(Main.class.getResource("view/RootPage.fxml") , bundle);
+            AnchorPane albumPage = FXMLLoader.load(Main.class.getResource("view/AlbumPage.fxml") , bundle);
+            AnchorPane statisticsPage = FXMLLoader.load(Main.class.getResource("view/StatisticsPage.fxml") , bundle);
+            AnchorPane listPage = FXMLLoader.load(Main.class.getResource("view/ListPage.fxml") , bundle);
+            AnchorPane settingsPage = FXMLLoader.load(Main.class.getResource("view/SettingsPage.fxml") , bundle);
             pageMap.put(Page.ROOT, rootPage);
             pageMap.put(Page.ALBUM, albumPage);
             pageMap.put(Page.STATISTICS , statisticsPage);
             pageMap.put(Page.LIST , listPage);
             setPage(Page.LIST);
             mainStage.setScene(new Scene(rootPage));
-            settingStage.setScene(new Scene(settingPage));
-            settingStage.initOwner(stage);
-            settingStage.setOnCloseRequest((event)->DirXMLParser.load());
+            settingsStage.setScene(new Scene(settingsPage));
+            settingsStage.initOwner(stage);
+            settingsStage.setOnCloseRequest((event)->DirXMLParser.load());
             mainStage.show();
         } 
         catch (IOException e) 
@@ -74,6 +80,7 @@ public class Storage
     	else
     	{
     		DirXMLParser.load();
+    		PreferencesParser.load();
     		refreshMusicInfoList();
     	}
     	
@@ -140,9 +147,9 @@ public class Storage
     	return mainStage;
     }
     
-    public static Stage getSettingStage()
+    public static Stage getSettingsStage()
     {
-    	return settingStage;
+    	return settingsStage;
     }
     
     public static void setPage(Page page)

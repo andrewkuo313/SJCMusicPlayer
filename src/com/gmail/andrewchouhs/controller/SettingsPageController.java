@@ -7,23 +7,30 @@ import com.gmail.andrewchouhs.model.DirInfo;
 import com.gmail.andrewchouhs.utils.DirFilter;
 import com.gmail.andrewchouhs.utils.DirXMLParser;
 import com.gmail.andrewchouhs.utils.MusicFileFilter;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.image.Image;
 import javafx.stage.DirectoryChooser;
 
-public class SettingPageController
+public class SettingsPageController
 {
 	@FXML
     private TableView<DirInfo> dirInfoTable;
     @FXML
     private TableColumn<DirInfo, String> pathColumn;
+    @FXML
+    private ChoiceBox<String> localeBox;
     
     @FXML
     private void initialize() 
     {
     	dirInfoTable.setItems(Storage.dirList);
     	pathColumn.setCellValueFactory(cellData -> cellData.getValue().path);
+    	localeBox.setItems(FXCollections.observableArrayList("繁體中文" , "English"));
     }
     
     @FXML
@@ -31,21 +38,21 @@ public class SettingPageController
     {
     	DirXMLParser.save();
     	Storage.refreshMusicInfoList();
-    	Storage.getSettingStage().close();
+    	Storage.getSettingsStage().close();
     }
     
     @FXML
     private void cancelDir()
     {
     	DirXMLParser.load();
-    	Storage.getSettingStage().close();
+    	Storage.getSettingsStage().close();
     }
     
     @FXML
 	private void addDir()
 	{
 		DirectoryChooser dirChooser = new DirectoryChooser();
-		File selectedDir = dirChooser.showDialog(Storage.getSettingStage());
+		File selectedDir = dirChooser.showDialog(Storage.getSettingsStage());
 		
 		if(selectedDir != null && selectedDir.isDirectory())
 		{
@@ -74,7 +81,7 @@ public class SettingPageController
     }
     
     @FXML
-    private void removeChildrenDir()
+    private void removeChildDir()
     {
     	String parentPath = dirInfoTable.getSelectionModel().getSelectedItem().path.get();
     	Iterator<DirInfo> iter = Storage.dirList.iterator();

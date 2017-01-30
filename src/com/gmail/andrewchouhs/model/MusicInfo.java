@@ -1,15 +1,17 @@
 package com.gmail.andrewchouhs.model;
 
 import java.util.HashSet;
+import com.gmail.andrewchouhs.Storage;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
 public class MusicInfo
 {
+	//bundle efficiency should be tested
     public final StringProperty path = new SimpleStringProperty();
     public final StringProperty name = new SimpleStringProperty();
-    public final StringProperty artist = new SimpleStringProperty("無");
-    public final StringProperty album = new SimpleStringProperty("無");
+    public final StringProperty artist = new SimpleStringProperty(Storage.bundle.getString("ListPage.NullValue"));
+    public final StringProperty album = new SimpleStringProperty(Storage.bundle.getString("ListPage.NullValue"));
     public final HashSet<String> tags = new HashSet<String>();
     
     public MusicInfo(String path, String name , String artist , String album) 
@@ -27,6 +29,6 @@ public class MusicInfo
     private void checkNull(StringProperty stringProperty)
     {
     	if(stringProperty.get() == null)
-    		stringProperty.set("無");
+    		stringProperty.set(Storage.bundle.getString("ListPage.NullValue"));
     }
 }

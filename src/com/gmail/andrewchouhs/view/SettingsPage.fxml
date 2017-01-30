@@ -2,16 +2,17 @@
 
 <?import java.lang.*?>
 <?import java.net.*?>
+<?import javafx.collections.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="513.0" prefWidth="607.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="com.gmail.andrewchouhs.controller.SettingPageController">
+<AnchorPane prefHeight="500.0" prefWidth="800.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="com.gmail.andrewchouhs.controller.SettingsPageController">
   <!-- TODO Add Nodes -->
   <children>
     <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
       <tabs>
-        <Tab text="音樂管理">
+        <Tab text="%SettingsPage.Directory">
           <content>
             <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" styleClass="anchor-pane">
               <children>
@@ -20,24 +21,27 @@
                     <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                   </columnResizePolicy>
                   <columns>
-                    <TableColumn maxWidth="5000.0" minWidth="0.0" prefWidth="565.0" text="路徑" fx:id="pathColumn" />
+                    <TableColumn maxWidth="5000.0" minWidth="0.0" prefWidth="565.0" text="%SettingsPage.Directory.Path" fx:id="pathColumn" />
                   </columns>
+                  <placeholder>
+                    <Label text="%SettingsPage.Directory.NoContent" />
+                  </placeholder>
                 </TableView>
                 <HBox prefHeight="-1.0" prefWidth="-1.0" spacing="10.0" AnchorPane.bottomAnchor="8.0" AnchorPane.rightAnchor="20.0">
                   <children>
-                    <Button mnemonicParsing="false" onMouseClicked="#addDir" text="選擇資料夾" />
-                    <Button mnemonicParsing="false" onMouseClicked="#removeDir" text="刪除" />
-                    <Button mnemonicParsing="false" onMouseClicked="#removeAllDir" text="全部刪除" />
-                    <Button mnemonicParsing="false" onMouseClicked="#removeChildrenDir" text="子資料夾一併刪除" />
-                    <Button mnemonicParsing="false" onMouseClicked="#okDir" text="確定" />
-                    <Button mnemonicParsing="false" onMouseClicked="#cancelDir" text="取消" />
+                    <Button mnemonicParsing="false" onMouseClicked="#addDir" text="%SettingsPage.Directory.SelectDirectory" />
+                    <Button mnemonicParsing="false" onMouseClicked="#removeDir" text="%SettingsPage.Directory.Remove" />
+                    <Button mnemonicParsing="false" onMouseClicked="#removeAllDir" text="%SettingsPage.Directory.RemoveAll" />
+                    <Button mnemonicParsing="false" onMouseClicked="#removeChildDir" text="%SettingsPage.Directory.RemoveChildDirectories" />
+                    <Button mnemonicParsing="false" onMouseClicked="#okDir" text="%SettingsPage.Directory.OK" />
+                    <Button mnemonicParsing="false" onMouseClicked="#cancelDir" text="%SettingsPage.Directory.Cancel" />
                   </children>
                 </HBox>
               </children>
             </AnchorPane>
           </content>
         </Tab>
-        <Tab text="偏好設定">
+        <Tab text="%SettingsPage.Preferences">
           <content>
             <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" styleClass="anchor-pane">
               <children>
@@ -47,18 +51,27 @@
                     <CheckBox mnemonicParsing="false" text="開啟程式時自動播放" />
                     <CheckBox mnemonicParsing="false" text="自動更新" />
                     <CheckBox mnemonicParsing="false" text="提醒更新" />
+                    <ChoiceBox fx:id="localeBox">
+                      <items>
+                        <FXCollections fx:factory="observableArrayList">
+                          <String fx:value="Item 1" />
+                          <String fx:value="Item 2" />
+                          <String fx:value="Item 3" />
+                        </FXCollections>
+                      </items>
+                    </ChoiceBox>
                   </children>
                 </VBox>
               </children>
             </AnchorPane>
           </content>
         </Tab>
-        <Tab text="更新">
+        <Tab text="%SettingsPage.Updates">
           <content>
             <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" styleClass="anchor-pane" />
           </content>
         </Tab>
-        <Tab text="關於">
+        <Tab text="%SettingsPage.About">
           <content>
             <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" styleClass="anchor-pane" />
           </content>
@@ -67,6 +80,6 @@
     </TabPane>
   </children>
   <stylesheets>
-    <URL value="@SettingPage.css" />
+    <URL value="@SettingsPage.css" />
   </stylesheets>
 </AnchorPane>
