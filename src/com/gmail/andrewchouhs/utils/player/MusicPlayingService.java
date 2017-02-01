@@ -1,4 +1,4 @@
-package com.gmail.andrewchouhs.utils;
+package com.gmail.andrewchouhs.utils.player;
 
 import java.io.File;
 import java.util.Map;
@@ -10,7 +10,7 @@ import javax.sound.sampled.DataLine;
 import javax.sound.sampled.SourceDataLine;
 import org.tritonus.share.sampled.TAudioFormat;
 import org.tritonus.share.sampled.file.TAudioFileFormat;
-import com.gmail.andrewchouhs.Storage;
+import com.gmail.andrewchouhs.storage.PropertyStorage;
 import javafx.application.Platform;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
@@ -52,7 +52,7 @@ public class MusicPlayingService extends Service<Long>
 			if (baseFileFormat instanceof TAudioFileFormat)
 			{
 			    Map<String , Object> properties = ((TAudioFileFormat)baseFileFormat).properties();
-			    Storage.musicTotalTime.set((int)((Long)properties.get("duration") / 1000000L));
+			    PropertyStorage.musicTotalTime.set((int)((Long)properties.get("duration") / 1000000L));
 			}
 			
 			if (baseFormat instanceof TAudioFormat)
@@ -66,9 +66,9 @@ public class MusicPlayingService extends Service<Long>
 		{
 		}
 		setOnSucceeded((event) -> 
-			Storage.musicPlayer.set(new MusicPlayingService(filePath , (Long)event.getSource().getValue() , this.startDirectly)));
+			PropertyStorage.musicPlayer.set(new MusicPlayingService(filePath , (Long)event.getSource().getValue() , this.startDirectly)));
 		
-		setOnCancelled((event) -> Storage.musicTime.set(0));
+		setOnCancelled((event) -> PropertyStorage.musicTime.set(0));
 		
 		if(startDirectly == true)
 			start();
@@ -118,7 +118,7 @@ public class MusicPlayingService extends Service<Long>
 							{
 								dataLine.write(data, 0, nBytesRead);
 								totalReadBytes += nBytesRead;
-								Platform.runLater(()->Storage.musicTime.set((int)(totalReadBytes / bytesPerSecond)));
+								Platform.runLater(()->PropertyStorage.musicTime.set((int)(totalReadBytes / bytesPerSecond)));
 							}
 							else
 							{
@@ -128,10 +128,10 @@ public class MusicPlayingService extends Service<Long>
 								audioIn.close();
 								Platform.runLater(()->
 								{
-									int index = Storage.musicInfoList.indexOf(Storage.musicInfo.get());
-									if(index == Storage.musicInfoList.size() - 1)
+									int index = PropertyStorage.musicList.indexOf(PropertyStorage.musicInfo.get());
+									if(index == PropertyStorage.musicList.size() - 1)
 										index = -1;
-									Storage.musicInfo.set(Storage.musicInfoList.get(index + 1));
+									PropertyStorage.musicInfo.set(PropertyStorage.musicList.get(index + 1));
 								});
 								cancel();
 							}

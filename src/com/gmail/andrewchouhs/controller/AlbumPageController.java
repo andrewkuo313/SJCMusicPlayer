@@ -1,6 +1,6 @@
 package com.gmail.andrewchouhs.controller;
 
-import com.gmail.andrewchouhs.Storage;
+import static com.gmail.andrewchouhs.storage.PropertyStorage.albumCoverList;
 import javafx.collections.ListChangeListener;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
@@ -14,24 +14,29 @@ public class AlbumPageController
 	private TextField searchTextField;
 	@FXML
 	private FlowPane albumCoverPane;
+	
 	private int albumCoverCount = -4;
 	
 	@FXML
-	private void initialize() 
+	private void initialize()
 	{
-		Storage.albumCoverList.addListener((ListChangeListener<Image>)(c -> 
+		albumCoverList.addListener((ListChangeListener<Image>)(c -> 
 		{
 			albumCoverCount++;
-			if(albumCoverCount == Storage.albumCoverList.size())
+			
+			if(albumCoverCount == albumCoverList.size())
 			{
 				albumCoverPane.getChildren().clear();
-				for(Image image : Storage.albumCoverList)
+				
+				for(Image image : albumCoverList)
 				{
 					ImageView imageView = new ImageView(image);
 					imageView.setFitWidth(250);
 					imageView.setFitHeight(image.getHeight() / image.getWidth() * 250d);
+					
 					albumCoverPane.getChildren().add(imageView);
 				}
+				
 				albumCoverCount = -4;
 			}
 		}));

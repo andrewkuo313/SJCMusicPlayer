@@ -1,8 +1,13 @@
 package com.gmail.andrewchouhs.controller;
 
-import com.gmail.andrewchouhs.Storage;
-import com.gmail.andrewchouhs.utils.MusicPlayingService;
-import com.gmail.andrewchouhs.utils.Page;
+import com.gmail.andrewchouhs.storage.DataStorage;
+import com.gmail.andrewchouhs.storage.PropertyStorage;
+import static com.gmail.andrewchouhs.storage.PropertyStorage.musicPlayer;
+import static com.gmail.andrewchouhs.storage.PropertyStorage.musicList;
+import static com.gmail.andrewchouhs.storage.PropertyStorage.musicInfo;
+import com.gmail.andrewchouhs.storage.SceneStorage;
+import com.gmail.andrewchouhs.storage.SceneStorage.Page;
+import com.gmail.andrewchouhs.utils.player.MusicPlayingService;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -12,88 +17,100 @@ import javafx.scene.control.Tab;
 public class RootPageController
 {
 	@FXML
-	private Tab albumTab;
+	private Tab albumPageTab;
 	@FXML
-	private Tab statisticsTab;
+	private Tab statisticsPageTab;
 	@FXML
-	private Tab listTab;
+	private Tab listPageTab;
+	
 	@FXML
 	private Button playAndPauseButton;
+	
 	@FXML
 	private Slider timeSlider;
+	
 	@FXML
 	private Label nameLabel;
 	@FXML
 	private Label albumLabel;
-	private boolean isHoldingSlider = false;
+	
+	private boolean holdingSlider = false;
 	
 	@FXML
 	private void initialize()
 	{
-    	albumTab.setOnSelectionChanged((event)->Storage.setPage(Page.ALBUM));
-    	statisticsTab.setOnSelectionChanged((event)->Storage.setPage(Page.STATISTICS));
-    	listTab.setOnSelectionChanged((event)->Storage.setPage(Page.LIST));
-    	Storage.musicTime.addListener( (observable, oldValue, newValue) -> 
-    	{
-    		if(!isHoldingSlider)
-    			timeSlider.setValue(newValue.intValue());
-    	});
+    	albumPageTab.setOnSelectionChanged((event)->SceneStorage.setPage(Page.ALBUM));
+    	statisticsPageTab.setOnSelectionChanged((event)->SceneStorage.setPage(Page.STATISTICS));
+    	listPageTab.setOnSelectionChanged((event)->SceneStorage.setPage(Page.LIST));
     	
     	timeSlider.valueProperty().addListener((observable, oldValue, newValue) ->
     	{
-    		if(oldValue.intValue() != newValue.intValue())
+    		int time = newValue.intValue();
+    		
+    		if(oldValue.intValue() != time)
     		{
-	    		int time = newValue.intValue();
 	    		int minute = time / 60;
 				int second = time % 60;
+				
 				playAndPauseButton.setText((minute < 10 ? "0" + minute : minute)+ ":" + (second < 10 ? "0" + second : second));
-				timeSlider.setValue(newValue.intValue());
+				
+				timeSlider.setValue(time);
     		}
     	});
     	
-    	Storage.musicTotalTime.addListener((observable, oldValue, newValue) -> 
+    	PropertyStorage.musicTime.addListener((observable, oldValue, newValue) -> 
+    	{
+    		if(!holdingSlider)
+    			timeSlider.setValue(newValue.intValue());
+    	});
+    	
+    	PropertyStorage.musicTotalTime.addListener((observable, oldValue, newValue) -> 
     	{
     		timeSlider.setMax(newValue.intValue());
     	});
     	
-    	Storage.musicInfo.addListener((observable, oldValue, newValue) ->
+    	PropertyStorage.musicInfo.addListener((observable, oldValue, newValue) ->
     	{
     		if(newValue != null)
     			nameLabel.setText(newValue.name.get());
     		else
-    			nameLabel.setText(Storage.bundle.getString("ListPage.Name"));
+    			nameLabel.setText(DataStorage.bundle.getString("ListPage.Name"));
     	});
 	}
 	
 	@FXML
 	private void onTimeSliderPressed()
 	{
-		isHoldingSlider = true;
+		holdingSlider = true;
 	}
 	
 	@FXML
 	private void onTimeSliderReleased()
 	{
-		isHoldingSlider = false;
-		//this fucking bug didn't get fixed in fact
-		if(Storage.musicPlayer.get() == null || ((int)timeSlider.getValue()) == Storage.musicTime.get())
+		holdingSlider = false;
+		
+		//很難修。
+		if((int)timeSlider.getValue() == PropertyStorage.musicTime.get() || musicPlayer.get() == null)
 			return;
-		Storage.musicPlayer.get().seek((int)timeSlider.getValue());
+		
+		musicPlayer.get().seek((int)timeSlider.getValue());
 	}
 	
 	@FXML
 	private void openSettings()
 	{
-		Storage.getSettingsStage().show();
-		Storage.getSettingsStage().toFront();
+		SceneStorage.getSettingsStage().show();
+		SceneStorage.getSettingsStage().toFront();
 	}
 	
 	@FXML
 	private void playAndPause()
 	{
-		MusicPlayingService player = Storage.musicPlayer.get();
+		MusicPlayingService player = musicPlayer.get();
+		
 		if(player == null)
 			return;
+		
 		if(player.isRunning())
 			player.pause();
 		else
@@ -103,22 +120,28 @@ public class RootPageController
 	@FXML
 	private void previousMusic()
 	{
-		int index = Storage.musicInfoList.indexOf(Storage.musicInfo.get());
+		int index = musicList.indexOf(musicInfo.get());
+		
 		if(index == -1)
 			return;
+		
 		if(index == 0)
-			index = Storage.musicInfoList.size();
-		Storage.musicInfo.set(Storage.musicInfoList.get(index - 1));
+			index = musicList.size();
+		
+		musicInfo.set(musicList.get(index - 1));
 	}
 	
 	@FXML
 	private void nextMusic()
 	{
-		int index = Storage.musicInfoList.indexOf(Storage.musicInfo.get());
+		int index = musicList.indexOf(musicInfo.get());
+		
 		if(index == -1)
 			return;
-		if(index == Storage.musicInfoList.size() - 1)
+		
+		if(index == musicList.size() - 1)
 			index = -1;
-		Storage.musicInfo.set(Storage.musicInfoList.get(index + 1));
+		
+		musicInfo.set(musicList.get(index + 1));
 	}
 }

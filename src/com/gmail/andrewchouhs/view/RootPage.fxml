@@ -14,9 +14,9 @@
       <bottom>
         <TabPane focusTraversable="true" prefHeight="-1.0" prefWidth="-1.0" rotateGraphic="false" side="TOP" tabClosingPolicy="UNAVAILABLE" tabMaxHeight="1.7976931348623157E308">
           <tabs>
-            <Tab fx:id="listTab" content="$null" text="%RootPage.ListPage" />
-            <Tab fx:id="albumTab" content="$null" text="%RootPage.AlbumPage" />
-            <Tab fx:id="statisticsTab" content="$null" text="%RootPage.StatisticsPage" />
+            <Tab fx:id="listPageTab" content="$null" text="%RootPage.ListPage" />
+            <Tab fx:id="albumPageTab" content="$null" text="%RootPage.AlbumPage" />
+            <Tab fx:id="statisticsPageTab" content="$null" text="%RootPage.StatisticsPage" />
           </tabs>
         </TabPane>
       </bottom>
