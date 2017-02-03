@@ -2,6 +2,7 @@ package com.gmail.andrewchouhs.utils.fliter;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.util.Locale;
 
 public class MusicFilter implements FileFilter
 {
@@ -13,7 +14,7 @@ public class MusicFilter implements FileFilter
 		if(file.isDirectory())
 			return false;
 		
-		String lowerCaseFileName = file.getName().toLowerCase();
+		String lowerCaseFileName = file.getName().toLowerCase(Locale.ENGLISH);
 		
 	    for(String extension : extensions)
 	    {

@@ -34,7 +34,7 @@ public class DataStorage
 			DirParser.load();
 		}
 		
-		//轉存至 String，而無需存回硬碟
+		//轉存至 String，而無需存回硬碟，需分出執行緒否則占用太大開啟時間。
 		try(BufferedInputStream in = new BufferedInputStream(new URL(gitHubUpdatesURL).openStream());
 				FileOutputStream out = new FileOutputStream(new File(updatesPath)))
 		{

@@ -3,7 +3,6 @@ package com.gmail.andrewchouhs.storage;
 import java.io.File;
 import com.gmail.andrewchouhs.model.DirInfo;
 import com.gmail.andrewchouhs.model.MusicInfo;
-import com.gmail.andrewchouhs.utils.fliter.AlbumCoverFilter;
 import com.gmail.andrewchouhs.utils.fliter.MusicFilter;
 import com.gmail.andrewchouhs.utils.player.MusicPlayingService;
 import javafx.beans.property.IntegerProperty;
@@ -68,11 +67,12 @@ public class PropertyStorage
     			(new MusicInfo(file.getAbsolutePath() , musicName , artistName , albumName));
     		}
     		
-    		for(File file : dirFile.listFiles(new AlbumCoverFilter()))
-    		{
-    			//需加入判斷同一資料夾最接近封面的檔案、取而代之從音樂檔擷取封面。	
-    			albumCoverList.add(new Image(file.toURI().toString()));
-    		}
+    		//非常耗時間和記憶體，需要修正。
+//    		for(File file : dirFile.listFiles(new AlbumCoverFilter()))
+//    		{
+//    			//需加入判斷同一資料夾最接近封面的檔案、取而代之從音樂檔擷取封面。	
+//    			albumCoverList.add(new Image(file.toURI().toString()));
+//    		}
     	}
     	
 		albumCoverList.add(null);

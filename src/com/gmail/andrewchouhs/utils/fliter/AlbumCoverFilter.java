@@ -7,7 +7,7 @@ import java.util.Locale;
 public class AlbumCoverFilter implements FileFilter
 {
 	private String[] extensions = {".jpg",".png",".jpeg" , ".bmp" , ".gif"};
-	private String[] names = {"cover" , "folder" , "jacket" };
+	private String[] names = {"cover" , "folder" , "jacket"};
 	
 	@Override
 	public boolean accept(File file)

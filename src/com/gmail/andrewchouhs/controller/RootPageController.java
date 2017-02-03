@@ -89,7 +89,7 @@ public class RootPageController
 	{
 		holdingSlider = false;
 		
-		//很難修。
+		//很難修，問題貌似出於撥放器的時差未調整。
 		if((int)timeSlider.getValue() == PropertyStorage.musicTime.get() || musicPlayer.get() == null)
 			return;
 		
