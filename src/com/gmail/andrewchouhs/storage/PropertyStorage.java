@@ -18,13 +18,13 @@ public class PropertyStorage
 	//至下一首歌的間隔需要修改。
 	//須避免 List 有重複的物件，也許先套入 HashSet 可以解決。
 	//有暴吃記憶體的現象。
+	//須修正至不須使用 Platform.runLater()。
     public static final ObservableList<DirInfo> dirList = FXCollections.observableArrayList();
 	public static final ObservableList<MusicInfo> musicList = FXCollections.observableArrayList();
     public static final ObservableList<Image> albumCoverList = FXCollections.observableArrayList();
     
     public static final ObjectProperty<MusicInfo> musicInfo = new SimpleObjectProperty<MusicInfo>();
     public static final ObjectProperty<MusicPlayingService> musicPlayer = new SimpleObjectProperty<MusicPlayingService>();
-    //應嘗試合併至 MusicPlayingService。
     public static final IntegerProperty musicTime = new SimpleIntegerProperty(0);
     //應合併至 MusicInfo。
     public static final IntegerProperty musicTotalTime = new SimpleIntegerProperty(0);
