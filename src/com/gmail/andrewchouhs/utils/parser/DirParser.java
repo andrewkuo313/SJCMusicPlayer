@@ -1,6 +1,5 @@
 package com.gmail.andrewchouhs.utils.parser;
 
-import java.io.File;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
@@ -14,20 +13,20 @@ import org.w3c.dom.NodeList;
 import com.gmail.andrewchouhs.model.DirInfo;
 import com.gmail.andrewchouhs.storage.DataStorage;
 import static com.gmail.andrewchouhs.storage.PropertyStorage.dirList;
+import java.io.File;
 
 public class DirParser
 {
-	private static final File file = new File(DataStorage.dirPathPath);
-	
 	public static void load()
 	{
-		if(!file.exists())
+		File dirPathFile = new File(DataStorage.dirPathPath);
+		
+		if(!dirPathFile.exists())
 			return;
 		
-		//應修改 XML 讓其更簡短。
 		try
 		{
-			Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(file);
+			Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(dirPathFile);
 			doc.getDocumentElement().normalize();
 			
 			dirList.clear();
@@ -39,7 +38,7 @@ public class DirParser
 				Node node = nodeList.item(i);
 				
 				if(node.getNodeType() == Node.ELEMENT_NODE)
-					dirList.add(new DirInfo(((Element)node).getTextContent()));
+					dirList.add(new DirInfo(((Element)node).getAttribute("path")));
 			}
 		}
 		catch(Exception e)
@@ -52,6 +51,8 @@ public class DirParser
 	{
 		try
 		{
+			File dirPathFile = new File(DataStorage.dirPathPath);
+			
 			Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
 			
 			Element rootElement = doc.createElement("dirpath");
@@ -61,14 +62,14 @@ public class DirParser
 			{
 				Element path = doc.createElement("path");
 				
-				path.appendChild(doc.createTextNode(dirInfo.path.get()));
+				path.setAttribute("path" , dirInfo.path.get());
 				rootElement.appendChild(path);
 			}
 			
 			Transformer transformer = TransformerFactory.newInstance().newTransformer();
 			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
 			transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
-			transformer.transform(new DOMSource(doc) , new StreamResult(file));
+			transformer.transform(new DOMSource(doc) , new StreamResult(dirPathFile));
 		}
 		catch(Exception e)
 		{

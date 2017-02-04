@@ -2,6 +2,7 @@ package com.gmail.andrewchouhs.storage;
 
 import java.util.EnumMap;
 import com.gmail.andrewchouhs.Main;
+import com.gmail.andrewchouhs.storage.DataStorage.Text;
 import com.gmail.andrewchouhs.utils.parser.DirParser;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -37,7 +38,7 @@ public class SceneStorage
             pageMap.put(Page.STATISTICS , statisticsPage);
     		
             settingsStage.setScene(new Scene(settingsPage));
-        	settingsStage.setTitle(bundle.getString("SettingsPage.Title"));
+        	settingsStage.setTitle(Text.SettingsPage_Title.toString());
             settingsStage.initOwner(mainStage);
             settingsStage.setOnCloseRequest((event)->DirParser.load());
             
@@ -70,10 +71,10 @@ public class SceneStorage
     {
     	return settingsStage;
     }
-	
+    
     public enum Page
     {
-    	ROOT,ALBUM,STATISTICS,LIST
+    	ROOT,ALBUM,STATISTICS,LIST;
     }
     
 	private SceneStorage()

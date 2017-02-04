@@ -21,8 +21,7 @@ public class DataStorage
 	private static final String gitHubUpdatesURL = "https://raw.githubusercontent.com/andrewkuo313/SJCMusicPlayer/master/updates/Updates.xml";
 	
 	public static final Properties prefs = new Properties();
-	//bundle 的 getString 應透過 Enum。
-	public static final ResourceBundle bundle = 
+    public static final ResourceBundle bundle = 
 			ResourceBundle.getBundle("com.gmail.andrewchouhs.i18n.text" , new Locale("en" , "US"));
 	
 	//可能需要抽出變成 Method。
@@ -47,6 +46,26 @@ public class DataStorage
 		{
 			e.printStackTrace();
 		}
+	}
+	
+    public enum Text
+	{
+		ListPage_Name("ListPage.Name"),
+		ListPage_NullValue("ListPage.NullValue"),
+		SettingsPage_Title("SettingsPage.Title");
+		
+		private final String text;
+		
+		private Text(String text)
+		{
+			this.text = bundle.getString(text);
+		}
+		
+		@Override
+	    public String toString()
+		{
+	        return text;
+	    }
 	}
 	
 	private DataStorage()

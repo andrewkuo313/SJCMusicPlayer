@@ -10,7 +10,7 @@
 <AnchorPane prefHeight="600.0" prefWidth="1024.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="com.gmail.andrewchouhs.controller.ListPageController">
   <!-- TODO Add Nodes -->
   <children>
-    <SplitPane dividerPositions="0.6416015625" focusTraversable="true" opacity="1.0" prefHeight="-1.0" prefWidth="-1.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+    <SplitPane dividerPositions="0.5419921875" focusTraversable="true" opacity="1.0" prefHeight="-1.0" prefWidth="-1.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
       <items>
         <TableView fx:id="musicInfoTable" disable="false" editable="false" focusTraversable="true" opacity="1.0" prefHeight="-1.0" prefWidth="-1.0" tableMenuButtonVisible="false">
           <columnResizePolicy>
@@ -67,6 +67,7 @@
     </SplitPane>
   </children>
   <stylesheets>
+    <URL value="@Page.css" />
     <URL value="@ListPage.css" />
   </stylesheets>
 </AnchorPane>

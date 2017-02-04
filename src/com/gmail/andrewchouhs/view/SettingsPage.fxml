@@ -80,6 +80,7 @@
     </TabPane>
   </children>
   <stylesheets>
+    <URL value="@Page.css" />
     <URL value="@SettingsPage.css" />
   </stylesheets>
 </AnchorPane>

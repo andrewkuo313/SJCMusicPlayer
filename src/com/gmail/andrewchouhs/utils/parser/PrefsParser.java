@@ -9,12 +9,11 @@ import static com.gmail.andrewchouhs.storage.DataStorage.prefs;
 
 public class PrefsParser
 {
-	private static final File file = new File(DataStorage.prefsPath);
-	
 	public static void load()
 	{
+		File prefsFile = new File(DataStorage.prefsPath);
 		//應直接複製內部檔案，而非一直呼叫 setProperty()，至於 Locale 的 Property 問題可使用給予 default 此字串來解決。
-		if(!file.exists())
+		if(!prefsFile.exists())
 		{
 			prefs.setProperty("Locale", Locale.getDefault().toString());
 			prefs.setProperty("RepeatPlay", "false");
@@ -28,7 +27,7 @@ public class PrefsParser
 			
 			try
 			{
-				prefs.load(new FileInputStream(file));
+				prefs.load(new FileInputStream(prefsFile));
 			}
 			catch (Exception e)
 			{
@@ -41,7 +40,8 @@ public class PrefsParser
 	{
 		try
 		{
-			prefs.store(new FileOutputStream(file), null);
+			File prefsFile = new File(DataStorage.prefsPath);
+			prefs.store(new FileOutputStream(prefsFile), null);
 		}
 		catch (Exception e)
 		{

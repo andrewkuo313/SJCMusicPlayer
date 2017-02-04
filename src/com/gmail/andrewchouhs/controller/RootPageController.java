@@ -1,8 +1,8 @@
 package com.gmail.andrewchouhs.controller;
 
-import com.gmail.andrewchouhs.storage.DataStorage;
 import com.gmail.andrewchouhs.storage.PropertyStorage;
 import static com.gmail.andrewchouhs.storage.PropertyStorage.musicPlayer;
+import com.gmail.andrewchouhs.storage.DataStorage.Text;
 import static com.gmail.andrewchouhs.storage.PropertyStorage.musicList;
 import static com.gmail.andrewchouhs.storage.PropertyStorage.musicInfo;
 import com.gmail.andrewchouhs.storage.SceneStorage;
@@ -74,7 +74,7 @@ public class RootPageController
     		if(newValue != null)
     			nameLabel.setText(newValue.name.get());
     		else
-    			nameLabel.setText(DataStorage.bundle.getString("ListPage.Name"));
+    			nameLabel.setText(Text.ListPage_Name.toString());
     	});
 	}
 	

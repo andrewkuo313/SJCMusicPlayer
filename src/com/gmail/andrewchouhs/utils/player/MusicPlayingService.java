@@ -124,12 +124,7 @@ public class MusicPlayingService extends Service<Long>
 							Platform.runLater(()->PropertyStorage.musicTime.set((int)(totalReadBytes / bytesPerSecond)));
 						}
 						else
-						{
-							dataLine.flush();
-							dataLine.stop();
-							dataLine.close();
-							in.close();
-							
+						{					
 							Platform.runLater(()->
 							{
 								int index = musicList.indexOf(musicInfo.get());
@@ -140,7 +135,8 @@ public class MusicPlayingService extends Service<Long>
 								musicInfo.set(musicList.get(index + 1));
 							});
 							
-							cancel();
+							stopped = true;
+							break;
 						}
 					}
 					

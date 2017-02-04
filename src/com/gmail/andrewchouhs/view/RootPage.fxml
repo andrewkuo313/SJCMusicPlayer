@@ -28,12 +28,12 @@
         </Slider>
       </center>
       <top>
-        <HBox alignment="CENTER" prefHeight="-1.0" prefWidth="-1.0" spacing="10.0" BorderPane.alignment="CENTER">
+        <HBox alignment="CENTER_LEFT" prefHeight="-1.0" prefWidth="-1.0" spacing="10.0" BorderPane.alignment="CENTER">
           <children>
-            <Label fx:id="nameLabel" text="%RootPage.Name" />
             <Button id="previousMusic" mnemonicParsing="false" onMouseClicked="#previousMusic" text="%RootPage.PreviousMusic" />
             <Button id="playAndPause" fx:id="playAndPauseButton" mnemonicParsing="false" onMouseClicked="#playAndPause" text="00:00" />
             <Button id="nextMusic" mnemonicParsing="false" onMouseClicked="#nextMusic" text="%RootPage.NextMusic" />
+            <Label fx:id="nameLabel" text="%RootPage.Name" />
             <Label fx:id="albumLabel" text="%RootPage.Album" />
           </children>
           <padding>
@@ -47,6 +47,7 @@
     </BorderPane>
   </bottom>
   <stylesheets>
+    <URL value="@Page.css" />
     <URL value="@RootPage.css" />
   </stylesheets>
   <top>
