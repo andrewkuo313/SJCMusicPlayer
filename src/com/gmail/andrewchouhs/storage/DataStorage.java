@@ -15,7 +15,7 @@ public class DataStorage
 	private static final String dataRootPath = System.getenv("APPDATA") + "\\SJCMusicPlayer\\";
 	
 	private static final String updatesPath = dataRootPath + "Updates.xml";
-	public static final String dirPathPath = dataRootPath + "DirectoryPath.xml";
+	public static final String dirPathsPath = dataRootPath + "DirectoryPaths.xml";
 	public static final String prefsPath = dataRootPath + "Preferences.properties";
 	
 	private static final String gitHubUpdatesURL = "https://raw.githubusercontent.com/andrewkuo313/SJCMusicPlayer/master/updates/Updates.xml";
@@ -70,6 +70,5 @@ public class DataStorage
 	
 	private DataStorage()
 	{
-		
 	}
 }

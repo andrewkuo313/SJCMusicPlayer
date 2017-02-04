@@ -19,6 +19,7 @@ public class PropertyStorage
 	//須避免 List 有重複的物件，也許先套入 HashSet 可以解決。
 	//有暴吃記憶體的現象。
 	//須修正至不須使用 Platform.runLater()。
+	//Dir 的讀取時間點要修正。
     public static final ObservableList<DirInfo> dirList = FXCollections.observableArrayList();
 	public static final ObservableList<MusicInfo> musicList = FXCollections.observableArrayList();
     public static final ObservableList<Image> albumCoverList = FXCollections.observableArrayList();
@@ -55,7 +56,7 @@ public class PropertyStorage
     	
     	for(DirInfo dirInfo : dirList)
     	{
-    		File dirFile = new File(dirInfo.path.get());
+    		File dirFile = new File(dirInfo.getPath());
     		
     		for(File file : dirFile.listFiles(new MusicFilter()))
     		{
@@ -81,6 +82,5 @@ public class PropertyStorage
     
 	private PropertyStorage()
 	{
-		
 	}
 }

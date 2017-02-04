@@ -28,7 +28,7 @@ public class SettingsPageController
     private void initialize() 
     {
     	dirInfoTable.setItems(PropertyStorage.dirList);
-    	pathColumn.setCellValueFactory(cellData -> cellData.getValue().path);
+    	pathColumn.setCellValueFactory(cellData -> cellData.getValue().getPathProperty());
     	localeBox.setItems(FXCollections.observableArrayList("繁體中文" , "English"));
     }
     
@@ -82,11 +82,11 @@ public class SettingsPageController
     @FXML
     private void removeChildDir()
     {
-    	String parentPath = dirInfoTable.getSelectionModel().getSelectedItem().path.get();
+    	String parentPath = dirInfoTable.getSelectionModel().getSelectedItem().getPath();
     	Iterator<DirInfo> iter = PropertyStorage.dirList.iterator();
     	while(iter.hasNext())
     	{
-    		if(iter.next().path.get().startsWith(parentPath))
+    		if(iter.next().getPath().startsWith(parentPath))
     			iter.remove();
     	}
     }
