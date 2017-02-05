@@ -53,8 +53,27 @@
 .check-box .box
 {
 	-fx-background-radius: 25;
-	-fx-effect: dropshadow(three-pass-box , #0096C9 , 10 , 0.5 , 0 , 0);
+	-fx-effect: dropshadow(three-pass-box , #FF0000 , 10 , 0.5 , 0 , 0);
 	-fx-background-color: #FFFFFF;
+	-fx-background-insets: 0;
+}
+
+.check-box:selected .box
+{
+	-fx-effect: dropshadow(three-pass-box , #00FF00 , 10 , 0.5 , 0 , 0);
+}
+
+.box .mark
+{
+	-fx-shape: none;
+	visibility: hidden;
+    -fx-opacity: 0;
+}
+
+.arrow
+{
+	-fx-background-color: #FFFFFF;
+	-fx-effect: dropshadow(three-pass-box , #0096C9 , 10 , 0.5 , 0 , 0);
 }
 
 .scroll-bar:vertical .thumb
@@ -117,5 +136,10 @@
 	-fx-padding: 2;
 	-fx-background-color: #404040;
     -fx-border-color: #404040;
+}
 
+.choice-box
+{
+	-fx-background-radius: 0;
+	-fx-background-color: #383838;
 }

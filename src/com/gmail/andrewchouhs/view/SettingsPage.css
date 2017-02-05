@@ -9,7 +9,7 @@
 	-fx-background-color: #303030;
 }
 
-.anchor-pane
+.anchor-pane , .hbox
 {
 	-fx-background-color: #202020;
 }

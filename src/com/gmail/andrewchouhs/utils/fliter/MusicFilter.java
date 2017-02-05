@@ -13,15 +13,12 @@ public class MusicFilter implements FileFilter
 	{
 		if(file.isDirectory())
 			return false;
-		
 		String lowerCaseFileName = file.getName().toLowerCase(Locale.ENGLISH);
-		
 	    for(String extension : extensions)
 	    {
 		    if(lowerCaseFileName.endsWith(extension))
 		    	return true;
 	    }
-	    
 	    return false;
 	}
 }

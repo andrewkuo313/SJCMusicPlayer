@@ -14,9 +14,7 @@ public class AlbumCoverFilter implements FileFilter
 	{
 		if(file.isDirectory() || file.isHidden())
 			return false;
-		
 		String lowerCaseFileName = file.getName().toLowerCase(Locale.ENGLISH);
-		
 	    for(String name : names)
 	    {
 		    if(lowerCaseFileName.contains(name))
@@ -26,11 +24,9 @@ public class AlbumCoverFilter implements FileFilter
 		    		if(lowerCaseFileName.endsWith(extension))
 		    			return true;
 		     	}
-		    	
 		    	return false;
 		    }
 	    }
-	    
 	    return false;
 	}
 }

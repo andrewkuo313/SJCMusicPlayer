@@ -3,18 +3,31 @@
 <?import java.lang.*?>
 <?import java.net.*?>
 <?import javafx.collections.*?>
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="500.0" prefWidth="800.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="com.gmail.andrewchouhs.controller.SettingsPageController">
+<BorderPane prefHeight="600.0" prefWidth="800.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="com.gmail.andrewchouhs.controller.SettingsPageController">
   <!-- TODO Add Nodes -->
-  <children>
-    <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+  <bottom>
+    <HBox alignment="TOP_RIGHT" prefHeight="-1.0" prefWidth="-1.0" spacing="10.0" styleClass="hbox" BorderPane.alignment="TOP_RIGHT">
+      <children>
+        <Button mnemonicParsing="false" onMouseClicked="#ok" text="%SettingsPage.Directory.OK" />
+        <Button mnemonicParsing="false" onMouseClicked="#cancel" text="%SettingsPage.Directory.Cancel" />
+      </children>
+      <padding>
+        <Insets bottom="8.0" left="8.0" right="8.0" />
+      </padding>
+    </HBox>
+  </bottom>
+  <center>
+    <TabPane prefHeight="-1.0" prefWidth="-1.0" tabClosingPolicy="UNAVAILABLE" tabMaxHeight="1.7976931348623157E308">
       <tabs>
         <Tab text="%SettingsPage.Directory">
           <content>
-            <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" styleClass="anchor-pane">
+            <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="-1.0" prefWidth="-1.0" styleClass="anchor-pane">
               <children>
                 <TableView fx:id="dirInfoTable" prefHeight="-1.0" prefWidth="-1.0" tableMenuButtonVisible="false" AnchorPane.bottomAnchor="50.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
                   <columnResizePolicy>
@@ -27,14 +40,12 @@
                     <Label text="%SettingsPage.Directory.NoContent" />
                   </placeholder>
                 </TableView>
-                <HBox prefHeight="-1.0" prefWidth="-1.0" spacing="10.0" AnchorPane.bottomAnchor="8.0" AnchorPane.rightAnchor="20.0">
+                <HBox alignment="TOP_LEFT" prefHeight="-1.0" prefWidth="-1.0" spacing="10.0" AnchorPane.bottomAnchor="8.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0">
                   <children>
                     <Button mnemonicParsing="false" onMouseClicked="#addDir" text="%SettingsPage.Directory.SelectDirectory" />
                     <Button mnemonicParsing="false" onMouseClicked="#removeDir" text="%SettingsPage.Directory.Remove" />
                     <Button mnemonicParsing="false" onMouseClicked="#removeAllDir" text="%SettingsPage.Directory.RemoveAll" />
                     <Button mnemonicParsing="false" onMouseClicked="#removeChildDir" text="%SettingsPage.Directory.RemoveChildDirectories" />
-                    <Button mnemonicParsing="false" onMouseClicked="#okDir" text="%SettingsPage.Directory.OK" />
-                    <Button mnemonicParsing="false" onMouseClicked="#cancelDir" text="%SettingsPage.Directory.Cancel" />
                   </children>
                 </HBox>
               </children>
@@ -45,23 +56,37 @@
           <content>
             <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" styleClass="anchor-pane">
               <children>
-                <VBox prefHeight="-1.0" prefWidth="-1.0" spacing="20.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="20.0">
+                <HBox id="localeBox" prefHeight="100.0" prefWidth="200.0" spacing="50.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="20.0">
                   <children>
-                    <CheckBox alignment="CENTER_LEFT" contentDisplay="LEFT" graphicTextGap="4.0" mnemonicParsing="false" selected="false" text="開機啟動程式" />
-                    <CheckBox mnemonicParsing="false" text="開啟程式時自動播放" />
-                    <CheckBox mnemonicParsing="false" text="自動更新" />
-                    <CheckBox mnemonicParsing="false" text="提醒更新" />
-                    <ChoiceBox fx:id="localeBox">
-                      <items>
-                        <FXCollections fx:factory="observableArrayList">
-                          <String fx:value="Item 1" />
-                          <String fx:value="Item 2" />
-                          <String fx:value="Item 3" />
-                        </FXCollections>
-                      </items>
-                    </ChoiceBox>
+                    <VBox alignment="TOP_LEFT" prefHeight="-1.0" prefWidth="-1.0" spacing="25.0">
+                      <children>
+                        <Label text="%SettingsPage.Preferences.General">
+                          <font>
+                            <Font size="48.0" fx:id="x1" />
+                          </font>
+                        </Label>
+                        <CheckBox alignment="CENTER_LEFT" contentDisplay="LEFT" graphicTextGap="4.0" mnemonicParsing="false" selected="false" text="%SettingsPage.Preferences.StartWhenOpeningPC" />
+                        <CheckBox mnemonicParsing="false" text="%SettingsPage.Preferences.PlayWhenOpeningApp" />
+                        <CheckBox mnemonicParsing="false" text="%SettingsPage.Preferences.AutoUpdate" />
+                        <CheckBox mnemonicParsing="false" text="%SettingsPage.Preferences.NotifyUpdate" />
+                      </children>
+                    </VBox>
+                    <VBox prefHeight="-1.0" prefWidth="-1.0" spacing="25.0">
+                      <children>
+                        <Label font="$x1" text="%SettingsPage.Preferences.Language" />
+                        <ChoiceBox fx:id="localeBox" maxWidth="1.7976931348623157E308">
+                          <items>
+                            <FXCollections fx:factory="observableArrayList">
+                              <String fx:value="Item 1" />
+                              <String fx:value="Item 2" />
+                              <String fx:value="Item 3" />
+                            </FXCollections>
+                          </items>
+                        </ChoiceBox>
+                      </children>
+                    </VBox>
                   </children>
-                </VBox>
+                </HBox>
               </children>
             </AnchorPane>
           </content>
@@ -78,9 +103,9 @@
         </Tab>
       </tabs>
     </TabPane>
-  </children>
+  </center>
   <stylesheets>
     <URL value="@Page.css" />
     <URL value="@SettingsPage.css" />
   </stylesheets>
-</AnchorPane>
+</BorderPane>

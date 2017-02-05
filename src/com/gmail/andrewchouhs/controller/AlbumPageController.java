@@ -14,7 +14,6 @@ public class AlbumPageController
 	private TextField searchTextField;
 	@FXML
 	private FlowPane albumCoverPane;
-	
 	private int albumCoverCount = -4;
 	
 	@FXML
@@ -23,20 +22,16 @@ public class AlbumPageController
 		albumCoverList.addListener((ListChangeListener<Image>)(c -> 
 		{
 			albumCoverCount++;
-			
 			if(albumCoverCount == albumCoverList.size())
 			{
 				albumCoverPane.getChildren().clear();
-				
 				for(Image image : albumCoverList)
 				{
 					ImageView imageView = new ImageView(image);
 					imageView.setFitWidth(250);
 					imageView.setFitHeight(image.getHeight() / image.getWidth() * 250d);
-					
 					albumCoverPane.getChildren().add(imageView);
 				}
-				
 				albumCoverCount = -4;
 			}
 		}));

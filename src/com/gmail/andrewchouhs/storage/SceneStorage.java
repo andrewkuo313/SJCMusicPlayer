@@ -2,7 +2,6 @@ package com.gmail.andrewchouhs.storage;
 
 import java.util.EnumMap;
 import com.gmail.andrewchouhs.Main;
-import com.gmail.andrewchouhs.storage.DataStorage.Text;
 import com.gmail.andrewchouhs.utils.parser.DirParser;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -22,29 +21,23 @@ public class SceneStorage
 	public static void init(Stage stage)
     {
 		mainStage = stage;
-        
     	try 
         {
+            BorderPane settingsPage = FXMLLoader.load(Main.class.getResource("view/SettingsPage.fxml") , bundle);
             BorderPane rootPage = FXMLLoader.load(Main.class.getResource("view/RootPage.fxml") , bundle);
             AnchorPane listPage = FXMLLoader.load(Main.class.getResource("view/ListPage.fxml") , bundle);
             AnchorPane albumPage = FXMLLoader.load(Main.class.getResource("view/AlbumPage.fxml") , bundle);
             AnchorPane statisticsPage = FXMLLoader.load(Main.class.getResource("view/StatisticsPage.fxml") , bundle);
-            
-            AnchorPane settingsPage = FXMLLoader.load(Main.class.getResource("view/SettingsPage.fxml") , bundle);
-            
             pageMap.put(Page.ROOT, rootPage);
             pageMap.put(Page.LIST , listPage);
             pageMap.put(Page.ALBUM, albumPage);
             pageMap.put(Page.STATISTICS , statisticsPage);
-    		
             settingsStage.setScene(new Scene(settingsPage));
-        	settingsStage.setTitle(Text.SettingsPage_Title.toString());
+        	settingsStage.setTitle(DataStorage.SettingsPage_Title);
             settingsStage.initOwner(mainStage);
             settingsStage.setOnCloseRequest((event)->DirParser.load());
-            
         	//應該要找一個更適當的時間點放。
     		PropertyStorage.refreshMusicList();
-            
             mainStage.setScene(new Scene(rootPage));
         	mainStage.setTitle("SJC's Music Player");
             setPage(Page.LIST);

@@ -23,7 +23,6 @@ public class PropertyStorage
     public static final ObservableList<DirInfo> dirList = FXCollections.observableArrayList();
 	public static final ObservableList<MusicInfo> musicList = FXCollections.observableArrayList();
     public static final ObservableList<Image> albumCoverList = FXCollections.observableArrayList();
-    
     public static final ObjectProperty<MusicInfo> musicInfo = new SimpleObjectProperty<MusicInfo>();
     public static final ObjectProperty<MusicPlayingService> musicPlayer = new SimpleObjectProperty<MusicPlayingService>();
     public static final IntegerProperty musicTime = new SimpleIntegerProperty(0);
@@ -39,7 +38,6 @@ public class PropertyStorage
     			musicPlayer.get().stop();
     			musicPlayer.set(null);
     		}
-    		
     		if(newValue != null)
     			musicPlayer.set(new MusicPlayingService(newValue.path.get() , 0L , true));
     		else
@@ -50,24 +48,19 @@ public class PropertyStorage
     public static void refreshMusicList()
     {
     	musicList.clear();
-    	
     	albumCoverList.add(null);
     	albumCoverList.clear();
-    	
     	for(DirInfo dirInfo : dirList)
     	{
     		File dirFile = new File(dirInfo.getPath());
-    		
     		for(File file : dirFile.listFiles(new MusicFilter()))
     		{
     			String musicName = file.getName().substring(0, file.getName().lastIndexOf('.'));
     			String artistName = null;
     			String albumName = null;
-    			
     			musicList.add
     			(new MusicInfo(file.getAbsolutePath() , musicName , artistName , albumName));
     		}
-    		
     		//非常耗時間和記憶體，需要修正。
 //    		for(File file : dirFile.listFiles(new AlbumCoverFilter()))
 //    		{
@@ -75,7 +68,6 @@ public class PropertyStorage
 //    			albumCoverList.add(new Image(file.toURI().toString()));
 //    		}
     	}
-    	
 		albumCoverList.add(null);
 		albumCoverList.remove(albumCoverList.size() - 1);
     }

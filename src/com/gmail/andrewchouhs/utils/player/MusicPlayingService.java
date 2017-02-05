@@ -21,14 +21,11 @@ public class MusicPlayingService extends Service<Long>
 {
 	private AudioInputStream in;
 	private AudioFormat format;
-	
 	private long bytesPerSecond;
 	private long totalReadBytes;
-	
 	private boolean paused = false;
 	private boolean stopped = false;
 	private boolean nextStartDirectly = false;
-	
 	private int seekSecond = -1;
 	
 	public MusicPlayingService(String filePath , long seekMillis , boolean startDirectly)
@@ -36,11 +33,9 @@ public class MusicPlayingService extends Service<Long>
 		try 
 		{
 			File file = new File(filePath);
-			
 		    AudioInputStream baseIn= AudioSystem.getAudioInputStream(file);
 		    AudioFormat baseFormat = baseIn.getFormat();
 		    AudioFileFormat baseFileFormat = AudioSystem.getAudioFileFormat(file);
-		    
 		    format = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, 
 		                                                                                  baseFormat.getSampleRate(),
 		                                                                                  16,
@@ -49,10 +44,8 @@ public class MusicPlayingService extends Service<Long>
 		                                                                                  baseFormat.getSampleRate(),
 		                                                                                  false);
 		    in = AudioSystem.getAudioInputStream(format, baseIn);
-		    
 			bytesPerSecond = (long)(format.getFrameSize() * format.getFrameRate());
 			totalReadBytes = bytesPerSecond * seekMillis / 1000L;
-			
 			if(baseFileFormat instanceof TAudioFileFormat)
 			{
 			    Map<String , Object> properties = ((TAudioFileFormat)baseFileFormat).properties();
@@ -63,11 +56,9 @@ public class MusicPlayingService extends Service<Long>
 			     Map<String , Object> properties = ((TAudioFormat)baseFormat).properties();
 				 in.skip((long)((int)properties.get("bitrate")) * seekMillis / 8000L);
 			}
-			
 			setOnSucceeded((event) -> 
 			PropertyStorage.musicPlayer.set(new MusicPlayingService(filePath , (long)event.getSource().getValue() , this.nextStartDirectly)));
 			setOnCancelled((event) -> PropertyStorage.musicTime.set(0));
-		
 			if(startDirectly == true)
 				start();
 		} 
@@ -106,21 +97,16 @@ public class MusicPlayingService extends Service<Long>
 				{
 					DataLine.Info dataLineInfo = new DataLine.Info(SourceDataLine.class, format);
 					SourceDataLine dataLine = (SourceDataLine) AudioSystem.getLine(dataLineInfo);
-					
 					dataLine.open(format);
 					dataLine.start();
-					
 					final byte[] data = new byte[4096];
 					int count = 0;
-					
 					while (!paused)
 					{
 						if((count = in.read(data, 0, data.length)) != -1) 
 						{
 							dataLine.write(data, 0, count);
-							
 							totalReadBytes += count;
-							
 							Platform.runLater(()->PropertyStorage.musicTime.set((int)(totalReadBytes / bytesPerSecond)));
 						}
 						else
@@ -128,23 +114,18 @@ public class MusicPlayingService extends Service<Long>
 							Platform.runLater(()->
 							{
 								int index = musicList.indexOf(musicInfo.get());
-								
 								if(index == musicList.size() - 1)
 									index = -1;
-								
 								musicInfo.set(musicList.get(index + 1));
 							});
-							
 							stopped = true;
 							break;
 						}
 					}
-					
 					dataLine.flush();
 					dataLine.stop();
 					dataLine.close();
 					in.close();
-					
 					if(stopped == true)
 						cancel();
 				}
@@ -152,7 +133,6 @@ public class MusicPlayingService extends Service<Long>
 				{
 					e.printStackTrace();
 				}
-				
 				if(seekSecond == -1)
 					return totalReadBytes * 1000L / bytesPerSecond; 
 				else

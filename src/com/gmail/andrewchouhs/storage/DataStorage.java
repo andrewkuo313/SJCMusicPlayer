@@ -4,6 +4,7 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.Properties;
 import java.util.ResourceBundle;
@@ -13,26 +14,37 @@ import com.gmail.andrewchouhs.utils.parser.PrefsParser;
 public class DataStorage
 {
 	private static final String dataRootPath = System.getenv("APPDATA") + "\\SJCMusicPlayer\\";
-	
 	private static final String updatesPath = dataRootPath + "Updates.xml";
 	public static final String dirPathsPath = dataRootPath + "DirectoryPaths.xml";
 	public static final String prefsPath = dataRootPath + "Preferences.properties";
-	
 	private static final String gitHubUpdatesURL = "https://raw.githubusercontent.com/andrewkuo313/SJCMusicPlayer/master/updates/Updates.xml";
-	
+	public static final String Locale = "Locale";
+	public static final String RepeatPlay = "RepeatPlay";
+	public static final String RandomPlay= "RandomPlay";
+	public static final String StartWhenOpeningPC = "StartWhenOpeningPC";
+	public static final String PlayWhenOpeningApp = "PlayWhenOpeningApp";
+	public static final String AutoUpdate = "AutoUpdate";
+	public static final String NotifyUpdate = "NotifyUpdate";
+	public static final String ListPage_Name;
+	public static final String ListPage_NullValue;
+	public static final String SettingsPage_Title;
+    public static final ResourceBundle bundle;
 	public static final Properties prefs = new Properties();
-    public static final ResourceBundle bundle = 
-			ResourceBundle.getBundle("com.gmail.andrewchouhs.i18n.text" , new Locale("en" , "US"));
-	
+	public static final HashMap<String , Locale> availableLocales = new HashMap<String , Locale>();
 	//可能需要抽出變成 Method。
 	static
 	{
+		availableLocales.put("zh_tw" , java.util.Locale.TRADITIONAL_CHINESE);
+		availableLocales.put("en" , java.util.Locale.ENGLISH);
 		if(!new File(dataRootPath).mkdirs())
 		{
 			PrefsParser.load();
 			DirParser.load();
 		}
-		
+		bundle = ResourceBundle.getBundle("com.gmail.andrewchouhs.i18n.text" , new Locale(prefs.getProperty(Locale)));
+		ListPage_Name = bundle.getString("ListPage.Name");
+		ListPage_NullValue = bundle.getString("ListPage.NullValue");
+		SettingsPage_Title = bundle.getString("SettingsPage.Title");
 		//轉存至 String，而無需存回硬碟，需分出執行緒否則占用太大開啟時間。
 		try(BufferedInputStream in = new BufferedInputStream(new URL(gitHubUpdatesURL).openStream());
 				FileOutputStream out = new FileOutputStream(new File(updatesPath)))
@@ -47,27 +59,7 @@ public class DataStorage
 			e.printStackTrace();
 		}
 	}
-	
-    public enum Text
-	{
-		ListPage_Name("ListPage.Name"),
-		ListPage_NullValue("ListPage.NullValue"),
-		SettingsPage_Title("SettingsPage.Title");
-		
-		private final String text;
-		
-		private Text(String text)
-		{
-			this.text = bundle.getString(text);
-		}
-		
-		@Override
-	    public String toString()
-		{
-	        return text;
-	    }
-	}
-	
+
 	private DataStorage()
 	{
 	}

@@ -2,21 +2,27 @@ package com.gmail.andrewchouhs.controller;
 
 import java.io.File;
 import java.util.Iterator;
+import java.util.Locale;
 import com.gmail.andrewchouhs.model.DirInfo;
+import com.gmail.andrewchouhs.storage.DataStorage;
 import com.gmail.andrewchouhs.storage.PropertyStorage;
 import com.gmail.andrewchouhs.storage.SceneStorage;
 import com.gmail.andrewchouhs.utils.fliter.DirFilter;
 import com.gmail.andrewchouhs.utils.fliter.MusicFilter;
 import com.gmail.andrewchouhs.utils.parser.DirParser;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.stage.DirectoryChooser;
+import static com.gmail.andrewchouhs.storage.PropertyStorage.dirList;
+import static com.gmail.andrewchouhs.storage.DataStorage.prefs;
 
 public class SettingsPageController
 {
+	//改用TreeTableView
 	@FXML
     private TableView<DirInfo> dirInfoTable;
     @FXML
@@ -27,13 +33,18 @@ public class SettingsPageController
     @FXML
     private void initialize() 
     {
-    	dirInfoTable.setItems(PropertyStorage.dirList);
+    	dirInfoTable.setItems(dirList);
     	pathColumn.setCellValueFactory(cellData -> cellData.getValue().getPathProperty());
-    	localeBox.setItems(FXCollections.observableArrayList("繁體中文" , "English"));
+    	ObservableList<String> displayNameList = FXCollections.observableArrayList();
+    	for(Locale locale : DataStorage.availableLocales.values())
+    		displayNameList.add(locale.getDisplayName(locale));
+    	localeBox.setItems(displayNameList);
+    	Locale locale = DataStorage.availableLocales.get(prefs.getProperty(DataStorage.Locale));
+    	localeBox.setValue(locale.getDisplayName(locale));
     }
     
     @FXML
-    private void okDir()
+    private void ok()
     {
     	DirParser.save();
     	PropertyStorage.refreshMusicList();
@@ -41,7 +52,7 @@ public class SettingsPageController
     }
     
     @FXML
-    private void cancelDir()
+    private void cancel()
     {
     	DirParser.load();
     	SceneStorage.getSettingsStage().close();
@@ -50,13 +61,11 @@ public class SettingsPageController
     @FXML
 	private void addDir()
 	{
-		DirectoryChooser dirChooser = new DirectoryChooser();
-		File selectedDir = dirChooser.showDialog(SceneStorage.getSettingsStage());
-		
-		if(selectedDir != null && selectedDir.isDirectory())
+		File dirFile = new DirectoryChooser().showDialog(SceneStorage.getSettingsStage());
+		if(dirFile != null && dirFile.isDirectory())
 		{
-			PropertyStorage.dirList.add(new DirInfo(selectedDir.getAbsolutePath()));
-			for(File file : selectedDir.listFiles(new DirFilter()))
+			dirList.add(new DirInfo(dirFile.getAbsolutePath()));
+			for(File file : dirFile.listFiles(new DirFilter()))
 				recursiveFoundMusic(file);
 		}
 	}
@@ -68,7 +77,7 @@ public class SettingsPageController
     	if(musicFileList == null && dirFileList == null)
     		return;
     	if(musicFileList.length != 0)
-    		PropertyStorage.dirList.add(new DirInfo(dirFile.getAbsolutePath()));
+    		dirList.add(new DirInfo(dirFile.getAbsolutePath()));
     	for(File file : dirFileList)
     		recursiveFoundMusic(file);
     }
@@ -76,14 +85,14 @@ public class SettingsPageController
     @FXML
     private void removeDir()
     {
-    	PropertyStorage.dirList.remove(dirInfoTable.getSelectionModel().getSelectedIndex());
+    	dirList.remove(dirInfoTable.getSelectionModel().getSelectedIndex());
     }
     
     @FXML
     private void removeChildDir()
     {
     	String parentPath = dirInfoTable.getSelectionModel().getSelectedItem().getPath();
-    	Iterator<DirInfo> iter = PropertyStorage.dirList.iterator();
+    	Iterator<DirInfo> iter = dirList.iterator();
     	while(iter.hasNext())
     	{
     		if(iter.next().getPath().startsWith(parentPath))
@@ -94,6 +103,6 @@ public class SettingsPageController
     @FXML
     private void removeAllDir()
     {
-    	PropertyStorage.dirList.clear();
+    	dirList.clear();
     }
 }

@@ -1,7 +1,7 @@
 package com.gmail.andrewchouhs.model;
 
 import java.util.HashSet;
-import com.gmail.andrewchouhs.storage.DataStorage.Text;
+import com.gmail.andrewchouhs.storage.DataStorage;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
@@ -26,6 +26,6 @@ public class MusicInfo
     private void checkNull(StringProperty stringProperty)
     {
     	if(stringProperty.get() == null)
-    		stringProperty.set(Text.ListPage_NullValue.toString());
+    		stringProperty.set(DataStorage.ListPage_NullValue);
     }
 }
