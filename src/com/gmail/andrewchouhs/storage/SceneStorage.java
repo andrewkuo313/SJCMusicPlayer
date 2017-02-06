@@ -3,6 +3,7 @@ package com.gmail.andrewchouhs.storage;
 import java.util.EnumMap;
 import com.gmail.andrewchouhs.Main;
 import com.gmail.andrewchouhs.utils.parser.DirParser;
+import com.gmail.andrewchouhs.utils.parser.PrefsParser;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
@@ -40,6 +41,7 @@ public class SceneStorage
     		PropertyStorage.refreshMusicList();
             mainStage.setScene(new Scene(rootPage));
         	mainStage.setTitle("SJC's Music Player");
+        	mainStage.setOnCloseRequest((event)->PrefsParser.save());
             setPage(Page.LIST);
             mainStage.show();
         } 

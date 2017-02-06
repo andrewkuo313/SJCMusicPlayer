@@ -23,6 +23,8 @@ public class RootPageController
 	@FXML
 	private Tab listPageTab;
 	@FXML
+	private Button playModeButton;
+	@FXML
 	private Button playAndPauseButton;
 	@FXML
 	private Slider timeSlider;
@@ -38,6 +40,14 @@ public class RootPageController
     	albumPageTab.setOnSelectionChanged((event)->SceneStorage.setPage(Page.ALBUM));
     	statisticsPageTab.setOnSelectionChanged((event)->SceneStorage.setPage(Page.STATISTICS));
     	listPageTab.setOnSelectionChanged((event)->SceneStorage.setPage(Page.LIST));
+    	//同 changePlayMode() 須修正。
+    	String playMode = DataStorage.prefs.getProperty(DataStorage.PlayMode);
+		if(playMode.equals(DataStorage.NormalPlay))
+			playModeButton.setText(DataStorage.ListPage_NormalPlay);
+		if(playMode.equals(DataStorage.RandomPlay))
+			playModeButton.setText(DataStorage.ListPage_RandomPlay);
+		if(playMode.equals(DataStorage.RepeatPlay))
+			playModeButton.setText(DataStorage.ListPage_RepeatPlay);
     	timeSlider.valueProperty().addListener((observable, oldValue, newValue) ->
     	{
     		int time = newValue.intValue();
@@ -88,6 +98,28 @@ public class RootPageController
 	{
 		SceneStorage.getSettingsStage().show();
 		SceneStorage.getSettingsStage().toFront();
+	}
+	
+	//可以更精簡。
+	@FXML
+	private void changePlayMode()
+	{
+		String playMode = playModeButton.getText();
+		if(playMode.equals(DataStorage.ListPage_NormalPlay))
+		{
+			DataStorage.prefs.setProperty(DataStorage.PlayMode, DataStorage.RandomPlay);
+			playModeButton.setText(DataStorage.ListPage_RandomPlay);
+		}
+		if(playMode.equals(DataStorage.ListPage_RandomPlay))
+		{
+			DataStorage.prefs.setProperty(DataStorage.PlayMode, DataStorage.RepeatPlay);
+			playModeButton.setText(DataStorage.ListPage_RepeatPlay);
+		}
+		if(playMode.equals(DataStorage.ListPage_RepeatPlay))
+		{
+			DataStorage.prefs.setProperty(DataStorage.PlayMode, DataStorage.NormalPlay);
+			playModeButton.setText(DataStorage.ListPage_NormalPlay);
+		}
 	}
 	
 	@FXML

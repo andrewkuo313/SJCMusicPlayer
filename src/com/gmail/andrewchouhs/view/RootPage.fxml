@@ -30,6 +30,7 @@
       <top>
         <HBox alignment="CENTER_LEFT" prefHeight="-1.0" prefWidth="-1.0" spacing="10.0" BorderPane.alignment="CENTER">
           <children>
+            <Button fx:id="playModeButton" mnemonicParsing="false" onMouseClicked="#changePlayMode" text="%ListPage.NormalPlay" />
             <Button id="previousMusic" mnemonicParsing="false" onMouseClicked="#previousMusic" text="%RootPage.PreviousMusic" />
             <Button id="playAndPause" fx:id="playAndPauseButton" mnemonicParsing="false" onMouseClicked="#playAndPause" text="00:00" />
             <Button id="nextMusic" mnemonicParsing="false" onMouseClicked="#nextMusic" text="%RootPage.NextMusic" />

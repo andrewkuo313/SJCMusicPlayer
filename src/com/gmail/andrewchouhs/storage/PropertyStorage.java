@@ -20,6 +20,7 @@ public class PropertyStorage
 	//須避免 List 有重複的物件，也許先套入 HashSet 可以解決。
 	//有暴吃記憶體的現象。
 	//須修正至不須使用 Platform.runLater()。
+	//需重新檢查是否有物件比較使用 ==。
 	public static final ObservableList<MusicInfo> musicList = FXCollections.observableArrayList();
     public static final ObservableList<Image> albumCoverList = FXCollections.observableArrayList();
     public static final ObjectProperty<MusicInfo> musicInfo = new SimpleObjectProperty<MusicInfo>();

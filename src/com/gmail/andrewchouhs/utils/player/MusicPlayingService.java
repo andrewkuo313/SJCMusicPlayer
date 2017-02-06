@@ -10,6 +10,7 @@ import javax.sound.sampled.DataLine;
 import javax.sound.sampled.SourceDataLine;
 import org.tritonus.share.sampled.TAudioFormat;
 import org.tritonus.share.sampled.file.TAudioFileFormat;
+import com.gmail.andrewchouhs.storage.DataStorage;
 import com.gmail.andrewchouhs.storage.PropertyStorage;
 import static com.gmail.andrewchouhs.storage.PropertyStorage.musicList;
 import static com.gmail.andrewchouhs.storage.PropertyStorage.musicInfo;
@@ -107,17 +108,36 @@ public class MusicPlayingService extends Service<Long>
 						{
 							dataLine.write(data, 0, count);
 							totalReadBytes += count;
-							Platform.runLater(()->PropertyStorage.musicTime.set((int)(totalReadBytes / bytesPerSecond)));
+							Platform.runLater(() -> PropertyStorage.musicTime.set((int)(totalReadBytes / bytesPerSecond)));
 						}
 						else
-						{					
-							Platform.runLater(()->
+						{
+							//同 RootPageController 寫壞的各項。
+							String playMode = DataStorage.prefs.getProperty(DataStorage.PlayMode);
+							if(playMode.equals(DataStorage.NormalPlay))
 							{
-								int index = musicList.indexOf(musicInfo.get());
-								if(index == musicList.size() - 1)
-									index = -1;
-								musicInfo.set(musicList.get(index + 1));
-							});
+								Platform.runLater(() ->
+								{
+									int index = musicList.indexOf(musicInfo.get());
+									if(index == musicList.size() - 1)
+										index = -1;
+									musicInfo.set(musicList.get(index + 1));
+								});
+								stopped = true;
+								break;
+							}
+							if(playMode.equals(DataStorage.RandomPlay))
+							{
+								Platform.runLater(() -> musicInfo.set(musicList.get((int)(musicList.size() * Math.random()))));
+								stopped = true;
+								break;
+							}
+							if(playMode.equals(DataStorage.RepeatPlay))
+							{
+								seek(0);
+								break;
+							}
+							//保護措施，但不確定。
 							stopped = true;
 							break;
 						}

@@ -16,8 +16,7 @@ public class PrefsParser
 		File prefsFile = new File(DataStorage.prefsPath);
 		Properties samplePrefs = new Properties();
 		samplePrefs.setProperty(DataStorage.Locale, Locale.getDefault().toString());
-		samplePrefs.setProperty(DataStorage.RepeatPlay, "false");
-		samplePrefs.setProperty(DataStorage.RandomPlay, "false");
+		samplePrefs.setProperty(DataStorage.PlayMode, DataStorage.NormalPlay);
 		samplePrefs.setProperty(DataStorage.StartWhenOpeningPC, "false");
 		samplePrefs.setProperty(DataStorage.PlayWhenOpeningApp, "true");
 		samplePrefs.setProperty(DataStorage.AutoUpdate , "false");
