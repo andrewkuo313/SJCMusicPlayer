@@ -60,4 +60,8 @@ public class PrefsParser
 			e.printStackTrace();
 		}
 	}
+	
+	private PrefsParser()
+	{
+	}
 }

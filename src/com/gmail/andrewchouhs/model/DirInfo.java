@@ -7,7 +7,7 @@ import javafx.beans.property.StringProperty;
 public class DirInfo
 {
 	private final StringProperty pathProperty = new SimpleStringProperty();
-
+	
     public DirInfo(String path) 
     {
         setPath(path);
@@ -27,6 +27,12 @@ public class DirInfo
     public StringProperty getPathProperty()
     {
     	return pathProperty;
+    }
+    
+    @Override
+    public String toString()
+    {
+    	return getPath().substring(getPath().lastIndexOf("\\") + 1 , getPath().length());
     }
     
     public DirInfo()

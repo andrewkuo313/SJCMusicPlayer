@@ -1,12 +1,6 @@
-.table-view , .table-column , .scroll-bar:vertical
+.tree-view , .tree-cell , .scroll-bar:vertical
 {
 	-fx-background-color: #282828;
-}
-
-.column-header , .table-view .filler
-{
-	-fx-border-color: #303030;
-	-fx-background-color: #303030;
 }
 
 .anchor-pane , .hbox

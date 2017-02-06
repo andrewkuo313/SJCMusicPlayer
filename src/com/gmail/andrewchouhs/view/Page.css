@@ -25,13 +25,13 @@
 	-fx-background-color: #0096C9;
 }
 
-.tab-label , .button , .label , .check-box , .table-cell
+.tab-label , .button , .label , .check-box , .table-cell , .tree-view .tree-cell
 {
 	-fx-text-fill: #FFFFFF;
 	-fx-text-overrun: clip;
 }
 
-.table-row-cell:selected .table-cell
+.table-row-cell:selected .table-cell , .tree-view .tree-cell:selected
 {
 	-fx-border-color: #FFFFFF;
 }
@@ -46,6 +46,7 @@
 	-fx-border-color: #0096C9;
 	-fx-border-width: 1;
 	-fx-border-radius: 5;
+	-fx-background-radius: 5;
 	-fx-background-color: transparent;
 	-fx-padding: 5;
 }
