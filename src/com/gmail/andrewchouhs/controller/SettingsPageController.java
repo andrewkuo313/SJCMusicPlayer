@@ -10,41 +10,66 @@ import com.gmail.andrewchouhs.storage.SceneStorage;
 import com.gmail.andrewchouhs.utils.fliter.DirFilter;
 import com.gmail.andrewchouhs.utils.fliter.MusicFilter;
 import com.gmail.andrewchouhs.utils.parser.DirParser;
+import com.gmail.andrewchouhs.utils.parser.PrefsParser;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.stage.DirectoryChooser;
+import javafx.util.StringConverter;
 import static com.gmail.andrewchouhs.storage.DataStorage.dirList;
 import static com.gmail.andrewchouhs.storage.DataStorage.prefs;
 
 public class SettingsPageController
 {
-	//TreeView 待 MusicInfo 的讀寫完成再大修正。
+	//TreeView 待 MusicInfo 的讀寫完成再大修正和重新命名。
+	//重複讀取時仍稍微有些問題。
 	@FXML
     private TreeView<DirInfo> dirInfoTreeView;
+	@FXML
+	private CheckBox startWhenOpeningPC;
+	@FXML
+	private CheckBox playWhenOpeningApp;
+	@FXML
+	private CheckBox autoUpdate;
+	@FXML
+	private CheckBox notifyUpdate;
     @FXML
-    private ChoiceBox<String> localeBox;
+    private ComboBox<Locale> localeBox;
     
     @FXML
     private void initialize() 
     {
     	dirInfoTreeView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+    	ObservableList<Locale> localeList = FXCollections.observableArrayList();
+    	localeList.addAll(DataStorage.availableLocales.values());
+    	localeBox.setItems(localeList);
+    	localeBox.setConverter(new StringConverter<Locale>()
+    	{
+    		//可能會造成 Bug。
+			@Override
+			public Locale fromString(String arg0)
+			{
+				return null;
+			}
+
+			@Override
+			public String toString(Locale locale)
+			{
+				return locale.getDisplayName(locale);
+			}
+    	});
     	SceneStorage.getSettingsStage().setOnShowing((event) -> refreshAll());
     }
     
     private void refreshAll()
     {
     	refreshDirInfoTreeView();
-    	ObservableList<String> displayNameList = FXCollections.observableArrayList();
-    	for(Locale locale : DataStorage.availableLocales.values())
-    		displayNameList.add(locale.getDisplayName(locale));
-    	localeBox.setItems(displayNameList);
-    	Locale locale = DataStorage.availableLocales.get(prefs.getProperty(DataStorage.Locale));
-    	localeBox.setValue(locale.getDisplayName(locale));
+    	refreshPreferences();
     }
     
     private void refreshDirInfoTreeView()
@@ -80,6 +105,15 @@ public class SettingsPageController
     	dirInfoTreeView.setRoot(root);
     }
     
+    private void refreshPreferences()
+    {
+    	startWhenOpeningPC.setSelected(Boolean.valueOf(prefs.getProperty(DataStorage.StartWhenOpeningPC)));
+    	playWhenOpeningApp.setSelected(Boolean.valueOf(prefs.getProperty(DataStorage.PlayWhenOpeningApp)));
+    	autoUpdate.setSelected(Boolean.valueOf(prefs.getProperty(DataStorage.AutoUpdate)));
+    	notifyUpdate.setSelected(Boolean.valueOf(prefs.getProperty(DataStorage.NotifyUpdate)));
+    	localeBox.setValue(DataStorage.availableLocales.get(prefs.getProperty(DataStorage.Locale)));
+    }
+    
     @FXML
     private void ok()
     {
@@ -87,6 +121,12 @@ public class SettingsPageController
     	for(TreeItem<DirInfo> treeItem : dirInfoTreeView.getRoot().getChildren())
     		recursiveSearchChildren(treeItem);
     	DirParser.save();
+    	prefs.setProperty(DataStorage.StartWhenOpeningPC, Boolean.toString(startWhenOpeningPC.isSelected()));
+    	prefs.setProperty(DataStorage.PlayWhenOpeningApp, Boolean.toString(playWhenOpeningApp.isSelected()));
+    	prefs.setProperty(DataStorage.AutoUpdate , Boolean.toString(autoUpdate.isSelected()));
+    	prefs.setProperty(DataStorage.NotifyUpdate, Boolean.toString(notifyUpdate.isSelected()));
+    	prefs.setProperty(DataStorage.Locale, localeBox.getValue().toString());
+    	PrefsParser.save();
     	PropertyStorage.refreshMusicList();
     	SceneStorage.getSettingsStage().close();
     }
@@ -94,7 +134,6 @@ public class SettingsPageController
     private void recursiveSearchChildren(TreeItem<DirInfo> treeItem)
     {
     	dirList.add(treeItem.getValue());
-    	System.out.println(treeItem.getValue().getPath());
     	if(treeItem.getChildren() == null)
     		return;
     	for(TreeItem<DirInfo> subTreeItem : treeItem.getChildren())

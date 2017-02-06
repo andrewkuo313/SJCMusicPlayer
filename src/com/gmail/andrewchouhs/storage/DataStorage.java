@@ -30,13 +30,13 @@ public class DataStorage
 	public static final String SettingsPage_Title;
     public static final ResourceBundle bundle;
 	public static final Properties prefs = new Properties();
-	//或許可以同 LinkedHashSet 變成 LinkedHashMap。
+	//或許可以同 LinkedHashSet 變成 LinkedHashMap，並改名。
 	public static final HashMap<String , Locale> availableLocales = new HashMap<String , Locale>();
 	public static final LinkedHashSet<DirInfo> dirList = new LinkedHashSet<DirInfo>();
 	//可能需要抽出變成 Method。
 	static
 	{
-		availableLocales.put("zh_tw" , java.util.Locale.TRADITIONAL_CHINESE);
+		availableLocales.put("zh_TW" , java.util.Locale.TRADITIONAL_CHINESE);
 		availableLocales.put("en" , java.util.Locale.ENGLISH);
 		if(!new File(dataRootPath).mkdirs())
 		{
