@@ -31,6 +31,12 @@
 	-fx-text-overrun: clip;
 }
 
+.hyperlink
+{
+	-fx-text-fill: #8888FF;
+	-fx-text-overrun: clip;
+}
+
 .table-row-cell:selected .table-cell , .tree-view .tree-cell:selected
 {
 	-fx-border-color: #FFFFFF;

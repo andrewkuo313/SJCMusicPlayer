@@ -1,8 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <update version="v1.1" date="2017.02.06">
-	New Features:
-		Detecting Updates!
+	What Was Changed:
+	
+		1.Settings almost done.
+		2.Internationalization added.
+		3.Some bugs were fixed.
 		
 	新功能：
-		檢測更新！
+		
+		1.設定選項幾乎完成。
+		2.國際化功能已增加。
+		3.一些錯誤已經修正。
 </update>

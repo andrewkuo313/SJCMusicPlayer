@@ -22,7 +22,6 @@ public class UpdatesDownloadService extends Service<UpdateInfo>
 					PropertyStorage.updateInfo.set((UpdateInfo)
 							JAXBContext.newInstance(UpdateInfo.class).createUnmarshaller().unmarshal
 							(new URL(DataStorage.gitHubUpdatesURL)));
-		    		System.out.println("do");
 					return null;
 				} 
 				catch (Exception e)
