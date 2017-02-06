@@ -81,7 +81,30 @@
         </Tab>
         <Tab text="%SettingsPage.Updates">
           <content>
-            <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" styleClass="anchor-pane" />
+            <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" styleClass="anchor-pane">
+              <children>
+                <VBox prefHeight="200.0" prefWidth="100.0" spacing="20.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="20.0">
+                  <children>
+                    <Label fx:id="dateLabel" alignment="CENTER" text="">
+                      <font>
+                        <Font size="32.0" />
+                      </font>
+                      <graphic>
+                        <Label fx:id="versionLabel" alignment="CENTER" contentDisplay="LEFT" font="$x1" text="%SettingsPage.Updates.NoUpdates" />
+                      </graphic>
+                    </Label>
+                    <Label fx:id="articleLabel" text="">
+                      <font>
+                        <Font size="16.0" />
+                      </font>
+                      <VBox.margin>
+                        <Insets left="20.0" />
+                      </VBox.margin>
+                    </Label>
+                  </children>
+                </VBox>
+              </children>
+            </AnchorPane>
           </content>
         </Tab>
         <Tab text="%SettingsPage.About">

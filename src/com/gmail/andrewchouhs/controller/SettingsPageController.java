@@ -16,6 +16,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
@@ -40,6 +41,12 @@ public class SettingsPageController
 	private CheckBox notifyUpdate;
     @FXML
     private ComboBox<Locale> localeBox;
+    @FXML
+    private Label versionLabel;
+    @FXML
+    private Label dateLabel;
+    @FXML
+    private Label articleLabel;
     
     @FXML
     private void initialize() 
@@ -62,6 +69,12 @@ public class SettingsPageController
 			{
 				return locale.getDisplayName(locale);
 			}
+    	});
+    	PropertyStorage.updateInfo.addListener((observable , oldValue , newValue) -> 
+    	{
+    		versionLabel.setText(newValue.getVersion());
+    		dateLabel.setText(newValue.getDate());
+    		articleLabel.setText(newValue.getArticle());
     	});
     	SceneStorage.getSettingsStage().setOnShowing((event) -> refreshAll());
     }

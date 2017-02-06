@@ -3,6 +3,7 @@ package com.gmail.andrewchouhs.storage;
 import java.io.File;
 import com.gmail.andrewchouhs.model.DirInfo;
 import com.gmail.andrewchouhs.model.MusicInfo;
+import com.gmail.andrewchouhs.model.UpdateInfo;
 import com.gmail.andrewchouhs.utils.fliter.MusicFilter;
 import com.gmail.andrewchouhs.utils.player.MusicPlayingService;
 import javafx.beans.property.IntegerProperty;
@@ -23,6 +24,7 @@ public class PropertyStorage
     public static final ObservableList<Image> albumCoverList = FXCollections.observableArrayList();
     public static final ObjectProperty<MusicInfo> musicInfo = new SimpleObjectProperty<MusicInfo>();
     public static final ObjectProperty<MusicPlayingService> musicPlayer = new SimpleObjectProperty<MusicPlayingService>();
+    public static final ObjectProperty<UpdateInfo> updateInfo = new SimpleObjectProperty<UpdateInfo>();
     public static final IntegerProperty musicTime = new SimpleIntegerProperty(0);
     //應合併至 MusicInfo。
     public static final IntegerProperty musicTotalTime = new SimpleIntegerProperty(0);
