@@ -29,6 +29,7 @@ public class DirInfo
     	return pathProperty;
     }
     
+    //須找到更好的方法。
     @Override
     public String toString()
     {

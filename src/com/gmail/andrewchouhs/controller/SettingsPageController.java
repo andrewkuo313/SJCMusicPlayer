@@ -3,13 +3,19 @@ package com.gmail.andrewchouhs.controller;
 import java.io.File;
 import java.util.LinkedHashMap;
 import java.util.Locale;
+import java.util.Map;
+import javax.sound.sampled.AudioFileFormat;
+import javax.sound.sampled.AudioSystem;
+import org.tritonus.share.sampled.file.TAudioFileFormat;
 import com.gmail.andrewchouhs.model.DirInfo;
+import com.gmail.andrewchouhs.model.MusicInfo;
 import com.gmail.andrewchouhs.storage.DataStorage;
 import com.gmail.andrewchouhs.storage.PropertyStorage;
 import com.gmail.andrewchouhs.storage.SceneStorage;
 import com.gmail.andrewchouhs.utils.fliter.DirFilter;
 import com.gmail.andrewchouhs.utils.fliter.MusicFilter;
 import com.gmail.andrewchouhs.utils.parser.DirParser;
+import com.gmail.andrewchouhs.utils.parser.MusicParser;
 import com.gmail.andrewchouhs.utils.parser.PrefsParser;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -128,6 +134,8 @@ public class SettingsPageController
     	localeBox.setValue(DataStorage.availableLocales.get(prefs.getProperty(DataStorage.Locale)));
     }
     
+    //用方法分開。
+    //AudioFileFormat 時快時慢，須找到原因。
     @FXML
     private void ok()
     {
@@ -141,8 +149,43 @@ public class SettingsPageController
     	prefs.setProperty(DataStorage.NotifyUpdate, Boolean.toString(notifyUpdate.isSelected()));
     	prefs.setProperty(DataStorage.Locale, localeBox.getValue().toString());
     	PrefsParser.save();
-    	PropertyStorage.refreshMusicList();
-    	SceneStorage.getSettingsStage().close();
+    	PropertyStorage.musicList.clear();
+    	for(DirInfo dirInfo : DataStorage.dirList)
+    	{
+    		File dirFile = new File(dirInfo.getPath());
+    		for(File file : dirFile.listFiles(new MusicFilter()))
+    		{
+    			AudioFileFormat baseFileFormat = null;
+    			try
+    			{
+    				 baseFileFormat = AudioSystem.getAudioFileFormat(file);
+    			}
+    			catch(Exception e)
+    			{
+    				e.printStackTrace();
+    			}
+    			String musicName = file.getName().substring(0, file.getName().lastIndexOf('.'));
+    			String artistName = null;
+    			String albumName = null;
+    			String dateName = null;
+    			if(baseFileFormat instanceof TAudioFileFormat)
+    			{
+    			    Map<String , Object> properties = ((TAudioFileFormat)baseFileFormat).properties();
+    			    String name = (String)properties.get("title");
+    			    //未解決。
+    			    if(name != null)
+    			    	musicName = name;
+    			    artistName = (String)properties.get("author");
+    			    albumName = (String)properties.get("album");
+    			    dateName = (String)properties.get("date");
+    			}
+    			PropertyStorage.musicList.add
+    			(new MusicInfo(file.getAbsolutePath() , musicName , artistName , albumName , dateName));
+    		}
+    	}
+    	MusicParser.save();
+//    	PropertyStorage.refreshMusicList();
+        	SceneStorage.getSettingsStage().close();
     }
     
     private void recursiveSearchChildren(TreeItem<DirInfo> treeItem)

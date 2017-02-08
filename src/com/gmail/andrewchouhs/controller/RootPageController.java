@@ -71,7 +71,7 @@ public class RootPageController
     	PropertyStorage.musicInfo.addListener((observable, oldValue, newValue) ->
     	{
     		if(newValue != null)
-    			nameLabel.setText(newValue.name.get());
+    			nameLabel.setText(newValue.getNameProperty().get());
     		else
     			nameLabel.setText(DataStorage.ListPage_Name);
     	});

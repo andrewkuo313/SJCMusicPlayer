@@ -16,6 +16,7 @@ public class DataStorage
 	//PropertyStorage 或許可以合併過來。
 	private static final String dataRootPath = System.getenv("APPDATA") + "\\SJCMusicPlayer\\";
 	public static final String dirPathsPath = dataRootPath + "DirectoryPaths.xml";
+	public static final String musicInfoPath = dataRootPath + "MusicInfo.xml";
 	public static final String prefsPath = dataRootPath + "Preferences.properties";
 	public static final String gitHubUpdatesURL = "https://raw.githubusercontent.com/andrewkuo313/SJCMusicPlayer/master/updates/Updates.xml";
 	public static final String Locale = "Locale";
@@ -38,6 +39,7 @@ public class DataStorage
 	public static final Properties prefs = new Properties();
 	//或許可以同 LinkedHashSet 變成 LinkedHashMap，並改名。
 	public static final HashMap<String , Locale> availableLocales = new HashMap<String , Locale>();
+	//可能在 MusicInfo I/O 完工後退出。
 	public static final LinkedHashSet<DirInfo> dirList = new LinkedHashSet<DirInfo>();
 	//可能需要抽出變成 Method。
 	static

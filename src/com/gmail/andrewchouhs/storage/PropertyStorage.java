@@ -21,13 +21,13 @@ public class PropertyStorage
 	//有暴吃記憶體的現象。
 	//須修正至不須使用 Platform.runLater()。
 	//需重新檢查是否有物件比較使用 ==。
+	//需將使用 Lambda 後大幅提升效率的程式碼修正。(後期)
 	public static final ObservableList<MusicInfo> musicList = FXCollections.observableArrayList();
     public static final ObservableList<Image> albumCoverList = FXCollections.observableArrayList();
     public static final ObjectProperty<MusicInfo> musicInfo = new SimpleObjectProperty<MusicInfo>();
     public static final ObjectProperty<MusicPlayingService> musicPlayer = new SimpleObjectProperty<MusicPlayingService>();
     public static final ObjectProperty<UpdateInfo> updateInfo = new SimpleObjectProperty<UpdateInfo>();
     public static final IntegerProperty musicTime = new SimpleIntegerProperty(0);
-    //應合併至 MusicInfo。
     public static final IntegerProperty musicTotalTime = new SimpleIntegerProperty(0);
 	
     static
@@ -40,7 +40,7 @@ public class PropertyStorage
     			musicPlayer.set(null);
     		}
     		if(newValue != null)
-    			musicPlayer.set(new MusicPlayingService(newValue.path.get() , 0L , true));
+    			musicPlayer.set(new MusicPlayingService(newValue.getPathProperty().get() , 0L , true));
     		else
     			musicTotalTime.set(0);
     	});
@@ -59,8 +59,9 @@ public class PropertyStorage
     			String musicName = file.getName().substring(0, file.getName().lastIndexOf('.'));
     			String artistName = null;
     			String albumName = null;
+    			String dateName = null;
     			musicList.add
-    			(new MusicInfo(file.getAbsolutePath() , musicName , artistName , albumName));
+    			(new MusicInfo(file.getAbsolutePath() , musicName , artistName , albumName , dateName));
     		}
     		//非常耗時間和記憶體，需要修正。
 //    		for(File file : dirFile.listFiles(new AlbumCoverFilter()))
