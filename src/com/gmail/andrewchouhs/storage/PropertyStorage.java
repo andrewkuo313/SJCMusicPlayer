@@ -1,7 +1,6 @@
 package com.gmail.andrewchouhs.storage;
 
 import java.io.File;
-import com.gmail.andrewchouhs.model.DirInfo;
 import com.gmail.andrewchouhs.model.MusicInfo;
 import com.gmail.andrewchouhs.model.UpdateInfo;
 import com.gmail.andrewchouhs.utils.fliter.MusicFilter;
@@ -46,33 +45,33 @@ public class PropertyStorage
     	});
 	}
 	
-    public static void refreshMusicList()
-    {
-    	musicList.clear();
-    	albumCoverList.add(null);
-    	albumCoverList.clear();
-    	for(DirInfo dirInfo : DataStorage.dirList)
-    	{
-    		File dirFile = new File(dirInfo.getPath());
-    		for(File file : dirFile.listFiles(new MusicFilter()))
-    		{
-    			String musicName = file.getName().substring(0, file.getName().lastIndexOf('.'));
-    			String artistName = null;
-    			String albumName = null;
-    			String dateName = null;
-    			musicList.add
-    			(new MusicInfo(file.getAbsolutePath() , musicName , artistName , albumName , dateName));
-    		}
-    		//非常耗時間和記憶體，需要修正。
-//    		for(File file : dirFile.listFiles(new AlbumCoverFilter()))
+//    public static void refreshMusicList()
+//    {
+//    	musicList.clear();
+//    	albumCoverList.add(null);
+//    	albumCoverList.clear();
+//    	for(DirInfo dirInfo : DataStorage.dirList)
+//    	{
+//    		File dirFile = new File(dirInfo.getPath());
+//    		for(File file : dirFile.listFiles(new MusicFilter()))
 //    		{
-//    			//需加入判斷同一資料夾最接近封面的檔案、取而代之從音樂檔擷取封面。	
-//    			albumCoverList.add(new Image(file.toURI().toString()));
+//    			String musicName = file.getName().substring(0, file.getName().lastIndexOf('.'));
+//    			String artistName = null;
+//    			String albumName = null;
+//    			String dateName = null;
+//    			musicList.add
+//    			(new MusicInfo(file.getAbsolutePath() , musicName , artistName , albumName , dateName));
 //    		}
-    	}
-		albumCoverList.add(null);
-		albumCoverList.remove(albumCoverList.size() - 1);
-    }
+//    		//非常耗時間和記憶體，需要修正。
+////    		for(File file : dirFile.listFiles(new AlbumCoverFilter()))
+////    		{
+////    			//需加入判斷同一資料夾最接近封面的檔案、取而代之從音樂檔擷取封面。	
+////    			albumCoverList.add(new Image(file.toURI().toString()));
+////    		}
+//    	}
+//		albumCoverList.add(null);
+//		albumCoverList.remove(albumCoverList.size() - 1);
+//    }
     
 	private PropertyStorage()
 	{

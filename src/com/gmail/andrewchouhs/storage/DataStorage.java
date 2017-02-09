@@ -2,12 +2,9 @@ package com.gmail.andrewchouhs.storage;
 
 import java.io.File;
 import java.util.HashMap;
-import java.util.LinkedHashSet;
 import java.util.Locale;
 import java.util.Properties;
 import java.util.ResourceBundle;
-import com.gmail.andrewchouhs.model.DirInfo;
-import com.gmail.andrewchouhs.utils.parser.DirParser;
 import com.gmail.andrewchouhs.utils.parser.PrefsParser;
 import com.gmail.andrewchouhs.utils.service.UpdatesDownloadService;
 
@@ -15,7 +12,7 @@ public class DataStorage
 {
 	//PropertyStorage 或許可以合併過來。
 	private static final String dataRootPath = System.getenv("APPDATA") + "\\SJCMusicPlayer\\";
-	public static final String dirPathsPath = dataRootPath + "DirectoryPaths.xml";
+	public static final String dirPathsPath = dataRootPath + "DirectoryPaths";
 	public static final String musicInfoPath = dataRootPath + "MusicInfo.xml";
 	public static final String prefsPath = dataRootPath + "Preferences.properties";
 	public static final String gitHubUpdatesURL = "https://raw.githubusercontent.com/andrewkuo313/SJCMusicPlayer/master/updates/Updates.xml";
@@ -37,10 +34,8 @@ public class DataStorage
 	public static final String SettingsPage_Updates_NoUpdates;
     public static final ResourceBundle bundle;
 	public static final Properties prefs = new Properties();
-	//或許可以同 LinkedHashSet 變成 LinkedHashMap，並改名。
+	//或許可以變成 LinkedHashMap，並改名。
 	public static final HashMap<String , Locale> availableLocales = new HashMap<String , Locale>();
-	//可能在 MusicInfo I/O 完工後退出。
-	public static final LinkedHashSet<DirInfo> dirList = new LinkedHashSet<DirInfo>();
 	//可能需要抽出變成 Method。
 	static
 	{
@@ -49,7 +44,6 @@ public class DataStorage
 		if(!new File(dataRootPath).mkdirs())
 		{
 			PrefsParser.load();
-			DirParser.load();
 		}
 		bundle = ResourceBundle.getBundle("com.gmail.andrewchouhs.i18n.text" , new Locale(prefs.getProperty(Locale)));
 		ListPage_Name = bundle.getString("ListPage.Name");
@@ -62,6 +56,16 @@ public class DataStorage
 		new UpdatesDownloadService().start();
 	}
 
+	public static void loadMusicTreeMap()
+	{
+		
+	}
+	
+	public static void saveMusicTreeMap()
+	{
+		
+	}
+	
 	private DataStorage()
 	{
 	}

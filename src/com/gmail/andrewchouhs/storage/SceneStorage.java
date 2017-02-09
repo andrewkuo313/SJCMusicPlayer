@@ -2,7 +2,6 @@ package com.gmail.andrewchouhs.storage;
 
 import java.util.EnumMap;
 import com.gmail.andrewchouhs.Main;
-import com.gmail.andrewchouhs.utils.parser.DirParser;
 import com.gmail.andrewchouhs.utils.parser.PrefsParser;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -36,9 +35,8 @@ public class SceneStorage
             settingsStage.setScene(new Scene(settingsPage));
         	settingsStage.setTitle(DataStorage.SettingsPage_Title);
             settingsStage.initOwner(mainStage);
-            settingsStage.setOnCloseRequest((event)->DirParser.load());
         	//應該要找一個更適當的時間點放。
-    		PropertyStorage.refreshMusicList();
+//    		PropertyStorage.refreshMusicList(); ///////////////////////////
             mainStage.setScene(new Scene(rootPage));
         	mainStage.setTitle("SJC's Music Player");
         	mainStage.setOnCloseRequest((event)->PrefsParser.save());
