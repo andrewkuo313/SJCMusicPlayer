@@ -8,10 +8,12 @@ public class DirTreeItem extends TreeItem<String> implements Serializable
 {
 	private static final long serialVersionUID = 1L;
 	public MusicTreeMap musicTreeMap;
+	public final String path;/////////////
 	
-	public DirTreeItem(String name , MusicTreeMap musicTreeMap)
+	public DirTreeItem(String name , MusicTreeMap musicTreeMap , String path)
 	{
 		super(name);
 		this.musicTreeMap = musicTreeMap;
+		this.path = path;
 	}
 }

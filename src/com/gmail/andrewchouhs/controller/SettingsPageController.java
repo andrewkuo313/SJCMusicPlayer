@@ -57,7 +57,7 @@ public class SettingsPageController
     @FXML
     private Label articleLabel;
     //需決定其與其相關方法存放地點。
-    private MusicTreeMap musicTreeMap = new MusicTreeMap(new DirTreeItem("" , null));
+    private MusicTreeMap musicTreeMap = new MusicTreeMap(new DirTreeItem("" , null , null));
     
     @FXML
     private void initialize() 
@@ -93,19 +93,18 @@ public class SettingsPageController
     private void refreshAll()
     {
     	refreshPreferences();
-    	try(FileInputStream fIn = new FileInputStream(new File(DataStorage.dirPathsPath));
-            ObjectInputStream oIn = new ObjectInputStream(fIn))
-    	{
-    		//或許不需要迴圈。
-            while(fIn.available() > 0) 
-            	musicTreeMap = (MusicTreeMap)oIn.readObject();
-        } 
-    	catch(Exception e)
-    	{
-    		e.printStackTrace();
-    	}
+//    	try(FileInputStream fIn = new FileInputStream(new File(DataStorage.dirPathsPath));
+//            ObjectInputStream oIn = new ObjectInputStream(fIn))
+//    	{
+//    		//或許不需要迴圈。
+//            while(fIn.available() > 0) 
+//            	musicTreeMap = (MusicTreeMap)oIn.readObject();
+//        } 
+//    	catch(Exception e)
+//    	{
+//    		e.printStackTrace();
+//    	}
     	dirInfoTreeView.setRoot(musicTreeMap.treeItem);
-    	System.out.println(musicTreeMap.get("D:\\Music\\Touhou"));
     }
     
     private void refreshPreferences()
@@ -128,15 +127,15 @@ public class SettingsPageController
     	prefs.setProperty(DataStorage.NotifyUpdate, Boolean.toString(notifyUpdate.isSelected()));
     	prefs.setProperty(DataStorage.Locale, localeBox.getValue().toString());
     	PrefsParser.save();
-    	//不確定tws的內括順序是否正確。
-    	try(ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(new File(DataStorage.dirPathsPath))))
-    	{     
-    		out.writeObject(musicTreeMap); 
-    	} 
-    	catch(Exception e) 
-    	{ 
-    		e.printStackTrace(); 
-    	}
+//    	//不確定tws的內括順序是否正確。
+//    	try(ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(new File(DataStorage.dirPathsPath))))
+//    	{     
+//    		out.writeObject(musicTreeMap); 
+//    	} 
+//    	catch(Exception e) 
+//    	{ 
+//    		e.printStackTrace(); 
+//    	}
     	PropertyStorage.musicList.clear();
 //    	for(DirInfo dirInfo : DataStorage.dirList)
 //    	{
@@ -189,6 +188,7 @@ public class SettingsPageController
 		{
 			File parentFile = dirFile;
 			LinkedList<File> parentFiles = new LinkedList<File>();
+			LinkedList<File> preloadFiles = new LinkedList<File>();
 			while(parentFile != null)
 			{
 				parentFiles.addFirst(parentFile);
@@ -197,47 +197,35 @@ public class SettingsPageController
 				parentFile = parentFile.getParentFile();
 			}
 			MusicTreeMap childMusicTreeMap = musicTreeMap;
-			MusicTreeMap forAvailableMusicTreeMap = musicTreeMap;
 			for(File file : parentFiles)
 			{
 				String path = file.getAbsolutePath();
-				MusicTreeMap prev = childMusicTreeMap;////////////////////////////////
-				if(childMusicTreeMap.containsKey(path) && childMusicTreeMap.get(path).available)
+				if(childMusicTreeMap.containsKey(path))
 				{
 					childMusicTreeMap = childMusicTreeMap.get(path);
 					dirFile = file;
 				}
-				if(forAvailableMusicTreeMap.containsKey(path))
-				{
-					forAvailableMusicTreeMap = forAvailableMusicTreeMap.get(path);
-					if(prev.containsKey(path))
-					{
-						prev.get(path).available = true;
-					}
-				}
 				else
-					break;
+					preloadFiles.add(file);
 			}
-			recursiveAvailable(forAvailableMusicTreeMap , true);
+			if(!preloadFiles.isEmpty() && preloadFiles.getLast().equals(dirFile))
+				preloadFiles = new LinkedList<File>();
 			DirTreeItem parentTreeItem = (DirTreeItem)childMusicTreeMap.treeItem.getParent();
 			if(parentTreeItem != null)
-			{
-				parentTreeItem.getChildren().remove(childMusicTreeMap.treeItem);
 				childMusicTreeMap = parentTreeItem.musicTreeMap;
-			}
-			if(!recursiveFoundMusic(dirFile , childMusicTreeMap , false))
+			if(!recursiveFoundMusic(dirFile , preloadFiles , childMusicTreeMap , false))
 			{
 				System.out.println("選擇資料夾無音樂檔案");
 			}
 		}
 	}
     
-    private boolean recursiveFoundMusic(File dirFile , MusicTreeMap parentMusicTreeMap , boolean checkDuplicate)
+    private boolean recursiveFoundMusic(File dirFile , LinkedList<File> preloadFiles , MusicTreeMap parentMusicTreeMap , boolean checkDuplicate)
     {
     	boolean orLogicGate = false;
     	File[] musicFileList = dirFile.listFiles(new MusicFilter());
     	File[] dirFileList = dirFile.listFiles(new DirFilter());
-    	if(musicFileList == null && dirFileList == null)
+    	if(musicFileList == null && (dirFileList == null || preloadFiles.isEmpty()))
     		return false;
     	if(checkDuplicate && musicTreeMap.containsKey(dirFile.getAbsolutePath()))
     	{
@@ -246,37 +234,32 @@ public class SettingsPageController
 			if(treeItemChildren.contains(dirTreeItem))
 				treeItemChildren.remove(dirTreeItem);
     	}
-    	DirTreeItem childTreeItem = new DirTreeItem(dirFile.getName() , null);
+    	DirTreeItem childTreeItem = new DirTreeItem(dirFile.getName() , null , dirFile.getAbsolutePath());
     	DirTreeItem parentTreeItem = parentMusicTreeMap.treeItem;
     	parentTreeItem.setExpanded(true);
-    	parentTreeItem.musicTreeMap = parentMusicTreeMap;/////////////////
+    	parentTreeItem.musicTreeMap = parentMusicTreeMap;
     	MusicTreeMap childMusicTreeMap;
-    	boolean available;
     	if(parentMusicTreeMap.containsKey(dirFile.getAbsolutePath()))
     	{
     		childMusicTreeMap = parentMusicTreeMap.get(dirFile.getAbsolutePath());
-    		available = childMusicTreeMap.available;
     		childTreeItem = childMusicTreeMap.treeItem;
-    		childTreeItem.getChildren().clear();
     	}
     	else
     	{
     		childMusicTreeMap = new MusicTreeMap(childTreeItem);
-    		available = true;
+    		parentTreeItem.getChildren().add(childTreeItem);
+        	childTreeItem.musicTreeMap = childMusicTreeMap;
+        	parentMusicTreeMap.put(dirFile.getAbsolutePath() , childMusicTreeMap);
     	}
-    	childTreeItem.musicTreeMap = childMusicTreeMap;
-    	parentTreeItem.getChildren().add(childTreeItem);
-    	parentMusicTreeMap.put(dirFile.getAbsolutePath() , childMusicTreeMap);
-    	if(available)
+    	if(preloadFiles.isEmpty())
     	{
-	    	for(File file : dirFileList)
-	    	{
-	    		orLogicGate = recursiveFoundMusic(file , childMusicTreeMap , true) || orLogicGate;
-	    	}
+    		for(File file : dirFileList)
+    			orLogicGate = recursiveFoundMusic(file , preloadFiles , childMusicTreeMap , true) || orLogicGate;
     	}
+    	else
+    		orLogicGate = recursiveFoundMusic(preloadFiles.removeFirst() , preloadFiles , childMusicTreeMap , true) || orLogicGate;
     	if(musicFileList.length != 0)
     		orLogicGate = true;
-    	orLogicGate = orLogicGate && available;
     	if(!orLogicGate)
     	{
     		parentMusicTreeMap.remove(childMusicTreeMap);
@@ -295,17 +278,10 @@ public class SettingsPageController
     	{
     		ObservableList<TreeItem<String>> parentTreeItemChildren = treeItem.getParent().getChildren();
     		if(parentTreeItemChildren.contains(treeItem))
+    		{
+    			((DirTreeItem)treeItem.getParent()).musicTreeMap.remove(treeItem.path);
     			parentTreeItemChildren.remove(treeItem);
-    		recursiveAvailable(treeItem.musicTreeMap , false);
+    		}
     	}
-    }
-    
-    private void recursiveAvailable(MusicTreeMap parentMusicTreeMap , boolean available)
-    {
-    	parentMusicTreeMap.available = available;
-    	if(parentMusicTreeMap.isEmpty())
-    		return;
-    	for(MusicTreeMap childMusicTreeMap : parentMusicTreeMap.values())
-    		recursiveAvailable(childMusicTreeMap , available);
     }
 }
