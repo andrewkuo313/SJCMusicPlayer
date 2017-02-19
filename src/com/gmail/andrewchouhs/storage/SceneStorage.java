@@ -1,17 +1,17 @@
 package com.gmail.andrewchouhs.storage;
 
 import java.util.EnumMap;
+import java.util.ResourceBundle;
 import com.gmail.andrewchouhs.Main;
-import com.gmail.andrewchouhs.utils.parser.PrefsParser;
+import com.gmail.andrewchouhs.storage.TextStorage.Text;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-import static com.gmail.andrewchouhs.storage.DataStorage.bundle;
 
-public class SceneStorage
+public final class SceneStorage
 {
 	private static Stage mainStage;
 	//有可能將 Stage 都獨立成一個類別。
@@ -23,6 +23,7 @@ public class SceneStorage
 		mainStage = stage;
     	try 
         {
+    		ResourceBundle bundle = TextStorage.getBundle();
             BorderPane settingsPage = FXMLLoader.load(Main.class.getResource("view/SettingsPage.fxml") , bundle);
             BorderPane rootPage = FXMLLoader.load(Main.class.getResource("view/RootPage.fxml") , bundle);
             AnchorPane listPage = FXMLLoader.load(Main.class.getResource("view/ListPage.fxml") , bundle);
@@ -32,15 +33,13 @@ public class SceneStorage
             pageMap.put(Page.LIST , listPage);
             pageMap.put(Page.ALBUM, albumPage);
             pageMap.put(Page.STATISTICS , statisticsPage);
+            setPage(Page.LIST);
             settingsStage.setScene(new Scene(settingsPage));
-        	settingsStage.setTitle(DataStorage.SettingsPage_Title);
+        	settingsStage.setTitle(TextStorage.getText(Text.SettingsPage_Title));
             settingsStage.initOwner(mainStage);
-        	//應該要找一個更適當的時間點放。
-//    		PropertyStorage.refreshMusicList(); ///////////////////////////
             mainStage.setScene(new Scene(rootPage));
         	mainStage.setTitle("SJC's Music Player");
-        	mainStage.setOnCloseRequest((event)->PrefsParser.save());
-            setPage(Page.LIST);
+        	mainStage.setOnCloseRequest((event)->PrefStorage.save());
             mainStage.show();
         } 
         catch (Exception e) 

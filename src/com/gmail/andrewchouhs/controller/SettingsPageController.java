@@ -13,13 +13,13 @@ import javax.sound.sampled.AudioSystem;
 import org.tritonus.share.sampled.file.TAudioFileFormat;
 import com.gmail.andrewchouhs.model.MusicInfo;
 import com.gmail.andrewchouhs.storage.DataStorage;
-import com.gmail.andrewchouhs.storage.PropertyStorage;
+import com.gmail.andrewchouhs.storage.PrefStorage;
+import com.gmail.andrewchouhs.storage.PrefStorage.Pref;
 import com.gmail.andrewchouhs.storage.SceneStorage;
 import com.gmail.andrewchouhs.utils.DirTreeItem;
 import com.gmail.andrewchouhs.utils.MusicTreeMap;
 import com.gmail.andrewchouhs.utils.fliter.DirFilter;
 import com.gmail.andrewchouhs.utils.fliter.MusicFilter;
-import com.gmail.andrewchouhs.utils.parser.PrefsParser;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -31,11 +31,11 @@ import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.stage.DirectoryChooser;
 import javafx.util.StringConverter;
-import static com.gmail.andrewchouhs.storage.DataStorage.prefs;
+import static com.gmail.andrewchouhs.storage.DataStorage.musicTreeMap;
 
 public class SettingsPageController
 {
-	//TreeView 需增加刷新功能、增加無資料夾提示、減省名稱重新檢查一次此頁程式碼。
+	//TreeView 需增加刷新功能、增加無資料夾提示、排序。
 	@FXML
     private TreeView<String> dirInfoTreeView;
 	@FXML
@@ -54,15 +54,13 @@ public class SettingsPageController
     private Label dateLabel;
     @FXML
     private Label articleLabel;
-    //需決定其與其相關方法存放地點。
-    private MusicTreeMap musicTreeMap = new MusicTreeMap(new DirTreeItem("" , null , null));
     
     @FXML
     private void initialize() 
     {
     	dirInfoTreeView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
     	ObservableList<Locale> localeList = FXCollections.observableArrayList();
-    	localeList.addAll(DataStorage.availableLocales.values());
+    	localeList.addAll(PrefStorage.localeMap.values());
     	localeBox.setItems(localeList);
     	localeBox.setConverter(new StringConverter<Locale>()
     	{
@@ -79,7 +77,7 @@ public class SettingsPageController
 				return locale.getDisplayName(locale);
 			}
     	});
-    	PropertyStorage.updateInfo.addListener((observable , oldValue , newValue) -> 
+    	DataStorage.updateInfo.addListener((observable , oldValue , newValue) -> 
     	{
     		versionLabel.setText(newValue.getVersion());
     		dateLabel.setText(newValue.getDate());
@@ -91,17 +89,7 @@ public class SettingsPageController
     private void refreshAll()
     {
     	refreshPreferences();
-    	try(FileInputStream fIn = new FileInputStream(new File(DataStorage.dirPathsPath));
-    			ObjectInputStream oIn = new ObjectInputStream(fIn))
-    	{
-    		//或許不需要迴圈。
-            while(fIn.available() > 0) 
-            	musicTreeMap = (MusicTreeMap)oIn.readObject();
-        } 
-    	catch(Exception e)
-    	{
-    		e.printStackTrace();
-    	}
+    	DataStorage.loadMusicTreeMap();
     	dirInfoTreeView.setRoot(recursiveRefreshDirTreeItem("" , musicTreeMap));
     }
     
@@ -116,36 +104,35 @@ public class SettingsPageController
     
     private void refreshPreferences()
     {
-    	startWhenOpeningPC.setSelected(Boolean.valueOf(prefs.getProperty(DataStorage.StartWhenOpeningPC)));
-    	playWhenOpeningApp.setSelected(Boolean.valueOf(prefs.getProperty(DataStorage.PlayWhenOpeningApp)));
-    	autoUpdate.setSelected(Boolean.valueOf(prefs.getProperty(DataStorage.AutoUpdate)));
-    	notifyUpdate.setSelected(Boolean.valueOf(prefs.getProperty(DataStorage.NotifyUpdate)));
-    	localeBox.setValue(DataStorage.availableLocales.get(prefs.getProperty(DataStorage.Locale)));
+    	startWhenOpeningPC.setSelected(Boolean.valueOf(PrefStorage.getPref(Pref.StartWhenOpeningPC)));
+    	playWhenOpeningApp.setSelected(Boolean.valueOf(PrefStorage.getPref(Pref.PlayWhenOpeningApp)));
+    	autoUpdate.setSelected(Boolean.valueOf(PrefStorage.getPref(Pref.AutoUpdate)));
+    	notifyUpdate.setSelected(Boolean.valueOf(PrefStorage.getPref(Pref.NotifyUpdate)));
+    	localeBox.setValue(PrefStorage.localeMap.get(PrefStorage.getPref(Pref.Language)));
     }
     
-    //用方法分開。
     //AudioFileFormat 時快時慢，須找到原因。
     @FXML
     private void ok()
     {
-    	prefs.setProperty(DataStorage.StartWhenOpeningPC, Boolean.toString(startWhenOpeningPC.isSelected()));
-    	prefs.setProperty(DataStorage.PlayWhenOpeningApp, Boolean.toString(playWhenOpeningApp.isSelected()));
-    	prefs.setProperty(DataStorage.AutoUpdate , Boolean.toString(autoUpdate.isSelected()));
-    	prefs.setProperty(DataStorage.NotifyUpdate, Boolean.toString(notifyUpdate.isSelected()));
-    	prefs.setProperty(DataStorage.Locale, localeBox.getValue().toString());
-    	PrefsParser.save();
-    	//不確定tws的內括順序是否正確。
-    	try(ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(new File(DataStorage.dirPathsPath))))
+    	PrefStorage.setPref(Pref.StartWhenOpeningPC, Boolean.toString(startWhenOpeningPC.isSelected()));
+    	PrefStorage.setPref(Pref.PlayWhenOpeningApp, Boolean.toString(playWhenOpeningApp.isSelected()));
+    	PrefStorage.setPref(Pref.AutoUpdate , Boolean.toString(autoUpdate.isSelected()));
+    	PrefStorage.setPref(Pref.NotifyUpdate, Boolean.toString(notifyUpdate.isSelected()));
+    	PrefStorage.setPref(Pref.Language, localeBox.getValue().toString());
+    	PrefStorage.save();
+    	try(FileOutputStream fOut = new FileOutputStream(new File(DataStorage.dirPathsPath)); 
+    			ObjectOutputStream oOut = new ObjectOutputStream(fOut))
     	{     
-    		out.writeObject(musicTreeMap); 
+    		oOut.writeObject(musicTreeMap); 
     	} 
     	catch(Exception e) 
     	{ 
     		e.printStackTrace(); 
     	}
-    	PropertyStorage.musicList.clear();
+    	DataStorage.musicList.clear();
     	recursiveSetMusicInfo("" , musicTreeMap);
-    	PropertyStorage.refreshMusicList();
+    	DataStorage.refreshMusicList();
         SceneStorage.getSettingsStage().close();
     }
     
@@ -180,7 +167,7 @@ public class SettingsPageController
 				    albumName = (String)properties.get("album");
 				    dateName = (String)properties.get("date");
 				}
-				PropertyStorage.musicList.add
+				DataStorage.musicList.add
 				(new MusicInfo(file.getAbsolutePath() , musicName , artistName , albumName , dateName));
 			}
 		}

@@ -2,7 +2,8 @@ package com.gmail.andrewchouhs.controller;
 
 import com.gmail.andrewchouhs.model.MusicInfo;
 import com.gmail.andrewchouhs.storage.DataStorage;
-import com.gmail.andrewchouhs.storage.PropertyStorage;
+import com.gmail.andrewchouhs.storage.TextStorage;
+import com.gmail.andrewchouhs.storage.TextStorage.Text;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -24,17 +25,17 @@ public class ListPageController
     @FXML
 	private void initialize() 
     {
-    	musicInfoTable.setItems(PropertyStorage.musicList);
+    	musicInfoTable.setItems(DataStorage.musicList);
     	musicInfoTable.getSelectionModel().selectedItemProperty().addListener
-    	((observable, oldValue, newValue) -> PropertyStorage.musicInfo.set(newValue));
-    	StringProperty nullValue = new SimpleStringProperty(DataStorage.ListPage_NullValue);
+    	((observable, oldValue, newValue) -> DataStorage.musicInfo.set(newValue));
+    	StringProperty nullValue = new SimpleStringProperty(TextStorage.getText(Text.ListPage_NullValue));
     	nameColumn.setCellValueFactory(cellData -> cellData.getValue().getNameProperty());
     	artistColumn.setCellValueFactory(cellData -> 
     	(cellData.getValue().getArtistProperty().get() != null) ? cellData.getValue().getArtistProperty() : nullValue);
     	albumColumn.setCellValueFactory(cellData -> 
     	(cellData.getValue().getAlbumProperty().get() != null) ? cellData.getValue().getAlbumProperty() : nullValue);
     	//無法使用 VirtualFlow 的問題尚待更新版本。
-    	PropertyStorage.musicInfo.addListener((observable, oldValue, newValue) -> 
-    		Platform.runLater(() -> musicInfoTable.getSelectionModel().select(PropertyStorage.musicList.indexOf(newValue))));
+    	DataStorage.musicInfo.addListener((observable, oldValue, newValue) -> 
+    		Platform.runLater(() -> musicInfoTable.getSelectionModel().select(DataStorage.musicList.indexOf(newValue))));
 	}
 }

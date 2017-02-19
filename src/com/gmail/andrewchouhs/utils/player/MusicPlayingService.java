@@ -11,9 +11,10 @@ import javax.sound.sampled.SourceDataLine;
 import org.tritonus.share.sampled.TAudioFormat;
 import org.tritonus.share.sampled.file.TAudioFileFormat;
 import com.gmail.andrewchouhs.storage.DataStorage;
-import com.gmail.andrewchouhs.storage.PropertyStorage;
-import static com.gmail.andrewchouhs.storage.PropertyStorage.musicList;
-import static com.gmail.andrewchouhs.storage.PropertyStorage.musicInfo;
+import com.gmail.andrewchouhs.storage.PrefStorage;
+import com.gmail.andrewchouhs.storage.PrefStorage.Pref;
+import static com.gmail.andrewchouhs.storage.DataStorage.musicList;
+import static com.gmail.andrewchouhs.storage.DataStorage.musicInfo;
 import javafx.application.Platform;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
@@ -50,7 +51,7 @@ public class MusicPlayingService extends Service<Long>
 			if(baseFileFormat instanceof TAudioFileFormat)
 			{
 			    Map<String , Object> properties = ((TAudioFileFormat)baseFileFormat).properties();
-			    PropertyStorage.musicTotalTime.set((int)((long)properties.get("duration") / 1000000L));
+			    DataStorage.musicTotalTime.set((int)((long)properties.get("duration") / 1000000L));
 			}
 			if(baseFormat instanceof TAudioFormat)
 			{
@@ -58,8 +59,8 @@ public class MusicPlayingService extends Service<Long>
 				 in.skip((long)((int)properties.get("bitrate")) * seekMillis / 8000L);
 			}
 			setOnSucceeded((event) -> 
-			PropertyStorage.musicPlayer.set(new MusicPlayingService(filePath , (long)event.getSource().getValue() , this.nextStartDirectly)));
-			setOnCancelled((event) -> PropertyStorage.musicTime.set(0));
+			DataStorage.musicPlayer.set(new MusicPlayingService(filePath , (long)event.getSource().getValue() , this.nextStartDirectly)));
+			setOnCancelled((event) -> DataStorage.musicTime.set(0));
 			if(startDirectly == true)
 				start();
 		} 
@@ -108,13 +109,13 @@ public class MusicPlayingService extends Service<Long>
 						{
 							dataLine.write(data, 0, count);
 							totalReadBytes += count;
-							Platform.runLater(() -> PropertyStorage.musicTime.set((int)(totalReadBytes / bytesPerSecond)));
+							Platform.runLater(() -> DataStorage.musicTime.set((int)(totalReadBytes / bytesPerSecond)));
 						}
 						else
 						{
 							//同 RootPageController 寫壞的各項。
-							String playMode = DataStorage.prefs.getProperty(DataStorage.PlayMode);
-							if(playMode.equals(DataStorage.NormalPlay))
+							String playMode = PrefStorage.getPref(Pref.PlayMode);
+							if(playMode.equals(PrefStorage.getPrefKey(Pref.NormalPlay)))
 							{
 								Platform.runLater(() ->
 								{
@@ -126,13 +127,13 @@ public class MusicPlayingService extends Service<Long>
 								stopped = true;
 								break;
 							}
-							if(playMode.equals(DataStorage.RandomPlay))
+							if(playMode.equals(PrefStorage.getPrefKey(Pref.RandomPlay)))
 							{
 								Platform.runLater(() -> musicInfo.set(musicList.get((int)(musicList.size() * Math.random()))));
 								stopped = true;
 								break;
 							}
-							if(playMode.equals(DataStorage.RepeatPlay))
+							if(playMode.equals(PrefStorage.getPrefKey(Pref.RepeatPlay)))
 							{
 								seek(0);
 								break;

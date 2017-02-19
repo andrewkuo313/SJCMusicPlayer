@@ -1,12 +1,15 @@
 package com.gmail.andrewchouhs.controller;
 
-import com.gmail.andrewchouhs.storage.PropertyStorage;
-import static com.gmail.andrewchouhs.storage.PropertyStorage.musicPlayer;
 import com.gmail.andrewchouhs.storage.DataStorage;
-import static com.gmail.andrewchouhs.storage.PropertyStorage.musicList;
-import static com.gmail.andrewchouhs.storage.PropertyStorage.musicInfo;
+import com.gmail.andrewchouhs.storage.PrefStorage;
+import com.gmail.andrewchouhs.storage.PrefStorage.Pref;
+import static com.gmail.andrewchouhs.storage.DataStorage.musicPlayer;
+import static com.gmail.andrewchouhs.storage.DataStorage.musicList;
+import static com.gmail.andrewchouhs.storage.DataStorage.musicInfo;
 import com.gmail.andrewchouhs.storage.SceneStorage;
 import com.gmail.andrewchouhs.storage.SceneStorage.Page;
+import com.gmail.andrewchouhs.storage.TextStorage;
+import com.gmail.andrewchouhs.storage.TextStorage.Text;
 import com.gmail.andrewchouhs.utils.player.MusicPlayingService;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -41,13 +44,13 @@ public class RootPageController
     	statisticsPageTab.setOnSelectionChanged((event)->SceneStorage.setPage(Page.STATISTICS));
     	listPageTab.setOnSelectionChanged((event)->SceneStorage.setPage(Page.LIST));
     	//同 changePlayMode() 須修正。
-    	String playMode = DataStorage.prefs.getProperty(DataStorage.PlayMode);
-		if(playMode.equals(DataStorage.NormalPlay))
-			playModeButton.setText(DataStorage.ListPage_NormalPlay);
-		if(playMode.equals(DataStorage.RandomPlay))
-			playModeButton.setText(DataStorage.ListPage_RandomPlay);
-		if(playMode.equals(DataStorage.RepeatPlay))
-			playModeButton.setText(DataStorage.ListPage_RepeatPlay);
+    	String playMode = PrefStorage.getPref(Pref.PlayMode);
+		if(playMode.equals(PrefStorage.getPref(Pref.NormalPlay)))
+			playModeButton.setText(TextStorage.getText(Text.ListPage_NormalPlay));
+		if(playMode.equals(PrefStorage.getPref(Pref.RandomPlay)))
+			playModeButton.setText(TextStorage.getText(Text.ListPage_RandomPlay));
+		if(playMode.equals(PrefStorage.getPref(Pref.RepeatPlay)))
+			playModeButton.setText(TextStorage.getText(Text.ListPage_RepeatPlay));
     	timeSlider.valueProperty().addListener((observable, oldValue, newValue) ->
     	{
     		int time = newValue.intValue();
@@ -59,21 +62,21 @@ public class RootPageController
 				timeSlider.setValue(time);
     		}
     	});
-    	PropertyStorage.musicTime.addListener((observable, oldValue, newValue) -> 
+    	DataStorage.musicTime.addListener((observable, oldValue, newValue) -> 
     	{
     		if(!holdingSlider)
     			timeSlider.setValue(newValue.intValue());
     	});
-    	PropertyStorage.musicTotalTime.addListener((observable, oldValue, newValue) -> 
+    	DataStorage.musicTotalTime.addListener((observable, oldValue, newValue) -> 
     	{
     		timeSlider.setMax(newValue.intValue());
     	});
-    	PropertyStorage.musicInfo.addListener((observable, oldValue, newValue) ->
+    	DataStorage.musicInfo.addListener((observable, oldValue, newValue) ->
     	{
     		if(newValue != null)
     			nameLabel.setText(newValue.getNameProperty().get());
     		else
-    			nameLabel.setText(DataStorage.ListPage_Name);
+    			nameLabel.setText(TextStorage.getText(Text.ListPage_Name));
     	});
 	}
 	
@@ -88,7 +91,7 @@ public class RootPageController
 	{
 		holdingSlider = false;
 		//很難修，問題貌似出於撥放器的時差未調整。
-		if((int)timeSlider.getValue() == PropertyStorage.musicTime.get() || musicPlayer.get() == null)
+		if((int)timeSlider.getValue() == DataStorage.musicTime.get() || musicPlayer.get() == null)
 			return;
 		musicPlayer.get().seek((int)timeSlider.getValue());
 	}
@@ -105,20 +108,20 @@ public class RootPageController
 	private void changePlayMode()
 	{
 		String playMode = playModeButton.getText();
-		if(playMode.equals(DataStorage.ListPage_NormalPlay))
+		if(playMode.equals(TextStorage.getText(Text.ListPage_NormalPlay)))
 		{
-			DataStorage.prefs.setProperty(DataStorage.PlayMode, DataStorage.RandomPlay);
-			playModeButton.setText(DataStorage.ListPage_RandomPlay);
+			PrefStorage.setPref(Pref.PlayMode, PrefStorage.getPrefKey(Pref.RandomPlay));
+			playModeButton.setText(TextStorage.getText(Text.ListPage_RandomPlay));
 		}
-		if(playMode.equals(DataStorage.ListPage_RandomPlay))
+		if(playMode.equals(TextStorage.getText(Text.ListPage_RandomPlay)))
 		{
-			DataStorage.prefs.setProperty(DataStorage.PlayMode, DataStorage.RepeatPlay);
-			playModeButton.setText(DataStorage.ListPage_RepeatPlay);
+			PrefStorage.setPref(Pref.PlayMode, PrefStorage.getPrefKey(Pref.RepeatPlay));
+			playModeButton.setText(TextStorage.getText(Text.ListPage_RepeatPlay));
 		}
-		if(playMode.equals(DataStorage.ListPage_RepeatPlay))
+		if(playMode.equals(TextStorage.getText(Text.ListPage_RepeatPlay)))
 		{
-			DataStorage.prefs.setProperty(DataStorage.PlayMode, DataStorage.NormalPlay);
-			playModeButton.setText(DataStorage.ListPage_NormalPlay);
+			PrefStorage.setPref(Pref.PlayMode , PrefStorage.getPrefKey(Pref.NormalPlay));
+			playModeButton.setText(TextStorage.getText(Text.ListPage_NormalPlay));
 		}
 	}
 	
