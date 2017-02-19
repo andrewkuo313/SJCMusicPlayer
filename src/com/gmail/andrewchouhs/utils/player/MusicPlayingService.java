@@ -14,7 +14,7 @@ import com.gmail.andrewchouhs.storage.DataStorage;
 import com.gmail.andrewchouhs.storage.PrefStorage;
 import com.gmail.andrewchouhs.storage.PrefStorage.Pref;
 import static com.gmail.andrewchouhs.storage.DataStorage.musicList;
-import static com.gmail.andrewchouhs.storage.DataStorage.musicInfo;
+import static com.gmail.andrewchouhs.storage.DataStorage.currentMusicInfo;
 import javafx.application.Platform;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
@@ -119,17 +119,17 @@ public class MusicPlayingService extends Service<Long>
 							{
 								Platform.runLater(() ->
 								{
-									int index = musicList.indexOf(musicInfo.get());
+									int index = musicList.indexOf(currentMusicInfo.get());
 									if(index == musicList.size() - 1)
 										index = -1;
-									musicInfo.set(musicList.get(index + 1));
+									currentMusicInfo.set(musicList.get(index + 1));
 								});
 								stopped = true;
 								break;
 							}
 							if(playMode.equals(PrefStorage.getPrefKey(Pref.RandomPlay)))
 							{
-								Platform.runLater(() -> musicInfo.set(musicList.get((int)(musicList.size() * Math.random()))));
+								Platform.runLater(() -> currentMusicInfo.set(musicList.get((int)(musicList.size() * Math.random()))));
 								stopped = true;
 								break;
 							}

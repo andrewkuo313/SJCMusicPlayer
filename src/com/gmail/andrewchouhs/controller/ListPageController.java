@@ -27,15 +27,15 @@ public class ListPageController
     {
     	musicInfoTable.setItems(DataStorage.musicList);
     	musicInfoTable.getSelectionModel().selectedItemProperty().addListener
-    	((observable, oldValue, newValue) -> DataStorage.musicInfo.set(newValue));
+    	((observable, oldValue, newValue) -> DataStorage.currentMusicInfo.set(newValue));
     	StringProperty nullValue = new SimpleStringProperty(TextStorage.getText(Text.ListPage_NullValue));
-    	nameColumn.setCellValueFactory(cellData -> cellData.getValue().getNameProperty());
+    	nameColumn.setCellValueFactory(cellData -> cellData.getValue().name);
     	artistColumn.setCellValueFactory(cellData -> 
-    	(cellData.getValue().getArtistProperty().get() != null) ? cellData.getValue().getArtistProperty() : nullValue);
+    	(cellData.getValue().artist.get() != null) ? cellData.getValue().artist : nullValue);
     	albumColumn.setCellValueFactory(cellData -> 
-    	(cellData.getValue().getAlbumProperty().get() != null) ? cellData.getValue().getAlbumProperty() : nullValue);
+    	(cellData.getValue().album.get() != null) ? cellData.getValue().album : nullValue);
     	//無法使用 VirtualFlow 的問題尚待更新版本。
-    	DataStorage.musicInfo.addListener((observable, oldValue, newValue) -> 
+    	DataStorage.currentMusicInfo.addListener((observable, oldValue, newValue) -> 
     		Platform.runLater(() -> musicInfoTable.getSelectionModel().select(DataStorage.musicList.indexOf(newValue))));
 	}
 }

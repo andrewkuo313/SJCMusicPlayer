@@ -5,7 +5,7 @@ import com.gmail.andrewchouhs.storage.PrefStorage;
 import com.gmail.andrewchouhs.storage.PrefStorage.Pref;
 import static com.gmail.andrewchouhs.storage.DataStorage.musicPlayer;
 import static com.gmail.andrewchouhs.storage.DataStorage.musicList;
-import static com.gmail.andrewchouhs.storage.DataStorage.musicInfo;
+import static com.gmail.andrewchouhs.storage.DataStorage.currentMusicInfo;
 import com.gmail.andrewchouhs.storage.SceneStorage;
 import com.gmail.andrewchouhs.storage.SceneStorage.Page;
 import com.gmail.andrewchouhs.storage.TextStorage;
@@ -45,11 +45,11 @@ public class RootPageController
     	listPageTab.setOnSelectionChanged((event)->SceneStorage.setPage(Page.LIST));
     	//同 changePlayMode() 須修正。
     	String playMode = PrefStorage.getPref(Pref.PlayMode);
-		if(playMode.equals(PrefStorage.getPref(Pref.NormalPlay)))
+		if(playMode.equals(PrefStorage.getPrefKey(Pref.NormalPlay)))
 			playModeButton.setText(TextStorage.getText(Text.ListPage_NormalPlay));
-		if(playMode.equals(PrefStorage.getPref(Pref.RandomPlay)))
+		if(playMode.equals(PrefStorage.getPrefKey(Pref.RandomPlay)))
 			playModeButton.setText(TextStorage.getText(Text.ListPage_RandomPlay));
-		if(playMode.equals(PrefStorage.getPref(Pref.RepeatPlay)))
+		if(playMode.equals(PrefStorage.getPrefKey(Pref.RepeatPlay)))
 			playModeButton.setText(TextStorage.getText(Text.ListPage_RepeatPlay));
     	timeSlider.valueProperty().addListener((observable, oldValue, newValue) ->
     	{
@@ -71,10 +71,10 @@ public class RootPageController
     	{
     		timeSlider.setMax(newValue.intValue());
     	});
-    	DataStorage.musicInfo.addListener((observable, oldValue, newValue) ->
+    	DataStorage.currentMusicInfo.addListener((observable, oldValue, newValue) ->
     	{
     		if(newValue != null)
-    			nameLabel.setText(newValue.getNameProperty().get());
+    			nameLabel.setText(newValue.name.get());
     		else
     			nameLabel.setText(TextStorage.getText(Text.ListPage_Name));
     	});
@@ -140,22 +140,22 @@ public class RootPageController
 	@FXML
 	private void previousMusic()
 	{
-		int index = musicList.indexOf(musicInfo.get());
+		int index = musicList.indexOf(currentMusicInfo.get());
 		if(index == -1)
 			return;
 		if(index == 0)
 			index = musicList.size();
-		musicInfo.set(musicList.get(index - 1));
+		currentMusicInfo.set(musicList.get(index - 1));
 	}
 	
 	@FXML
 	private void nextMusic()
 	{
-		int index = musicList.indexOf(musicInfo.get());
+		int index = musicList.indexOf(currentMusicInfo.get());
 		if(index == -1)
 			return;
 		if(index == musicList.size() - 1)
 			index = -1;
-		musicInfo.set(musicList.get(index + 1));
+		currentMusicInfo.set(musicList.get(index + 1));
 	}
 }

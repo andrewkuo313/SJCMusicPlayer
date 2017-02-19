@@ -1,14 +1,21 @@
 package com.gmail.andrewchouhs.storage;
 
-import static com.gmail.andrewchouhs.storage.DataStorage.musicTreeMap;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.Map;
+import javax.sound.sampled.AudioFileFormat;
+import javax.sound.sampled.AudioSystem;
+import org.tritonus.share.sampled.file.TAudioFileFormat;
 import com.gmail.andrewchouhs.model.MusicInfo;
 import com.gmail.andrewchouhs.model.UpdateInfo;
 import com.gmail.andrewchouhs.utils.DirTreeItem;
 import com.gmail.andrewchouhs.utils.MusicTreeMap;
+import com.gmail.andrewchouhs.utils.fliter.MusicFilter;
 import com.gmail.andrewchouhs.utils.player.MusicPlayingService;
 import com.gmail.andrewchouhs.utils.service.UpdatesDownloadService;
 import javafx.beans.property.IntegerProperty;
@@ -31,14 +38,14 @@ public final class DataStorage
 	//仍有些許程式碼需重新檢查一次。
 	public static final String dataRootPath = System.getenv("APPDATA") + "\\SJCMusicPlayer\\";
 	public static final String dirPathsPath = dataRootPath + "DirectoryPaths";
-	public static final String musicInfoPath = dataRootPath + "MusicInfo.xml";
+	public static final String musicInfoPath = dataRootPath + "MusicInfo";
 	public static final String prefsPath = dataRootPath + "Preferences.properties";
 	public static final String gitHubUpdatesURL = "https://raw.githubusercontent.com/andrewkuo313/SJCMusicPlayer/master/updates/Updates.xml";
-	public static final LinkedHashMap<String , MusicInfo> musicInfoMap = new LinkedHashMap<String , MusicInfo>();
+	private static final LinkedHashMap<String , MusicInfo> musicMap = new LinkedHashMap<String , MusicInfo>();
 	public static MusicTreeMap musicTreeMap = new MusicTreeMap(new DirTreeItem("" , null , null));
 	public static final ObservableList<MusicInfo> musicList = FXCollections.observableArrayList();
     public static final ObservableList<Image> albumCoverList = FXCollections.observableArrayList();
-    public static final ObjectProperty<MusicInfo> musicInfo = new SimpleObjectProperty<MusicInfo>();
+    public static final ObjectProperty<MusicInfo> currentMusicInfo = new SimpleObjectProperty<MusicInfo>();
     public static final ObjectProperty<MusicPlayingService> musicPlayer = new SimpleObjectProperty<MusicPlayingService>();
     public static final ObjectProperty<UpdateInfo> updateInfo = new SimpleObjectProperty<UpdateInfo>();
     public static final IntegerProperty musicTime = new SimpleIntegerProperty(0);
@@ -46,7 +53,7 @@ public final class DataStorage
     
 	public static void init()
 	{
-		musicInfo.addListener((observable, oldValue, newValue) -> 
+		currentMusicInfo.addListener((observable, oldValue, newValue) -> 
     	{
     		if(musicPlayer.get() != null)
     		{
@@ -54,11 +61,13 @@ public final class DataStorage
     			musicPlayer.set(null);
     		}
     		if(newValue != null)
-    			musicPlayer.set(new MusicPlayingService(newValue.getPathProperty().get() , 0L , true));
+    			musicPlayer.set(new MusicPlayingService(newValue.path.get() , 0L , true));
     		else
     			musicTotalTime.set(0);
     	});
 		loadMusicTreeMap();
+		loadMusicInfo();
+		refreshMusicMap();
 		new UpdatesDownloadService().start();
 	}
 	
@@ -77,31 +86,130 @@ public final class DataStorage
     	}
 	}
 	
-    public static void refreshMusicList()
+	public static void saveMusicTreeMap()
+	{
+    	try(FileOutputStream fOut = new FileOutputStream(new File(DataStorage.dirPathsPath)); 
+    			ObjectOutputStream oOut = new ObjectOutputStream(fOut))
+    	{     
+    		oOut.writeObject(musicTreeMap); 
+    	} 
+    	catch(Exception e) 
+    	{ 
+    		e.printStackTrace(); 
+    	}
+	}
+	
+	public static void loadMusicInfo()
+	{
+    	try(FileInputStream fIn = new FileInputStream(new File(DataStorage.musicInfoPath));
+    			ObjectInputStream oIn = new ObjectInputStream(fIn))
+    	{
+            while(fIn.available() > 0)
+            {
+            	@SuppressWarnings("unchecked")//須修正。
+				HashMap<String , String> dummyObject = (HashMap<String , String>)oIn.readObject();
+            	musicMap.put(dummyObject.get("path") , 
+            			new MusicInfo(dummyObject.get("path") , dummyObject.get("name") , dummyObject.get("artist") , 
+            					dummyObject.get("album") , dummyObject.get("date")));
+            }
+        } 
+    	catch(Exception e)
+    	{
+    		e.printStackTrace();
+    	}
+	}
+	
+	public static void saveMusicInfo()
+	{
+    	try(FileOutputStream fOut = new FileOutputStream(new File(DataStorage.musicInfoPath)); 
+    			ObjectOutputStream oOut = new ObjectOutputStream(fOut))
+    	{     
+    		for(MusicInfo musicInfo : musicMap.values())
+    		{
+    			HashMap<String , String> dummyObject = new HashMap<String , String>();
+    			dummyObject.put("path" , musicInfo.path.get());
+    			dummyObject.put("name" , musicInfo.name.get());
+    			dummyObject.put("artist" , musicInfo.artist.get());
+    			dummyObject.put("album" , musicInfo.album.get());
+    			dummyObject.put("date" , musicInfo.date.get());
+    			oOut.writeObject(dummyObject);
+    		}
+    	} 
+    	catch(Exception e) 
+    	{ 
+    		e.printStackTrace(); 
+    	}
+	}
+	
+    public static void refreshMusicMap()
     {
-//    	musicList.clear();
-//    	albumCoverList.add(null);
-//    	albumCoverList.clear();
-//    		File dirFile = new File(dirInfo.getPath());
-//    		for(File file : dirFile.listFiles(new MusicFilter()))
-//    		{
-//    			String musicName = file.getName().substring(0, file.getName().lastIndexOf('.'));
-//    			String artistName = null;
-//    			String albumName = null;
-//    			String dateName = null;
-//    			musicList.add
-//    			(new MusicInfo(file.getAbsolutePath() , musicName , artistName , albumName , dateName));
-//    		}
+    	musicList.clear();
+    	for(MusicInfo musicInfo : musicMap.values())
+    		musicInfo.available = false;
+    	albumCoverList.add(null);
+    	albumCoverList.clear();
+    	recursiveSetMusicInfo("" , musicTreeMap);
     		//非常耗時間和記憶體，需要修正。
 //    		for(File file : dirFile.listFiles(new AlbumCoverFilter()))
 //    		{
 //    			//需加入判斷同一資料夾最接近封面的檔案、取而代之從音樂檔擷取封面。	
 //    			albumCoverList.add(new Image(file.toURI().toString()));
 //    		}
-//		albumCoverList.add(null);
-//		albumCoverList.remove(albumCoverList.size() - 1);
+		albumCoverList.add(null);
+		albumCoverList.remove(albumCoverList.size() - 1);
+		saveMusicInfo();
+		for(MusicInfo musicInfo : musicMap.values())
+		{
+			if(musicInfo.available)
+				musicList.add(musicInfo);
+		}
     }
 	
+    //須隨資料夾自動讀取取消 dirFile.exists()、absolutePath() 替換。
+    private static void recursiveSetMusicInfo(String path , MusicTreeMap parentMusicTreeMap)
+    {
+		File dirFile = new File(path);
+		if(dirFile.exists())
+		{
+			for(File file : dirFile.listFiles(new MusicFilter()))
+			{
+				if(musicMap.containsKey(file.getAbsolutePath()))
+				{
+					musicMap.get(file.getAbsolutePath()).available = true;
+					continue;
+				}
+				AudioFileFormat baseFileFormat = null;
+				try
+				{
+					 baseFileFormat = AudioSystem.getAudioFileFormat(file);
+				}
+				catch(Exception e)
+				{
+					e.printStackTrace();
+				}
+				String musicName = file.getName().substring(0, file.getName().lastIndexOf('.'));
+				String artistName = null;
+				String albumName = null;
+				String dateName = null;
+				if(baseFileFormat instanceof TAudioFileFormat)
+				{
+				    Map<String , Object> properties = ((TAudioFileFormat)baseFileFormat).properties();
+				    String name = (String)properties.get("title");
+				    //未解決。
+				    if(name != null)
+				    	musicName = name;
+				    artistName = (String)properties.get("author");
+				    albumName = (String)properties.get("album");
+				    dateName = (String)properties.get("date");
+				}
+				musicMap.put(file.getAbsolutePath() , 
+						new MusicInfo(file.getAbsolutePath() , musicName , artistName , albumName , dateName));
+			}
+		}
+		for(Map.Entry<String, MusicTreeMap> entry : parentMusicTreeMap.entrySet())
+			recursiveSetMusicInfo(entry.getKey() , entry.getValue());
+    }
+    
 	private DataStorage()
 	{
 	}
