@@ -2,9 +2,11 @@ package com.gmail.andrewchouhs.storage;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Properties;
 import java.util.ResourceBundle;
+import com.gmail.andrewchouhs.model.MusicInfo;
 import com.gmail.andrewchouhs.utils.parser.PrefsParser;
 import com.gmail.andrewchouhs.utils.service.UpdatesDownloadService;
 
@@ -36,6 +38,7 @@ public class DataStorage
 	public static final Properties prefs = new Properties();
 	//或許可以變成 LinkedHashMap，並改名。
 	public static final HashMap<String , Locale> availableLocales = new HashMap<String , Locale>();
+	public static final LinkedHashMap<String , MusicInfo> musicInfoMap = new LinkedHashMap<String , MusicInfo>();
 	//可能需要抽出變成 Method。
 	static
 	{
@@ -54,16 +57,6 @@ public class DataStorage
 		SettingsPage_Title = bundle.getString("SettingsPage.Title");
 		SettingsPage_Updates_NoUpdates = bundle.getString("SettingsPage.Updates.NoUpdates");
 		new UpdatesDownloadService().start();
-	}
-
-	public static void loadMusicTreeMap()
-	{
-		
-	}
-	
-	public static void saveMusicTreeMap()
-	{
-		
 	}
 	
 	private DataStorage()

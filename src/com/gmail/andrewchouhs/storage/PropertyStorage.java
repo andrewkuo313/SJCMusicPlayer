@@ -21,6 +21,7 @@ public class PropertyStorage
 	//須修正至不須使用 Platform.runLater()。
 	//需重新檢查是否有物件比較使用 ==。
 	//需將使用 Lambda 後大幅提升效率的程式碼修正。(後期)
+	//移動後全數更改名稱或分類。
 	public static final ObservableList<MusicInfo> musicList = FXCollections.observableArrayList();
     public static final ObservableList<Image> albumCoverList = FXCollections.observableArrayList();
     public static final ObjectProperty<MusicInfo> musicInfo = new SimpleObjectProperty<MusicInfo>();
@@ -45,13 +46,11 @@ public class PropertyStorage
     	});
 	}
 	
-//    public static void refreshMusicList()
-//    {
+    public static void refreshMusicList()
+    {
 //    	musicList.clear();
 //    	albumCoverList.add(null);
 //    	albumCoverList.clear();
-//    	for(DirInfo dirInfo : DataStorage.dirList)
-//    	{
 //    		File dirFile = new File(dirInfo.getPath());
 //    		for(File file : dirFile.listFiles(new MusicFilter()))
 //    		{
@@ -62,16 +61,15 @@ public class PropertyStorage
 //    			musicList.add
 //    			(new MusicInfo(file.getAbsolutePath() , musicName , artistName , albumName , dateName));
 //    		}
-//    		//非常耗時間和記憶體，需要修正。
-////    		for(File file : dirFile.listFiles(new AlbumCoverFilter()))
-////    		{
-////    			//需加入判斷同一資料夾最接近封面的檔案、取而代之從音樂檔擷取封面。	
-////    			albumCoverList.add(new Image(file.toURI().toString()));
-////    		}
-//    	}
+    		//非常耗時間和記憶體，需要修正。
+//    		for(File file : dirFile.listFiles(new AlbumCoverFilter()))
+//    		{
+//    			//需加入判斷同一資料夾最接近封面的檔案、取而代之從音樂檔擷取封面。	
+//    			albumCoverList.add(new Image(file.toURI().toString()));
+//    		}
 //		albumCoverList.add(null);
 //		albumCoverList.remove(albumCoverList.size() - 1);
-//    }
+    }
     
 	private PropertyStorage()
 	{

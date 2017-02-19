@@ -5,7 +5,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.Locale;
 import java.util.Map;
@@ -36,8 +35,7 @@ import static com.gmail.andrewchouhs.storage.DataStorage.prefs;
 
 public class SettingsPageController
 {
-	//減省名稱。
-	//TreeView 增加無資料夾提示。
+	//TreeView 需增加刷新功能、增加無資料夾提示、減省名稱重新檢查一次此頁程式碼。
 	@FXML
     private TreeView<String> dirInfoTreeView;
 	@FXML
@@ -93,18 +91,27 @@ public class SettingsPageController
     private void refreshAll()
     {
     	refreshPreferences();
-//    	try(FileInputStream fIn = new FileInputStream(new File(DataStorage.dirPathsPath));
-//            ObjectInputStream oIn = new ObjectInputStream(fIn))
-//    	{
-//    		//或許不需要迴圈。
-//            while(fIn.available() > 0) 
-//            	musicTreeMap = (MusicTreeMap)oIn.readObject();
-//        } 
-//    	catch(Exception e)
-//    	{
-//    		e.printStackTrace();
-//    	}
-    	dirInfoTreeView.setRoot(musicTreeMap.treeItem);
+    	try(FileInputStream fIn = new FileInputStream(new File(DataStorage.dirPathsPath));
+    			ObjectInputStream oIn = new ObjectInputStream(fIn))
+    	{
+    		//或許不需要迴圈。
+            while(fIn.available() > 0) 
+            	musicTreeMap = (MusicTreeMap)oIn.readObject();
+        } 
+    	catch(Exception e)
+    	{
+    		e.printStackTrace();
+    	}
+    	dirInfoTreeView.setRoot(recursiveRefreshDirTreeItem("" , musicTreeMap));
+    }
+    
+    private DirTreeItem recursiveRefreshDirTreeItem(String path , MusicTreeMap parentMusicTreeMap)
+    {
+    	parentMusicTreeMap.treeItem = new DirTreeItem(
+    			path.substring(path.lastIndexOf(File.separator) + 1 , path.length()) , parentMusicTreeMap , path);
+    	for(Map.Entry<String, MusicTreeMap> childEntry : parentMusicTreeMap.entrySet())
+    		parentMusicTreeMap.treeItem.getChildren().add(recursiveRefreshDirTreeItem(childEntry.getKey() , childEntry.getValue()));
+    	return parentMusicTreeMap.treeItem;
     }
     
     private void refreshPreferences()
@@ -127,51 +134,58 @@ public class SettingsPageController
     	prefs.setProperty(DataStorage.NotifyUpdate, Boolean.toString(notifyUpdate.isSelected()));
     	prefs.setProperty(DataStorage.Locale, localeBox.getValue().toString());
     	PrefsParser.save();
-//    	//不確定tws的內括順序是否正確。
-//    	try(ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(new File(DataStorage.dirPathsPath))))
-//    	{     
-//    		out.writeObject(musicTreeMap); 
-//    	} 
-//    	catch(Exception e) 
-//    	{ 
-//    		e.printStackTrace(); 
-//    	}
+    	//不確定tws的內括順序是否正確。
+    	try(ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(new File(DataStorage.dirPathsPath))))
+    	{     
+    		out.writeObject(musicTreeMap); 
+    	} 
+    	catch(Exception e) 
+    	{ 
+    		e.printStackTrace(); 
+    	}
     	PropertyStorage.musicList.clear();
-//    	for(DirInfo dirInfo : DataStorage.dirList)
-//    	{
-//    		File dirFile = new File(dirInfo.getPath());
-//    		for(File file : dirFile.listFiles(new MusicFilter()))
-//    		{
-//    			AudioFileFormat baseFileFormat = null;
-//    			try
-//    			{
-//    				 baseFileFormat = AudioSystem.getAudioFileFormat(file);
-//    			}
-//    			catch(Exception e)
-//    			{
-//    				e.printStackTrace();
-//    			}
-//    			String musicName = file.getName().substring(0, file.getName().lastIndexOf('.'));
-//    			String artistName = null;
-//    			String albumName = null;
-//    			String dateName = null;
-//    			if(baseFileFormat instanceof TAudioFileFormat)
-//    			{
-//    			    Map<String , Object> properties = ((TAudioFileFormat)baseFileFormat).properties();
-//    			    String name = (String)properties.get("title");
-//    			    //未解決。
-//    			    if(name != null)
-//    			    	musicName = name;
-//    			    artistName = (String)properties.get("author");
-//    			    albumName = (String)properties.get("album");
-//    			    dateName = (String)properties.get("date");
-//    			}
-//    			PropertyStorage.musicList.add
-//    			(new MusicInfo(file.getAbsolutePath() , musicName , artistName , albumName , dateName));
-//    		}
-//    	}
-//    	PropertyStorage.refreshMusicList();
-        	SceneStorage.getSettingsStage().close();
+    	recursiveSetMusicInfo("" , musicTreeMap);
+    	PropertyStorage.refreshMusicList();
+        SceneStorage.getSettingsStage().close();
+    }
+    
+    private void recursiveSetMusicInfo(String path , MusicTreeMap parentMusicTreeMap)
+    {
+		File dirFile = new File(path);
+		if(dirFile.exists())
+		{
+			for(File file : dirFile.listFiles(new MusicFilter()))
+			{
+				AudioFileFormat baseFileFormat = null;
+				try
+				{
+					 baseFileFormat = AudioSystem.getAudioFileFormat(file);
+				}
+				catch(Exception e)
+				{
+					e.printStackTrace();
+				}
+				String musicName = file.getName().substring(0, file.getName().lastIndexOf('.'));
+				String artistName = null;
+				String albumName = null;
+				String dateName = null;
+				if(baseFileFormat instanceof TAudioFileFormat)
+				{
+				    Map<String , Object> properties = ((TAudioFileFormat)baseFileFormat).properties();
+				    String name = (String)properties.get("title");
+				    //未解決。
+				    if(name != null)
+				    	musicName = name;
+				    artistName = (String)properties.get("author");
+				    albumName = (String)properties.get("album");
+				    dateName = (String)properties.get("date");
+				}
+				PropertyStorage.musicList.add
+				(new MusicInfo(file.getAbsolutePath() , musicName , artistName , albumName , dateName));
+			}
+		}
+		for(Map.Entry<String, MusicTreeMap> entry : parentMusicTreeMap.entrySet())
+			recursiveSetMusicInfo(entry.getKey() , entry.getValue());
     }
     
     @FXML
@@ -227,21 +241,22 @@ public class SettingsPageController
     	File[] dirFileList = dirFile.listFiles(new DirFilter());
     	if(musicFileList == null && (dirFileList == null || preloadFiles.isEmpty()))
     		return false;
-    	if(checkDuplicate && musicTreeMap.containsKey(dirFile.getAbsolutePath()))
+    	String path = dirFile.getAbsolutePath();
+    	if(checkDuplicate && musicTreeMap.containsKey(path))
     	{
-			DirTreeItem dirTreeItem = musicTreeMap.remove(dirFile.getAbsolutePath()).treeItem;
+			DirTreeItem dirTreeItem = musicTreeMap.remove(path).treeItem;
 			ObservableList<TreeItem<String>> treeItemChildren = musicTreeMap.treeItem.getChildren();
 			if(treeItemChildren.contains(dirTreeItem))
 				treeItemChildren.remove(dirTreeItem);
     	}
-    	DirTreeItem childTreeItem = new DirTreeItem(dirFile.getName() , null , dirFile.getAbsolutePath());
+    	DirTreeItem childTreeItem = new DirTreeItem(dirFile.getName() , null , path);
     	DirTreeItem parentTreeItem = parentMusicTreeMap.treeItem;
     	parentTreeItem.setExpanded(true);
     	parentTreeItem.musicTreeMap = parentMusicTreeMap;
     	MusicTreeMap childMusicTreeMap;
-    	if(parentMusicTreeMap.containsKey(dirFile.getAbsolutePath()))
+    	if(parentMusicTreeMap.containsKey(path))
     	{
-    		childMusicTreeMap = parentMusicTreeMap.get(dirFile.getAbsolutePath());
+    		childMusicTreeMap = parentMusicTreeMap.get(path);
     		childTreeItem = childMusicTreeMap.treeItem;
     	}
     	else
@@ -249,7 +264,7 @@ public class SettingsPageController
     		childMusicTreeMap = new MusicTreeMap(childTreeItem);
     		parentTreeItem.getChildren().add(childTreeItem);
         	childTreeItem.musicTreeMap = childMusicTreeMap;
-        	parentMusicTreeMap.put(dirFile.getAbsolutePath() , childMusicTreeMap);
+        	parentMusicTreeMap.put(path , childMusicTreeMap);
     	}
     	if(preloadFiles.isEmpty())
     	{
@@ -262,7 +277,7 @@ public class SettingsPageController
     		orLogicGate = true;
     	if(!orLogicGate)
     	{
-    		parentMusicTreeMap.remove(childMusicTreeMap);
+    		parentMusicTreeMap.remove(path);
     		parentTreeItem.getChildren().remove(childTreeItem);
     	}
     	return orLogicGate;
