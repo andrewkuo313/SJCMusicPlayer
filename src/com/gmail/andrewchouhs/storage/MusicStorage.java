@@ -9,8 +9,12 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.Map;
 import javax.sound.sampled.AudioFileFormat;
+import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
+import org.tritonus.share.sampled.TAudioFormat;
 import org.tritonus.share.sampled.file.TAudioFileFormat;
+import com.gmail.andrewchouhs.model.MusicData;
 import com.gmail.andrewchouhs.model.MusicInfo;
 import com.gmail.andrewchouhs.utils.MusicTreeMap;
 import com.gmail.andrewchouhs.utils.fliter.DirFilter;
@@ -22,7 +26,7 @@ import javafx.scene.image.Image;
 public class MusicStorage
 {
 	private static final String musicDataPath = DataStorage.dataRootPath + "MusicData";
-	private static final LinkedHashMap<String , MusicInfo> musicMap = new LinkedHashMap<String , MusicInfo>();
+	private static final LinkedHashMap<String , MusicData> musicMap = new LinkedHashMap<>();
 	public static MusicTreeMap musicTreeMap = new MusicTreeMap("" , null);
 	public static final ObservableList<MusicInfo> musicList = FXCollections.observableArrayList();
     public static final ObservableList<Image> albumCoverList = FXCollections.observableArrayList();
@@ -31,6 +35,7 @@ public class MusicStorage
     {
 		loadMusicTreeMap();
 		recursiveRefreshMusicTreeMap(musicTreeMap);
+		refreshMusicMap();
     }
     
     public static void loadMusicTreeMap()
@@ -60,31 +65,7 @@ public class MusicStorage
     		e.printStackTrace(); 
     	}
 	}
-	
-    public static void refreshMusicMap()//重新命名。
-    {
-    	musicList.clear();
-    	for(MusicInfo musicInfo : musicMap.values())
-    		musicInfo.available = false;
-    	albumCoverList.add(null);
-    	albumCoverList.clear();
-    	recursiveSetMusicInfo("" , musicTreeMap);
-    		//非常耗時間和記憶體，需要修正。
-//    		for(File file : dirFile.listFiles(new AlbumCoverFilter()))
-//    		{
-//    			//需加入判斷同一資料夾最接近封面的檔案、取而代之從音樂檔擷取封面。	
-//    			albumCoverList.add(new Image(file.toURI().toString()));
-//    		}
-		albumCoverList.add(null);
-		albumCoverList.remove(albumCoverList.size() - 1);
-		saveMusicTreeMap();
-		for(MusicInfo musicInfo : musicMap.values())
-		{
-			if(musicInfo.available)
-				musicList.add(musicInfo);
-		}
-    }
-    
+
     public static void recursiveRefreshMusicTreeMap(MusicTreeMap parentMusicTreeMap)
     {
     		for(MusicTreeMap childMusicTreeMap : parentMusicTreeMap.values())
@@ -99,7 +80,6 @@ public class MusicStorage
     public static boolean recursiveFoundMusic(File dirFile , LinkedList<File> preloadFiles , MusicTreeMap parentMusicTreeMap , boolean loading)
     {
     	boolean orLogicGate = false;
-    	//需檢查。
     	File[] musicFileList = null;
     	File[] dirFileList = null;
     	if(preloadFiles.isEmpty())
@@ -148,49 +128,90 @@ public class MusicStorage
     	return orLogicGate;
     }
     
-    //須替換absolutePath()、AudioFileFormat 時快時慢，須找到原因。path可取消。
-    private static void recursiveSetMusicInfo(String path , MusicTreeMap parentMusicTreeMap)
+    public static void refreshMusicMap()
     {
-		File dirFile = new File(path);
-		if(dirFile.exists())
+    	musicList.clear();
+    	musicMap.clear();
+    	albumCoverList.add(null);
+    	albumCoverList.clear();
+    	recursiveSetMusicInfo(musicTreeMap);
+    		//非常耗時間和記憶體，需要修正。
+//    		for(File file : dirFile.listFiles(new AlbumCoverFilter()))
+//    		{
+//    			//需加入判斷同一資料夾最接近封面的檔案、取而代之從音樂檔擷取封面。	
+//    			albumCoverList.add(new Image(file.toURI().toString()));
+//    		}
+		albumCoverList.add(null);
+		albumCoverList.remove(albumCoverList.size() - 1);
+		saveMusicTreeMap();
+    }
+    
+    //AudioFileFormat 時快時慢，且似乎很傷硬碟。
+    private static void recursiveSetMusicInfo(MusicTreeMap parentMusicTreeMap)
+    {
+		File dirFile = new File(parentMusicTreeMap.path);
+		if(parentMusicTreeMap.visible && !parentMusicTreeMap.ignored && dirFile.exists())
 		{
+			LinkedHashMap<String , MusicData> insideMap = parentMusicTreeMap.musicMap;
 			for(File file : dirFile.listFiles(new MusicFilter()))
 			{
-				if(musicMap.containsKey(file.getAbsolutePath()))
+				String path = file.getAbsolutePath();
+				MusicData musicData;
+				if(insideMap.containsKey(file.getName()))
+					musicData = insideMap.get(file.getName());
+				else
+					musicData = new MusicData();
+				if(!(insideMap.containsKey(file.getName()) && insideMap.get(file.getName()).modDate == file.lastModified()))
 				{
-					musicMap.get(file.getAbsolutePath()).available = true;
-					continue;
+					AudioFileFormat baseFileFormat = null;
+				    AudioFormat baseFormat = null;
+					try
+					{
+						 baseFileFormat = AudioSystem.getAudioFileFormat(file);
+						 AudioInputStream baseIn = AudioSystem.getAudioInputStream(file);
+						 baseFormat = baseIn.getFormat();
+					}
+					catch(Exception e)
+					{
+						e.printStackTrace();
+					}
+					String musicName = file.getName().substring(0, file.getName().lastIndexOf('.'));
+					String artistName = null;
+					String albumName = null;
+					String dateName = null;
+					int bitrate = 0;
+					if(baseFileFormat instanceof TAudioFileFormat)
+					{
+					    Map<String , Object> properties = ((TAudioFileFormat)baseFileFormat).properties();
+					    String name = (String)properties.get("title");
+					    if(name != null)
+					    	musicName = name;
+					    artistName = (String)properties.get("author");
+					    albumName = (String)properties.get("album");
+					    dateName = (String)properties.get("date");
+					}
+					if(baseFormat instanceof TAudioFormat)
+					{
+					     Map<String , Object> properties = ((TAudioFormat)baseFormat).properties();
+						 bitrate = (int)properties.get("bitrate");
+					}
+					musicData.path = file.getName();
+					musicData.name = musicName;
+					musicData.artist = artistName;
+					musicData.album = albumName;
+					musicData.date = dateName;
+					musicData.bitrate = bitrate;
+					musicData.modDate = file.lastModified();
 				}
-				AudioFileFormat baseFileFormat = null;
-				try
-				{
-					 baseFileFormat = AudioSystem.getAudioFileFormat(file);
-				}
-				catch(Exception e)
-				{
-					e.printStackTrace();
-				}
-				String musicName = file.getName().substring(0, file.getName().lastIndexOf('.'));
-				String artistName = null;
-				String albumName = null;
-				String dateName = null;
-				if(baseFileFormat instanceof TAudioFileFormat)
-				{
-				    Map<String , Object> properties = ((TAudioFileFormat)baseFileFormat).properties();
-				    String name = (String)properties.get("title");
-				    //未解決。
-				    if(name != null)
-				    	musicName = name;
-				    artistName = (String)properties.get("author");
-				    albumName = (String)properties.get("album");
-				    dateName = (String)properties.get("date");
-				}
-				musicMap.put(file.getAbsolutePath() , 
-						new MusicInfo(file.getAbsolutePath() , musicName , artistName , albumName , dateName));
+				musicData.musicInfo = new MusicInfo(path , musicData.name , musicData.artist ,
+						musicData.album , musicData.date , Integer.toString(musicData.bitrate));
+				insideMap.put(file.getName() , musicData);
+				musicMap.put(path , musicData);
+				musicList.add(musicData.musicInfo);
 			}
 		}
-		for(Map.Entry<String, MusicTreeMap> entry : parentMusicTreeMap.entrySet())
-			recursiveSetMusicInfo(entry.getKey() , entry.getValue());
+		for(MusicTreeMap childMusicTreeMap : parentMusicTreeMap.values())
+			recursiveSetMusicInfo(childMusicTreeMap);
     }
 //    
 ////    測試用方法。

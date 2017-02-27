@@ -24,7 +24,7 @@ import javafx.util.StringConverter;
 public class SettingsPageController
 {
 	//TreeView 需增加刷新功能、增加無資料夾提示、排序。
-	//TreeView 有重新開啟會變黑的問題。
+	//些許與 MusicStorage 溝通的方法要合併。
 	@FXML
     private TreeView<String> dirInfoTreeView;
 	@FXML

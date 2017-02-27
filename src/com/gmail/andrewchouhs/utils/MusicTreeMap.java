@@ -1,9 +1,10 @@
 package com.gmail.andrewchouhs.utils;
 
 import java.util.LinkedHashMap;
+import java.util.TreeMap;
 import com.gmail.andrewchouhs.model.MusicData;
 
-public class MusicTreeMap extends LinkedHashMap<String , MusicTreeMap>
+public class MusicTreeMap extends TreeMap<String , MusicTreeMap>
 {
 	private static final long serialVersionUID = 1L;
 	public final String path;
