@@ -30,7 +30,6 @@ public class MusicStorage
     public static void init()
     {
 		loadMusicTreeMap();
-		refreshMusicTreeMap();
     }
     
     public static void loadMusicTreeMap()
@@ -83,12 +82,6 @@ public class MusicStorage
 			if(musicInfo.available)
 				musicList.add(musicInfo);
 		}
-    }
-	
-    public static void refreshMusicTreeMap()
-    {
-    	for(MusicTreeMap childMusicTreeMap : musicTreeMap.values())
-    		recursiveFoundMusic(new File(childMusicTreeMap.path) , new LinkedList<File>() , musicTreeMap , false);
     }
     
     public static boolean recursiveFoundMusic(File dirFile , LinkedList<File> preloadFiles , MusicTreeMap parentMusicTreeMap , boolean loading)

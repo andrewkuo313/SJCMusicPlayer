@@ -79,7 +79,6 @@ public class SettingsPageController
     private void refreshAll()
     {
     	refreshPreferences();
-    	MusicStorage.refreshMusicTreeMap();
     	dummyMusicTreeMap = recursiveConvertToDummyMusicTreeMap(MusicStorage.musicTreeMap , new MusicTreeMap("" , null));
     	dirInfoTreeView.setRoot(recursiveAddTreeItem(dummyMusicTreeMap));
     }
