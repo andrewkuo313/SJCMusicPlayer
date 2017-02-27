@@ -4,7 +4,7 @@ import com.gmail.andrewchouhs.storage.DataStorage;
 import com.gmail.andrewchouhs.storage.PrefStorage;
 import com.gmail.andrewchouhs.storage.PrefStorage.Pref;
 import static com.gmail.andrewchouhs.storage.DataStorage.musicPlayer;
-import static com.gmail.andrewchouhs.storage.DataStorage.musicList;
+import static com.gmail.andrewchouhs.storage.MusicStorage.musicList;
 import static com.gmail.andrewchouhs.storage.DataStorage.currentMusicInfo;
 import com.gmail.andrewchouhs.storage.SceneStorage;
 import com.gmail.andrewchouhs.storage.SceneStorage.Page;

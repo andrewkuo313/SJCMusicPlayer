@@ -1,6 +1,6 @@
 package com.gmail.andrewchouhs.controller;
 
-import static com.gmail.andrewchouhs.storage.DataStorage.albumCoverList;
+import static com.gmail.andrewchouhs.storage.MusicStorage.albumCoverList;
 import javafx.collections.ListChangeListener;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;

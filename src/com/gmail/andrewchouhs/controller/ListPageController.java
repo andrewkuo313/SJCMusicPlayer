@@ -2,6 +2,7 @@ package com.gmail.andrewchouhs.controller;
 
 import com.gmail.andrewchouhs.model.MusicInfo;
 import com.gmail.andrewchouhs.storage.DataStorage;
+import com.gmail.andrewchouhs.storage.MusicStorage;
 import com.gmail.andrewchouhs.storage.TextStorage;
 import com.gmail.andrewchouhs.storage.TextStorage.Text;
 import javafx.application.Platform;
@@ -25,7 +26,7 @@ public class ListPageController
     @FXML
 	private void initialize() 
     {
-    	musicInfoTable.setItems(DataStorage.musicList);
+    	musicInfoTable.setItems(MusicStorage.musicList);
     	musicInfoTable.getSelectionModel().selectedItemProperty().addListener
     	((observable, oldValue, newValue) -> DataStorage.currentMusicInfo.set(newValue));
     	StringProperty nullValue = new SimpleStringProperty(TextStorage.getText(Text.ListPage_NullValue));
@@ -36,6 +37,6 @@ public class ListPageController
     	(cellData.getValue().album.get() != null) ? cellData.getValue().album : nullValue);
     	//無法使用 VirtualFlow 的問題尚待更新版本。
     	DataStorage.currentMusicInfo.addListener((observable, oldValue, newValue) -> 
-    		Platform.runLater(() -> musicInfoTable.getSelectionModel().select(DataStorage.musicList.indexOf(newValue))));
+    		Platform.runLater(() -> musicInfoTable.getSelectionModel().select(MusicStorage.musicList.indexOf(newValue))));
 	}
 }

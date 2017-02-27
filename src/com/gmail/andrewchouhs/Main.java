@@ -1,6 +1,7 @@
 package com.gmail.andrewchouhs;
 
 import com.gmail.andrewchouhs.storage.DataStorage;
+import com.gmail.andrewchouhs.storage.MusicStorage;
 import com.gmail.andrewchouhs.storage.PrefStorage;
 import com.gmail.andrewchouhs.storage.SceneStorage;
 import com.gmail.andrewchouhs.storage.TextStorage;
@@ -15,6 +16,7 @@ public class Main extends Application
     	PrefStorage.init();
     	DataStorage.init();
     	TextStorage.init();
+    	MusicStorage.init();
     	SceneStorage.init(stage);
     }
     

@@ -1,18 +1,16 @@
 package com.gmail.andrewchouhs.model;
 
-import java.io.Serializable;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
-public class MusicInfo implements Serializable
+public class MusicInfo
 {
-	private static final long serialVersionUID = 1L;
 	public final StringProperty path = new SimpleStringProperty();
     public final StringProperty name = new SimpleStringProperty();
     public final StringProperty artist = new SimpleStringProperty();
     public final StringProperty album = new SimpleStringProperty();
     public final StringProperty date = new SimpleStringProperty();
-    public transient boolean available = true; 
+    public boolean available = true; 
     
     public MusicInfo(String path, String name , String artist , String album , String date) 
     {

@@ -11,6 +11,7 @@ import java.util.Properties;
 
 public final class PrefStorage
 {
+	private static final String prefsPath = DataStorage.dataRootPath + "Preferences.properties";
 	private static final Properties prefs = new Properties();
 	private static final EnumMap<Pref , String> prefKeyMap = new EnumMap<Pref , String>(Pref.class);
 	public static final LinkedHashMap<String , Locale> localeMap = new LinkedHashMap<String , Locale>();
@@ -34,7 +35,7 @@ public final class PrefStorage
 	
 	public static void load()
 	{
-		File prefsFile = new File(DataStorage.prefsPath);
+		File prefsFile = new File(prefsPath);
 		Properties samplePrefs = new Properties();
 		samplePrefs.setProperty(prefKeyMap.get(Pref.Language) , Locale.getDefault().toString());
 		samplePrefs.setProperty(prefKeyMap.get(Pref.PlayMode), prefKeyMap.get(Pref.NormalPlay));
@@ -73,7 +74,7 @@ public final class PrefStorage
 	{
 		try
 		{
-			prefs.store(new FileOutputStream(new File(DataStorage.prefsPath)), null);
+			prefs.store(new FileOutputStream(new File(prefsPath)), null);
 		}
 		catch (Exception e)
 		{

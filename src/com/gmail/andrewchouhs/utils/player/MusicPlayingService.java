@@ -13,7 +13,7 @@ import org.tritonus.share.sampled.file.TAudioFileFormat;
 import com.gmail.andrewchouhs.storage.DataStorage;
 import com.gmail.andrewchouhs.storage.PrefStorage;
 import com.gmail.andrewchouhs.storage.PrefStorage.Pref;
-import static com.gmail.andrewchouhs.storage.DataStorage.musicList;
+import static com.gmail.andrewchouhs.storage.MusicStorage.musicList;
 import static com.gmail.andrewchouhs.storage.DataStorage.currentMusicInfo;
 import javafx.application.Platform;
 import javafx.concurrent.Service;
@@ -51,7 +51,8 @@ public class MusicPlayingService extends Service<Long>
 			if(baseFileFormat instanceof TAudioFileFormat)
 			{
 			    Map<String , Object> properties = ((TAudioFileFormat)baseFileFormat).properties();
-			    DataStorage.musicTotalTime.set((int)((long)properties.get("duration") / 1000000L));
+			    //須找出音樂至底仍不同步的原因。
+			    DataStorage.musicTotalTime.set((int)((long)properties.get("duration") / 1000000L) - 1);
 			}
 			if(baseFormat instanceof TAudioFormat)
 			{
@@ -107,9 +108,10 @@ public class MusicPlayingService extends Service<Long>
 					{
 						if((count = in.read(data, 0, data.length)) != -1) 
 						{
+							//減緩傳入。
+							Platform.runLater(() -> DataStorage.musicTime.set((int)(totalReadBytes / bytesPerSecond)));
 							dataLine.write(data, 0, count);
 							totalReadBytes += count;
-							Platform.runLater(() -> DataStorage.musicTime.set((int)(totalReadBytes / bytesPerSecond)));
 						}
 						else
 						{
@@ -155,7 +157,12 @@ public class MusicPlayingService extends Service<Long>
 					e.printStackTrace();
 				}
 				if(seekSecond == -1)
-					return totalReadBytes * 1000L / bytesPerSecond; 
+				{
+					//替代方案，仍須找出會何連續暫停播放會跳段。
+					if(totalReadBytes > 81920)
+						totalReadBytes -= 81920;
+					return totalReadBytes * 1000L / bytesPerSecond;
+				}
 				else
 					return ((long)seekSecond) * 1000L;
             }

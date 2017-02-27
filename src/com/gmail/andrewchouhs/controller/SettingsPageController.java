@@ -3,15 +3,12 @@ package com.gmail.andrewchouhs.controller;
 import java.io.File;
 import java.util.LinkedList;
 import java.util.Locale;
-import java.util.Map;
 import com.gmail.andrewchouhs.storage.DataStorage;
+import com.gmail.andrewchouhs.storage.MusicStorage;
 import com.gmail.andrewchouhs.storage.PrefStorage;
 import com.gmail.andrewchouhs.storage.PrefStorage.Pref;
 import com.gmail.andrewchouhs.storage.SceneStorage;
-import com.gmail.andrewchouhs.utils.DirTreeItem;
 import com.gmail.andrewchouhs.utils.MusicTreeMap;
-import com.gmail.andrewchouhs.utils.fliter.DirFilter;
-import com.gmail.andrewchouhs.utils.fliter.MusicFilter;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -23,11 +20,11 @@ import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.stage.DirectoryChooser;
 import javafx.util.StringConverter;
-import static com.gmail.andrewchouhs.storage.DataStorage.musicTreeMap;
 
 public class SettingsPageController
 {
 	//TreeView 需增加刷新功能、增加無資料夾提示、排序。
+	//TreeView 有重新開啟會變黑的問題。
 	@FXML
     private TreeView<String> dirInfoTreeView;
 	@FXML
@@ -46,6 +43,7 @@ public class SettingsPageController
     private Label dateLabel;
     @FXML
     private Label articleLabel;
+    private MusicTreeMap dummyMusicTreeMap;
     
     @FXML
     private void initialize() 
@@ -81,17 +79,53 @@ public class SettingsPageController
     private void refreshAll()
     {
     	refreshPreferences();
-    	DataStorage.loadMusicTreeMap();
-    	dirInfoTreeView.setRoot(recursiveRefreshDirTreeItem("" , musicTreeMap));
+    	MusicStorage.refreshMusicTreeMap();
+    	dummyMusicTreeMap = recursiveConvertToDummyMusicTreeMap(MusicStorage.musicTreeMap , new MusicTreeMap("" , null));
+    	dirInfoTreeView.setRoot(recursiveAddTreeItem(dummyMusicTreeMap));
     }
     
-    private DirTreeItem recursiveRefreshDirTreeItem(String path , MusicTreeMap parentMusicTreeMap)
+    private MusicTreeMap recursiveConvertToDummyMusicTreeMap(MusicTreeMap parentMusicTreeMap , MusicTreeMap parentDummyMusicTreeMap)
     {
-    	parentMusicTreeMap.treeItem = new DirTreeItem(
-    			path.substring(path.lastIndexOf(File.separator) + 1 , path.length()) , parentMusicTreeMap , path);
-    	for(Map.Entry<String, MusicTreeMap> childEntry : parentMusicTreeMap.entrySet())
-    		parentMusicTreeMap.treeItem.getChildren().add(recursiveRefreshDirTreeItem(childEntry.getKey() , childEntry.getValue()));
-    	return parentMusicTreeMap.treeItem;
+    	for(MusicTreeMap childMusicTreeMap : parentMusicTreeMap.values())
+    	{
+    		MusicTreeMap childDummyMusicTreeMap = new MusicTreeMap(childMusicTreeMap.path , parentDummyMusicTreeMap);
+        	childDummyMusicTreeMap.available = childMusicTreeMap.available;
+    		parentDummyMusicTreeMap.put(childMusicTreeMap.path , 
+    				recursiveConvertToDummyMusicTreeMap(childMusicTreeMap , childDummyMusicTreeMap));
+    	}
+    	return parentDummyMusicTreeMap;
+    }
+   
+    private void recursiveConvertToMusicTreeMap(MusicTreeMap parentMusicTreeMap , MusicTreeMap parentDummyMusicTreeMap)
+    {
+    	for(MusicTreeMap childDummyMusicTreeMap : parentDummyMusicTreeMap.values())
+    	{
+    		MusicTreeMap childMusicTreeMap;
+    		if(parentMusicTreeMap.containsKey(childDummyMusicTreeMap.path))
+    			childMusicTreeMap = parentMusicTreeMap.get(childDummyMusicTreeMap.path);
+    		else
+    		{
+    			childMusicTreeMap = new MusicTreeMap(childDummyMusicTreeMap.path , parentMusicTreeMap);
+    			parentMusicTreeMap.put(childDummyMusicTreeMap.path , childMusicTreeMap);
+    		}
+    		childMusicTreeMap.available = childDummyMusicTreeMap.available;
+    		recursiveConvertToMusicTreeMap(childMusicTreeMap , childDummyMusicTreeMap);
+    	}
+    }
+    
+    private TreeItem<String> recursiveAddTreeItem(MusicTreeMap parentMusicTreeMap)
+    {
+    	String path = parentMusicTreeMap.path;
+    	path = parentMusicTreeMap.path.substring(path.lastIndexOf(File.separator) + 1 , path.length());
+    	if(path.length() == 0)
+    		path = parentMusicTreeMap.path;
+    	TreeItem<String> treeItem =  new TreeItem<String>(path);
+    	for(MusicTreeMap childMusicTreeMap : parentMusicTreeMap.values())
+    	{
+    		if(childMusicTreeMap.available)
+    			treeItem.getChildren().add(recursiveAddTreeItem(childMusicTreeMap));
+    	}
+    	return treeItem;
     }
     
     private void refreshPreferences()
@@ -103,7 +137,6 @@ public class SettingsPageController
     	localeBox.setValue(PrefStorage.localeMap.get(PrefStorage.getPref(Pref.Language)));
     }
     
-    //AudioFileFormat 時快時慢，須找到原因。
     @FXML
     private void ok()
     {
@@ -113,8 +146,9 @@ public class SettingsPageController
     	PrefStorage.setPref(Pref.NotifyUpdate, Boolean.toString(notifyUpdate.isSelected()));
     	PrefStorage.setPref(Pref.Language, localeBox.getValue().toString());
     	PrefStorage.save();
-    	DataStorage.saveMusicTreeMap();
-    	DataStorage.refreshMusicMap();
+    	recursiveConvertToMusicTreeMap(MusicStorage.musicTreeMap , dummyMusicTreeMap);
+    	MusicStorage.refreshMusicMap();
+    	MusicStorage.saveMusicTreeMap();
         SceneStorage.getSettingsStage().close();
     }
     
@@ -136,15 +170,14 @@ public class SettingsPageController
 			while(parentFile != null)
 			{
 				parentFiles.addFirst(parentFile);
-				if(musicTreeMap.containsKey(parentFile.getAbsolutePath()))
-					break;
 				parentFile = parentFile.getParentFile();
 			}
-			MusicTreeMap childMusicTreeMap = musicTreeMap;
+			dirFile = parentFiles.getFirst();
+			MusicTreeMap childMusicTreeMap = dummyMusicTreeMap;
 			for(File file : parentFiles)
 			{
 				String path = file.getAbsolutePath();
-				if(childMusicTreeMap.containsKey(path))
+				if(childMusicTreeMap.containsKey(path) && childMusicTreeMap.available)
 				{
 					childMusicTreeMap = childMusicTreeMap.get(path);
 					dirFile = file;
@@ -152,13 +185,12 @@ public class SettingsPageController
 				else
 					preloadFiles.add(file);
 			}
-			if(!preloadFiles.isEmpty() && preloadFiles.getLast().equals(dirFile))
-				preloadFiles = new LinkedList<File>();
-			DirTreeItem parentTreeItem = (DirTreeItem)childMusicTreeMap.treeItem.getParent();
-			if(parentTreeItem != null)
-				childMusicTreeMap = parentTreeItem.musicTreeMap;
-			if(recursiveFoundMusic(dirFile , preloadFiles , childMusicTreeMap))
-				dirInfoTreeView.setRoot(recursiveRefreshDirTreeItem("" , musicTreeMap));
+			if(!preloadFiles.isEmpty() && preloadFiles.getFirst().equals(parentFiles.getFirst()))
+				preloadFiles.removeFirst();
+			if(childMusicTreeMap.parent != null)
+				childMusicTreeMap = childMusicTreeMap.parent;
+			if(MusicStorage.recursiveFoundMusic(dirFile , preloadFiles , childMusicTreeMap , true))
+				dirInfoTreeView.setRoot(recursiveAddTreeItem(dummyMusicTreeMap));
 			else
 			{
 				System.out.println("選擇資料夾無音樂檔案");
@@ -166,51 +198,47 @@ public class SettingsPageController
 		}
 	}
     
-    private boolean recursiveFoundMusic(File dirFile , LinkedList<File> preloadFiles , MusicTreeMap parentMusicTreeMap)
-    {
-    	boolean orLogicGate = false;
-    	File[] musicFileList = dirFile.listFiles(new MusicFilter());
-    	File[] dirFileList = dirFile.listFiles(new DirFilter());
-    	if(musicFileList == null && (dirFileList == null || preloadFiles.isEmpty()))
-    		return false;
-    	String path = dirFile.getAbsolutePath();
-    	MusicTreeMap childMusicTreeMap;
-//    	避免重複 new 節省時間，但待測，且可能導致不刷新。
-    	if(parentMusicTreeMap.containsKey(path))
-    		childMusicTreeMap = parentMusicTreeMap.get(path);
-    	else
-    	{
-    		childMusicTreeMap = new MusicTreeMap();
-        	parentMusicTreeMap.put(path , childMusicTreeMap);
-    	}
-    	if(preloadFiles.isEmpty())
-    	{
-    		for(File file : dirFileList)
-    			orLogicGate = recursiveFoundMusic(file , preloadFiles , childMusicTreeMap) || orLogicGate;
-    	}
-    	else
-    		orLogicGate = recursiveFoundMusic(preloadFiles.removeFirst() , preloadFiles , childMusicTreeMap) || orLogicGate;
-    	if(musicFileList.length != 0)
-    		orLogicGate = true;
-    	if(!orLogicGate)
-    		parentMusicTreeMap.remove(path);
-    	return orLogicGate;
-    }
-    
     @FXML
     private void removeDir()
     {
-    	LinkedList<DirTreeItem> treeItemList = new LinkedList<DirTreeItem>();
+    	LinkedList<TreeItem<String>> treeItemList = new LinkedList<TreeItem<String>>();
     	for(TreeItem<String> treeItem : dirInfoTreeView.getSelectionModel().getSelectedItems())
-    		treeItemList.add((DirTreeItem)treeItem);
-    	for(DirTreeItem treeItem : treeItemList)
+    		treeItemList.add(treeItem);
+    	for(TreeItem<String> treeItem : treeItemList)
     	{
     		ObservableList<TreeItem<String>> parentTreeItemChildren = treeItem.getParent().getChildren();
     		if(parentTreeItemChildren.contains(treeItem))
     		{
-    			((DirTreeItem)treeItem.getParent()).musicTreeMap.remove(treeItem.path);
+    			LinkedList<String> splitPath = new LinkedList<String>();
+    			TreeItem<String> parentTreeItem = treeItem;
+    			while(parentTreeItem != null)
+    			{
+    				splitPath.addFirst(parentTreeItem.getValue());
+    				parentTreeItem = parentTreeItem.getParent();
+    			}
+    			splitPath.removeFirst();
+    			MusicTreeMap parentDummyMusicTreeMap = dummyMusicTreeMap;
+    			String currentPath = splitPath.removeFirst();
+    			if(parentDummyMusicTreeMap.containsKey(currentPath))//須找到更好的寫法。
+					parentDummyMusicTreeMap = parentDummyMusicTreeMap.get(currentPath);
+    			currentPath = currentPath.substring(0 , currentPath.length() - 1);//須找到更好的寫法。
+    			for(String s : splitPath)
+    			{
+    				if(parentDummyMusicTreeMap.containsKey(currentPath))
+    					parentDummyMusicTreeMap = parentDummyMusicTreeMap.get(currentPath);
+    				currentPath+=(File.separator + s);
+    			}
+    			if(parentDummyMusicTreeMap.containsKey(currentPath))
+    				recursiveSetUnavailable(parentDummyMusicTreeMap.get(currentPath));
     			parentTreeItemChildren.remove(treeItem);
     		}
     	}
+    }
+    
+    private void recursiveSetUnavailable(MusicTreeMap parentDummyMusicTreeMap)
+    {
+    	parentDummyMusicTreeMap.available = false;
+    	for(MusicTreeMap childDummyMusicTreeMap : parentDummyMusicTreeMap.values())
+    		recursiveSetUnavailable(childDummyMusicTreeMap);
     }
 }
