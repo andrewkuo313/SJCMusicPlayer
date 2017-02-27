@@ -9,7 +9,8 @@ public class MusicTreeMap extends LinkedHashMap<String , MusicTreeMap>
 	public final String path;
 	public final LinkedHashMap<String , MusicData> musicMap = new LinkedHashMap<String , MusicData>();
 	public final MusicTreeMap parent;
-	public boolean available = true;
+	public boolean visible = true;
+	public boolean ignored = false;
 	
 	public MusicTreeMap(String path , MusicTreeMap parent)
 	{

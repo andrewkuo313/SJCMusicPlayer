@@ -30,6 +30,7 @@ public class MusicStorage
     public static void init()
     {
 		loadMusicTreeMap();
+		recursiveRefreshMusicTreeMap(musicTreeMap);
     }
     
     public static void loadMusicTreeMap()
@@ -84,16 +85,33 @@ public class MusicStorage
 		}
     }
     
+    public static void recursiveRefreshMusicTreeMap(MusicTreeMap parentMusicTreeMap)
+    {
+    		for(MusicTreeMap childMusicTreeMap : parentMusicTreeMap.values())
+    		{
+    			if(childMusicTreeMap.ignored)
+    				recursiveRefreshMusicTreeMap(childMusicTreeMap);
+    			else
+    	    		recursiveFoundMusic(new File(childMusicTreeMap.path) , new LinkedList<File>() , parentMusicTreeMap , false);
+    		}
+    }
+    
     public static boolean recursiveFoundMusic(File dirFile , LinkedList<File> preloadFiles , MusicTreeMap parentMusicTreeMap , boolean loading)
     {
     	boolean orLogicGate = false;
-    	File[] musicFileList = dirFile.listFiles(new MusicFilter());
-    	File[] dirFileList = dirFile.listFiles(new DirFilter());
+    	//需檢查。
+    	File[] musicFileList = null;
+    	File[] dirFileList = null;
+    	if(preloadFiles.isEmpty())
+    	{
+    		musicFileList = dirFile.listFiles(new MusicFilter());
+    		dirFileList = dirFile.listFiles(new DirFilter());
+    	}
     	String path = dirFile.getAbsolutePath();
-    	if((musicFileList == null && dirFileList == null) || !dirFile.exists())
+    	if((musicFileList == null && dirFileList == null && preloadFiles.isEmpty()) || !dirFile.exists())
     	{
     		if(parentMusicTreeMap.containsKey(path))
-    			parentMusicTreeMap.get(path).available = false;
+    			parentMusicTreeMap.get(path).visible = false;
     		return false;
     	}
     	MusicTreeMap childMusicTreeMap;
@@ -101,10 +119,14 @@ public class MusicStorage
     	{
     		childMusicTreeMap = parentMusicTreeMap.get(path);
     		orLogicGate = !childMusicTreeMap.musicMap.isEmpty();
+    		if(preloadFiles.isEmpty())
+    			childMusicTreeMap.ignored = false;
     	}
     	else
     	{
     		childMusicTreeMap = new MusicTreeMap(path , parentMusicTreeMap);
+    		if(!preloadFiles.isEmpty())
+    			childMusicTreeMap.ignored = true;
         	parentMusicTreeMap.put(path , childMusicTreeMap);
     	}
     	if(preloadFiles.isEmpty())
@@ -114,14 +136,14 @@ public class MusicStorage
     	}
     	else
     		orLogicGate = recursiveFoundMusic(preloadFiles.removeFirst() , preloadFiles , childMusicTreeMap , loading) || orLogicGate;
-    	if(musicFileList.length != 0)
+    	if(musicFileList != null && musicFileList.length != 0)
     		orLogicGate = true;
     	if(!orLogicGate)
     		parentMusicTreeMap.remove(path);
     	else
     	{
     		if(loading)
-    			childMusicTreeMap.available = true;
+    			childMusicTreeMap.visible = true;
     	}
     	return orLogicGate;
     }
@@ -170,6 +192,17 @@ public class MusicStorage
 		for(Map.Entry<String, MusicTreeMap> entry : parentMusicTreeMap.entrySet())
 			recursiveSetMusicInfo(entry.getKey() , entry.getValue());
     }
+//    
+////    測試用方法。
+//    public static void recursiveGetMusicTreeMapInfo(MusicTreeMap parentMusicTreeMap)
+//    {
+//    	System.out.println("=-=-=-=-=-=-=-=-=-=-=");
+//    	System.out.println("Path: " + parentMusicTreeMap.path);
+//    	System.out.println("Available: " + parentMusicTreeMap.visible);
+//    	System.out.println("Ignored: " + parentMusicTreeMap.ignored);
+//    	for(MusicTreeMap childMusicTreeMap : parentMusicTreeMap.values())
+//    		recursiveGetMusicTreeMapInfo(childMusicTreeMap);
+//    }
     
 	private MusicStorage()
 	{

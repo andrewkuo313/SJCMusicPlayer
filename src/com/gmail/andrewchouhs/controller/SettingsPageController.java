@@ -79,6 +79,7 @@ public class SettingsPageController
     private void refreshAll()
     {
     	refreshPreferences();
+    	MusicStorage.recursiveRefreshMusicTreeMap(MusicStorage.musicTreeMap);
     	dummyMusicTreeMap = recursiveConvertToDummyMusicTreeMap(MusicStorage.musicTreeMap , new MusicTreeMap("" , null));
     	dirInfoTreeView.setRoot(recursiveAddTreeItem(dummyMusicTreeMap));
     }
@@ -88,7 +89,8 @@ public class SettingsPageController
     	for(MusicTreeMap childMusicTreeMap : parentMusicTreeMap.values())
     	{
     		MusicTreeMap childDummyMusicTreeMap = new MusicTreeMap(childMusicTreeMap.path , parentDummyMusicTreeMap);
-        	childDummyMusicTreeMap.available = childMusicTreeMap.available;
+        	childDummyMusicTreeMap.visible = childMusicTreeMap.visible;
+        	childDummyMusicTreeMap.ignored = childMusicTreeMap.ignored;
     		parentDummyMusicTreeMap.put(childMusicTreeMap.path , 
     				recursiveConvertToDummyMusicTreeMap(childMusicTreeMap , childDummyMusicTreeMap));
     	}
@@ -107,7 +109,8 @@ public class SettingsPageController
     			childMusicTreeMap = new MusicTreeMap(childDummyMusicTreeMap.path , parentMusicTreeMap);
     			parentMusicTreeMap.put(childDummyMusicTreeMap.path , childMusicTreeMap);
     		}
-    		childMusicTreeMap.available = childDummyMusicTreeMap.available;
+    		childMusicTreeMap.visible = childDummyMusicTreeMap.visible;
+    		childMusicTreeMap.ignored = childDummyMusicTreeMap.ignored;
     		recursiveConvertToMusicTreeMap(childMusicTreeMap , childDummyMusicTreeMap);
     	}
     }
@@ -121,7 +124,7 @@ public class SettingsPageController
     	TreeItem<String> treeItem =  new TreeItem<String>(path);
     	for(MusicTreeMap childMusicTreeMap : parentMusicTreeMap.values())
     	{
-    		if(childMusicTreeMap.available)
+    		if(childMusicTreeMap.visible)
     			treeItem.getChildren().add(recursiveAddTreeItem(childMusicTreeMap));
     	}
     	return treeItem;
@@ -176,7 +179,7 @@ public class SettingsPageController
 			for(File file : parentFiles)
 			{
 				String path = file.getAbsolutePath();
-				if(childMusicTreeMap.containsKey(path) && childMusicTreeMap.available)
+				if(childMusicTreeMap.containsKey(path) && childMusicTreeMap.visible)
 				{
 					childMusicTreeMap = childMusicTreeMap.get(path);
 					dirFile = file;
@@ -228,16 +231,17 @@ public class SettingsPageController
     				currentPath+=(File.separator + s);
     			}
     			if(parentDummyMusicTreeMap.containsKey(currentPath))
-    				recursiveSetUnavailable(parentDummyMusicTreeMap.get(currentPath));
+    				recursiveSetValue(parentDummyMusicTreeMap.get(currentPath));
     			parentTreeItemChildren.remove(treeItem);
     		}
     	}
     }
     
-    private void recursiveSetUnavailable(MusicTreeMap parentDummyMusicTreeMap)
+    private void recursiveSetValue(MusicTreeMap parentDummyMusicTreeMap)
     {
-    	parentDummyMusicTreeMap.available = false;
+    	parentDummyMusicTreeMap.visible = false;
+    	parentDummyMusicTreeMap.ignored = true;
     	for(MusicTreeMap childDummyMusicTreeMap : parentDummyMusicTreeMap.values())
-    		recursiveSetUnavailable(childDummyMusicTreeMap);
+    		recursiveSetValue(childDummyMusicTreeMap);
     }
 }
