@@ -11,6 +11,7 @@ import javax.sound.sampled.SourceDataLine;
 import org.tritonus.share.sampled.TAudioFormat;
 import org.tritonus.share.sampled.file.TAudioFileFormat;
 import com.gmail.andrewchouhs.storage.DataStorage;
+import com.gmail.andrewchouhs.storage.MusicStorage;
 import com.gmail.andrewchouhs.storage.PrefStorage;
 import com.gmail.andrewchouhs.storage.PrefStorage.Pref;
 import static com.gmail.andrewchouhs.storage.MusicStorage.musicList;
@@ -29,8 +30,9 @@ public class MusicPlayingService extends Service<Long>
 	private boolean stopped = false;
 	private boolean nextStartDirectly = false;
 	private int seekSecond = -1;
+	private boolean hadSeek = false;
 	
-	public MusicPlayingService(String filePath , long seekMillis , boolean startDirectly)
+	public MusicPlayingService(String filePath , long seekMillis , boolean startDirectly , boolean hadSeek)
 	{
 		try 
 		{
@@ -60,8 +62,9 @@ public class MusicPlayingService extends Service<Long>
 				 in.skip((long)((int)properties.get("bitrate")) * seekMillis / 8000L);
 			}
 			setOnSucceeded((event) -> 
-			DataStorage.musicPlayer.set(new MusicPlayingService(filePath , (long)event.getSource().getValue() , this.nextStartDirectly)));
+			DataStorage.musicPlayer.set(new MusicPlayingService(filePath , (long)event.getSource().getValue() , this.nextStartDirectly , this.hadSeek)));
 			setOnCancelled((event) -> DataStorage.musicTime.set(0));
+			this.hadSeek = hadSeek;
 			if(startDirectly == true)
 				start();
 		} 
@@ -87,6 +90,7 @@ public class MusicPlayingService extends Service<Long>
 		this.seekSecond = seekSecond;
 		nextStartDirectly = true;
 		paused = true;
+		hadSeek = true;
 	}
 	
 	@Override
@@ -115,6 +119,11 @@ public class MusicPlayingService extends Service<Long>
 						}
 						else
 						{
+							if(!hadSeek)
+							{
+								MusicStorage.musicMap.get(currentMusicInfo.get().path.get()).count.add(System.currentTimeMillis());
+								System.out.println(currentMusicInfo.get().path.get() + " : " + System.currentTimeMillis());
+							}
 							//同 RootPageController 寫壞的各項。
 							String playMode = PrefStorage.getPref(Pref.PlayMode);
 							if(playMode.equals(PrefStorage.getPrefKey(Pref.NormalPlay)))
@@ -138,11 +147,12 @@ public class MusicPlayingService extends Service<Long>
 							if(playMode.equals(PrefStorage.getPrefKey(Pref.RepeatPlay)))
 							{
 								seek(0);
+								hadSeek = false;
 								break;
 							}
 							//保護措施，但不確定。
-							stopped = true;
-							break;
+//							stopped = true;
+//							break;
 						}
 					}
 					dataLine.flush();

@@ -24,7 +24,7 @@ import javafx.scene.image.Image;
 public class MusicStorage
 {
 	private static final String musicDataPath = DataStorage.dataRootPath + "MusicData";
-	private static final LinkedHashMap<String , MusicData> musicMap = new LinkedHashMap<>();
+	public static final LinkedHashMap<String , MusicData> musicMap = new LinkedHashMap<>();
 	public static MusicTreeMap musicTreeMap = new MusicTreeMap("" , null);
 	public static final ObservableList<MusicInfo> musicList = FXCollections.observableArrayList();
     public static final ObservableList<Image> albumCoverList = FXCollections.observableArrayList();

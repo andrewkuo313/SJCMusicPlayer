@@ -36,7 +36,7 @@ public final class DataStorage
     			musicPlayer.set(null);
     		}
     		if(newValue != null)
-    			musicPlayer.set(new MusicPlayingService(newValue.path.get() , 0L , true));
+    			musicPlayer.set(new MusicPlayingService(newValue.path.get() , 0L , true , false));
     		else
     			musicTotalTime.set(0);
     	});
