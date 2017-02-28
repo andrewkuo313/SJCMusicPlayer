@@ -22,6 +22,12 @@ public class ListPageController
 	private TableColumn<MusicInfo, String> artistColumn;
 	@FXML
 	private TableColumn<MusicInfo, String> albumColumn;
+	@FXML
+	private TableColumn<MusicInfo, String> bitrateColumn;
+	@FXML
+	private TableColumn<MusicInfo, String> yearColumn;
+	@FXML
+	private TableColumn<MusicInfo, String> pathColumn;
     
     @FXML
 	private void initialize() 
@@ -35,6 +41,12 @@ public class ListPageController
     	(cellData.getValue().artist.get() != null) ? cellData.getValue().artist : nullValue);
     	albumColumn.setCellValueFactory(cellData -> 
     	(cellData.getValue().album.get() != null) ? cellData.getValue().album : nullValue);
+    	bitrateColumn.setCellValueFactory(cellData -> 
+    	(cellData.getValue().bitrate.get() != null) ? cellData.getValue().bitrate : nullValue);
+    	yearColumn.setCellValueFactory(cellData -> 
+    	(cellData.getValue().year.get() != null) ? cellData.getValue().year : nullValue);
+    	pathColumn.setCellValueFactory(cellData -> 
+    	(cellData.getValue().path.get() != null) ? cellData.getValue().path : nullValue);
     	//無法使用 VirtualFlow 的問題尚待更新版本。
     	DataStorage.currentMusicInfo.addListener((observable, oldValue, newValue) -> 
     		Platform.runLater(() -> musicInfoTable.getSelectionModel().select(MusicStorage.musicList.indexOf(newValue))));

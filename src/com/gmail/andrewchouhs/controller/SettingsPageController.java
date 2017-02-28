@@ -23,7 +23,7 @@ import javafx.util.StringConverter;
 
 public class SettingsPageController
 {
-	//TreeView 需增加刷新功能、增加無資料夾提示、排序。
+	//TreeView 需增加刷新功能、增加無資料夾提示。
 	//些許與 MusicStorage 溝通的方法要合併。
 	@FXML
     private TreeView<String> dirInfoTreeView;
@@ -223,15 +223,14 @@ public class SettingsPageController
     			String currentPath = splitPath.removeFirst();
     			if(parentDummyMusicTreeMap.containsKey(currentPath))//須找到更好的寫法。
 					parentDummyMusicTreeMap = parentDummyMusicTreeMap.get(currentPath);
-    			currentPath = currentPath.substring(0 , currentPath.length() - 1);//須找到更好的寫法。
+				currentPath = currentPath.substring(0 , currentPath.length() - 1);//須找到更好的寫法。
     			for(String s : splitPath)
     			{
+    				currentPath+=(File.separator + s);
     				if(parentDummyMusicTreeMap.containsKey(currentPath))
     					parentDummyMusicTreeMap = parentDummyMusicTreeMap.get(currentPath);
-    				currentPath+=(File.separator + s);
     			}
-    			if(parentDummyMusicTreeMap.containsKey(currentPath))
-    				recursiveSetValue(parentDummyMusicTreeMap.get(currentPath));
+    			recursiveSetValue(parentDummyMusicTreeMap);
     			parentTreeItemChildren.remove(treeItem);
     		}
     	}

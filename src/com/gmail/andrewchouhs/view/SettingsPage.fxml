@@ -122,6 +122,7 @@
                     <Hyperlink text="MP3SPI 1.9.5 (http://www.javazoom.net/mp3spi/mp3spi.html)" visited="false" />
                     <Hyperlink text="JLayer 1.0.1 (http://www.javazoom.net/javalayer/javalayer.html)" />
                     <Hyperlink text="Tritonus 0.3.6 (http://www.tritonus.org/)" />
+                    <Hyperlink text="JAudiotagger 2.2.6 (http://www.jthink.net/jaudiotagger/)" />
                   </children>
                 </VBox>
               </children>

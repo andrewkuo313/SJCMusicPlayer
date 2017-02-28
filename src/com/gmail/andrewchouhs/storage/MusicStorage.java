@@ -7,13 +7,11 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
-import java.util.Map;
-import javax.sound.sampled.AudioFileFormat;
-import javax.sound.sampled.AudioFormat;
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import org.tritonus.share.sampled.TAudioFormat;
-import org.tritonus.share.sampled.file.TAudioFileFormat;
+import org.jaudiotagger.audio.AudioFile;
+import org.jaudiotagger.audio.AudioFileIO;
+import org.jaudiotagger.audio.AudioHeader;
+import org.jaudiotagger.tag.FieldKey;
+import org.jaudiotagger.tag.Tag;
 import com.gmail.andrewchouhs.model.MusicData;
 import com.gmail.andrewchouhs.model.MusicInfo;
 import com.gmail.andrewchouhs.utils.MusicTreeMap;
@@ -146,7 +144,6 @@ public class MusicStorage
 		saveMusicTreeMap();
     }
     
-    //AudioFileFormat 時快時慢，且似乎很傷硬碟。
     private static void recursiveSetMusicInfo(MusicTreeMap parentMusicTreeMap)
     {
 		File dirFile = new File(parentMusicTreeMap.path);
@@ -163,13 +160,13 @@ public class MusicStorage
 					musicData = new MusicData();
 				if(!(insideMap.containsKey(file.getName()) && insideMap.get(file.getName()).modDate == file.lastModified()))
 				{
-					AudioFileFormat baseFileFormat = null;
-				    AudioFormat baseFormat = null;
+					Tag tag = null;
+					AudioHeader header = null;
 					try
 					{
-						 baseFileFormat = AudioSystem.getAudioFileFormat(file);
-						 AudioInputStream baseIn = AudioSystem.getAudioInputStream(file);
-						 baseFormat = baseIn.getFormat();
+						 AudioFile f = AudioFileIO.read(file);
+						 tag = f.getTag();
+						 header = f.getAudioHeader();
 					}
 					catch(Exception e)
 					{
@@ -178,33 +175,24 @@ public class MusicStorage
 					String musicName = file.getName().substring(0, file.getName().lastIndexOf('.'));
 					String artistName = null;
 					String albumName = null;
-					String dateName = null;
-					int bitrate = 0;
-					if(baseFileFormat instanceof TAudioFileFormat)
-					{
-					    Map<String , Object> properties = ((TAudioFileFormat)baseFileFormat).properties();
-					    String name = (String)properties.get("title");
-					    if(name != null)
-					    	musicName = name;
-					    artistName = (String)properties.get("author");
-					    albumName = (String)properties.get("album");
-					    dateName = (String)properties.get("date");
-					}
-					if(baseFormat instanceof TAudioFormat)
-					{
-					     Map<String , Object> properties = ((TAudioFormat)baseFormat).properties();
-						 bitrate = (int)properties.get("bitrate");
-					}
+					String yearName = null;
+					long bitrate = 0;
+					if(tag.getFirst(FieldKey.TITLE) != null)
+						musicName = tag.getFirst(FieldKey.TITLE);
+					artistName = tag.getFirst(FieldKey.ARTIST);
+					albumName = tag.getFirst(FieldKey.ALBUM);
+					yearName = tag.getFirst(FieldKey.YEAR);
+					bitrate = header.getBitRateAsNumber();
 					musicData.path = file.getName();
 					musicData.name = musicName;
 					musicData.artist = artistName;
 					musicData.album = albumName;
-					musicData.date = dateName;
+					musicData.year = yearName;
 					musicData.bitrate = bitrate;
 					musicData.modDate = file.lastModified();
 				}
 				musicData.musicInfo = new MusicInfo(path , musicData.name , musicData.artist ,
-						musicData.album , musicData.date , Integer.toString(musicData.bitrate));
+						musicData.album , musicData.year , Long.toString(musicData.bitrate) + "kbps");
 				insideMap.put(file.getName() , musicData);
 				musicMap.put(path , musicData);
 				musicList.add(musicData.musicInfo);

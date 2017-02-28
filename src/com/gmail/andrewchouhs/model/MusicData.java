@@ -6,23 +6,23 @@ import java.util.LinkedList;
 public class MusicData implements Serializable
 {
 	private static final long serialVersionUID = 1L;
-	public final LinkedList<Long> records = new LinkedList<>();
+	public final LinkedList<Long> count = new LinkedList<>();
 	public String path;
     public String name;
     public String artist;
     public String album;
-    public String date;
-    public int bitrate;
+    public String year;
+    public long bitrate;
     public long modDate;
     public transient MusicInfo musicInfo;
     
-    public MusicData(String path, String name , String artist , String album , String date , int bitrate , long modDate)
+    public MusicData(String path, String name , String artist , String album , String year  , long bitrate , long modDate)
     {
     	this.path = path;
     	this.name = name;
     	this.artist = artist;
     	this.album = album;
-    	this.date = date;
+    	this.year = year;
     	this.bitrate = bitrate;
     	this.modDate = modDate;
     }
