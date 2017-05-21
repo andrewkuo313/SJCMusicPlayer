@@ -9,8 +9,13 @@ import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.fxml.FXML;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.ScrollPane.ScrollBarPolicy;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.layout.FlowPane;
 
 public class ListPageController
 {
@@ -28,7 +33,9 @@ public class ListPageController
 	private TableColumn<MusicInfo, String> yearColumn;
 	@FXML
 	private TableColumn<MusicInfo, String> pathColumn;
-    
+	@FXML
+	private TabPane tagPane;
+
     @FXML
 	private void initialize() 
     {
@@ -51,4 +58,18 @@ public class ListPageController
     	DataStorage.currentMusicInfo.addListener((observable, oldValue, newValue) -> 
     		Platform.runLater(() -> musicInfoTable.getSelectionModel().select(MusicStorage.musicList.indexOf(newValue))));
 	}
+    
+    @FXML
+    private void addNewTagFolder()
+    {
+    	Tab tab = new Tab("Custom");
+    	ScrollPane scrollPane = new ScrollPane();
+    	scrollPane.setHbarPolicy(ScrollBarPolicy.NEVER);
+    	scrollPane.setVbarPolicy(ScrollBarPolicy.AS_NEEDED);
+    	scrollPane.setPannable(true);
+    	FlowPane flowPane = new FlowPane();
+    	scrollPane.setContent(flowPane);
+    	tab.setContent(scrollPane);
+    	tagPane.getTabs().add(tab);
+    }
 }

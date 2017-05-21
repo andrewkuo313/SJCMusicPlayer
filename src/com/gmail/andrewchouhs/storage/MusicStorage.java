@@ -15,6 +15,7 @@ import org.jaudiotagger.tag.Tag;
 import com.gmail.andrewchouhs.model.MusicData;
 import com.gmail.andrewchouhs.model.MusicInfo;
 import com.gmail.andrewchouhs.utils.MusicTreeMap;
+import com.gmail.andrewchouhs.utils.TagMap;
 import com.gmail.andrewchouhs.utils.fliter.DirFilter;
 import com.gmail.andrewchouhs.utils.fliter.MusicFilter;
 import javafx.collections.FXCollections;
@@ -25,10 +26,11 @@ public class MusicStorage
 {
 	private static final String musicDataPath = DataStorage.dataRootPath + "MusicData";
 	public static final LinkedHashMap<String , MusicData> musicMap = new LinkedHashMap<>();
+	public static LinkedHashMap<String , TagMap> tagMap = new LinkedHashMap<>();
 	public static MusicTreeMap musicTreeMap = new MusicTreeMap("" , null);
 	public static final ObservableList<MusicInfo> musicList = FXCollections.observableArrayList();
     public static final ObservableList<Image> albumCoverList = FXCollections.observableArrayList();
-	
+    
     public static void init()
     {
 		loadMusicTreeMap();
@@ -177,11 +179,13 @@ public class MusicStorage
 					String albumName = null;
 					String yearName = null;
 					long bitrate = 0;
-					if(tag.getFirst(FieldKey.TITLE) != null)
+					if(tag != null)
+					{
 						musicName = tag.getFirst(FieldKey.TITLE);
-					artistName = tag.getFirst(FieldKey.ARTIST);
-					albumName = tag.getFirst(FieldKey.ALBUM);
-					yearName = tag.getFirst(FieldKey.YEAR);
+						artistName = tag.getFirst(FieldKey.ARTIST);
+						albumName = tag.getFirst(FieldKey.ALBUM);
+						yearName = tag.getFirst(FieldKey.YEAR);
+					}
 					bitrate = header.getBitRateAsNumber();
 					musicData.path = file.getName();
 					musicData.name = musicName;

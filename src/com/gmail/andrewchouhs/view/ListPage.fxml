@@ -30,7 +30,7 @@
         </TableView>
         <BorderPane prefHeight="-1.0" prefWidth="-1.0">
           <center>
-            <TabPane prefHeight="200.0" prefWidth="200.0" side="TOP" tabClosingPolicy="UNAVAILABLE">
+            <TabPane fx:id="tagPane" prefHeight="200.0" prefWidth="200.0" side="TOP" tabClosingPolicy="UNAVAILABLE">
               <tabs>
                 <Tab text="%ListPage.TagPage.Folder.Genre">
                   <content>
@@ -57,8 +57,16 @@
             <HBox alignment="TOP_LEFT" fillHeight="true" prefHeight="-1.0" prefWidth="-1.0" spacing="10.0" styleClass="hbox">
               <children>
                 <Button mnemonicParsing="false" text="%ListPage.TagPage.SelectAllTags" textOverrun="ELLIPSIS" />
-                <Button mnemonicParsing="false" text="%ListPage.TagPage.AddNewTag" textOverrun="ELLIPSIS" />
-                <Button mnemonicParsing="false" text="%ListPage.TagPage.AddNewTagFolder" textOverrun="ELLIPSIS" />
+                <Button mnemonicParsing="false" text="%ListPage.TagPage.AddNewTag" textOverrun="ELLIPSIS">
+                  <contextMenu>
+                    <ContextMenu>
+                      <items>
+                        <MenuItem mnemonicParsing="false" text="Unspecified Action" />
+                      </items>
+                    </ContextMenu>
+                  </contextMenu>
+                </Button>
+                <Button mnemonicParsing="false" onMouseClicked="#addNewTagFolder" text="%ListPage.TagPage.AddNewTagFolder" textOverrun="ELLIPSIS" />
               </children>
               <padding>
                 <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
