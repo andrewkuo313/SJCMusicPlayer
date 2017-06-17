@@ -11,7 +11,7 @@ import javafx.beans.property.SimpleObjectProperty;
 
 public final class DataStorage
 {
-	//至下一首歌的間隔需要修改。
+	//AudioInputStream.skip()仍有少許歌曲有提早結束問題(揭)。
 	//有暴吃記憶體的現象。
 	//需重新檢查是否有物件比較使用 ==。
 	//需將使用 Lambda 後大幅提升效率的程式碼修正。
