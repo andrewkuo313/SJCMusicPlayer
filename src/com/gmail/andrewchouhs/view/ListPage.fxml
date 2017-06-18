@@ -30,22 +30,17 @@
         </TableView>
         <BorderPane prefHeight="-1.0" prefWidth="-1.0">
           <center>
-            <TabPane fx:id="tagPane" prefHeight="200.0" prefWidth="200.0" side="TOP" tabClosingPolicy="UNAVAILABLE">
+            <TabPane fx:id="tagPane" prefHeight="-1.0" prefWidth="-1.0" side="TOP" tabClosingPolicy="UNAVAILABLE" tabMaxHeight="1.7976931348623157E308">
               <tabs>
-                <Tab text="%ListPage.TagPage.Folder.Genre">
+                <Tab closable="false" text="%ListPage.TagPage.BitRate">
                   <content>
-                    <ScrollPane fitToHeight="false" hbarPolicy="NEVER" pannable="true" prefHeight="200.0" prefWidth="200.0">
+                    <ScrollPane fitToHeight="false" fitToWidth="true" hbarPolicy="NEVER" pannable="true" prefHeight="-1.0" prefWidth="-1.0" vbarPolicy="AS_NEEDED">
                       <content>
-                        <FlowPane prefHeight="-1.0" prefWidth="-1.0" />
-                      </content>
-                    </ScrollPane>
-                  </content>
-                </Tab>
-                <Tab text="%ListPage.TagPage.Folder.From">
-                  <content>
-                    <ScrollPane hbarPolicy="NEVER" pannable="true" prefHeight="200.0" prefWidth="200.0">
-                      <content>
-                        <FlowPane prefHeight="-1.0" prefWidth="-1.0" />
+                        <FlowPane alignment="TOP_CENTER" columnHalignment="LEFT" hgap="0.0" prefHeight="-1.0" prefWidth="-1.0" prefWrapLength="400.0" rowValignment="TOP" vgap="10.0">
+                          <padding>
+                            <Insets bottom="20.0" top="20.0" />
+                          </padding>
+                        </FlowPane>
                       </content>
                     </ScrollPane>
                   </content>
@@ -57,15 +52,7 @@
             <HBox alignment="TOP_LEFT" fillHeight="true" prefHeight="-1.0" prefWidth="-1.0" spacing="10.0" styleClass="hbox">
               <children>
                 <Button mnemonicParsing="false" text="%ListPage.TagPage.SelectAllTags" textOverrun="ELLIPSIS" />
-                <Button mnemonicParsing="false" text="%ListPage.TagPage.AddNewTag" textOverrun="ELLIPSIS">
-                  <contextMenu>
-                    <ContextMenu>
-                      <items>
-                        <MenuItem mnemonicParsing="false" text="Unspecified Action" />
-                      </items>
-                    </ContextMenu>
-                  </contextMenu>
-                </Button>
+                <Button mnemonicParsing="false" onMouseClicked="#addNewTag" text="%ListPage.TagPage.AddNewTag" textOverrun="ELLIPSIS" />
                 <Button mnemonicParsing="false" onMouseClicked="#addNewTagFolder" text="%ListPage.TagPage.AddNewTagFolder" textOverrun="ELLIPSIS" />
               </children>
               <padding>

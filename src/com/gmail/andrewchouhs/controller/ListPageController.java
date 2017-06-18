@@ -3,19 +3,27 @@ package com.gmail.andrewchouhs.controller;
 import com.gmail.andrewchouhs.model.MusicInfo;
 import com.gmail.andrewchouhs.storage.DataStorage;
 import com.gmail.andrewchouhs.storage.MusicStorage;
+import com.gmail.andrewchouhs.storage.SceneStorage;
 import com.gmail.andrewchouhs.storage.TextStorage;
 import com.gmail.andrewchouhs.storage.TextStorage.Text;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.geometry.VPos;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.ScrollPane.ScrollBarPolicy;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 
 public class ListPageController
 {
@@ -62,14 +70,57 @@ public class ListPageController
     @FXML
     private void addNewTagFolder()
     {
-    	Tab tab = new Tab("Custom");
+
     	ScrollPane scrollPane = new ScrollPane();
     	scrollPane.setHbarPolicy(ScrollBarPolicy.NEVER);
     	scrollPane.setVbarPolicy(ScrollBarPolicy.AS_NEEDED);
     	scrollPane.setPannable(true);
+    	scrollPane.setFitToWidth(true);
     	FlowPane flowPane = new FlowPane();
+    	flowPane.setAlignment(Pos.TOP_CENTER);
+    	flowPane.setVgap(10);
+    	flowPane.setPadding(new Insets(20 , 0 , 20 , 0));
     	scrollPane.setContent(flowPane);
+    	Tab tab = new Tab();
     	tab.setContent(scrollPane);
     	tagPane.getTabs().add(tab);
+    	tagPane.getSelectionModel().select(tab);
+    	renameTag(tab);
+    }
+    
+    private void renameTag(Tab tab)
+    {
+    	TextField textField = new TextField(tab.getText());
+    	tab.setText(null);
+    	tab.setGraphic(textField);
+    	//暫時的寫法。
+    	textField.sceneProperty().addListener((observable , oldValue , newValue) -> textField.requestFocus());
+    	textField.focusedProperty().addListener((observable , oldValue , newValue) -> 
+    	{
+    		if(newValue == false)
+    		{
+    			tab.setGraphic(null);
+    			tab.setText(textField.getText());
+    		}
+    	});
+    	textField.setOnKeyPressed((event) -> 
+    	{
+    		if(event.getCode() == KeyCode.ENTER)
+    			//暫時的寫法。
+    			textField.getParent().requestFocus();
+    	});
+    }
+    
+    @FXML
+    private void addNewTag()
+    {
+    	FlowPane flowPane = (FlowPane)((ScrollPane)tagPane.getSelectionModel().getSelectedItem().getContent())
+    			.getContent();
+    	Rectangle rect = new Rectangle(20 , 50);
+    	rect.setArcHeight(5);
+    	rect.setArcWidth(5);
+    	rect.setFill(Color.WHITE);
+    	flowPane.getChildren().add(rect);
+    	rect.widthProperty().bind(flowPane.widthProperty().subtract(20));
     }
 }
