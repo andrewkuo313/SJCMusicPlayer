@@ -3,7 +3,6 @@ package com.gmail.andrewchouhs.controller;
 import com.gmail.andrewchouhs.model.MusicInfo;
 import com.gmail.andrewchouhs.storage.DataStorage;
 import com.gmail.andrewchouhs.storage.MusicStorage;
-import com.gmail.andrewchouhs.storage.SceneStorage;
 import com.gmail.andrewchouhs.storage.TextStorage;
 import com.gmail.andrewchouhs.storage.TextStorage.Text;
 import javafx.application.Platform;
@@ -12,14 +11,13 @@ import javafx.beans.property.StringProperty;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.geometry.VPos;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.control.ScrollPane.ScrollBarPolicy;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.paint.Color;
@@ -72,13 +70,9 @@ public class ListPageController
     {
 
     	ScrollPane scrollPane = new ScrollPane();
-    	scrollPane.setHbarPolicy(ScrollBarPolicy.NEVER);
-    	scrollPane.setVbarPolicy(ScrollBarPolicy.AS_NEEDED);
-    	scrollPane.setPannable(true);
-    	scrollPane.setFitToWidth(true);
     	FlowPane flowPane = new FlowPane();
     	flowPane.setAlignment(Pos.TOP_CENTER);
-    	flowPane.setVgap(10);
+    	flowPane.setVgap(15);
     	flowPane.setPadding(new Insets(20 , 0 , 20 , 0));
     	scrollPane.setContent(flowPane);
     	Tab tab = new Tab();
@@ -117,10 +111,46 @@ public class ListPageController
     	FlowPane flowPane = (FlowPane)((ScrollPane)tagPane.getSelectionModel().getSelectedItem().getContent())
     			.getContent();
     	Rectangle rect = new Rectangle(20 , 50);
-    	rect.setArcHeight(5);
-    	rect.setArcWidth(5);
-    	rect.setFill(Color.WHITE);
-    	flowPane.getChildren().add(rect);
+    	rect.setFill(Color.BLACK);
+    	rect.setArcHeight(10);
+    	rect.setArcWidth(10);
+    	rect.setOnMouseClicked((event) -> 
+    	{
+    		switch(event.getButton())
+    		{
+    			case PRIMARY:
+    				if(rect.getEffect() == null)
+    				{
+    					DropShadow dropShadow = new DropShadow();
+    					dropShadow.setRadius(20);
+    					dropShadow.setSpread(0.5);
+    					dropShadow.setHeight(25);
+    					dropShadow.setWidth(25);
+    					dropShadow.setColor(Color.LIGHTGREEN);
+    					rect.setEffect(dropShadow);
+    				}
+    				else
+    					rect.setEffect(null);
+    				break;
+    			case SECONDARY:
+    				if(rect.getEffect() == null)
+    				{
+    					DropShadow dropShadow = new DropShadow();
+    					dropShadow.setRadius(20);
+    					dropShadow.setSpread(0.5);
+    					dropShadow.setHeight(25);
+    					dropShadow.setWidth(25);
+    					dropShadow.setColor(Color.RED);
+    					rect.setEffect(dropShadow);
+    				}
+    				else
+    					rect.setEffect(null);
+    				break;
+    			default:
+    		}
+    		
+    	});
     	rect.widthProperty().bind(flowPane.widthProperty().subtract(20));
+    	flowPane.getChildren().add(rect);
     }
 }

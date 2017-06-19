@@ -4,6 +4,14 @@
 	-fx-background-radius: 0;
 }
 
+.scroll-pane
+{
+	-fx-fit-to-width: true;
+	-fx-pannable: true;
+	-fx-hbar-policy: never;
+	-fx-vbar-policy: as-needed;
+}
+
 .column-header , .table-view .filler
 {
 	-fx-border-color: #2c2c2c;

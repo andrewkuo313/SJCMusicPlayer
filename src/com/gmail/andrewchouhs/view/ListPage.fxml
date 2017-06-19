@@ -36,7 +36,7 @@
                   <content>
                     <ScrollPane fitToHeight="false" fitToWidth="true" hbarPolicy="NEVER" pannable="true" prefHeight="-1.0" prefWidth="-1.0" vbarPolicy="AS_NEEDED">
                       <content>
-                        <FlowPane alignment="TOP_CENTER" columnHalignment="LEFT" hgap="0.0" prefHeight="-1.0" prefWidth="-1.0" prefWrapLength="400.0" rowValignment="TOP" vgap="10.0">
+                        <FlowPane alignment="TOP_CENTER" columnHalignment="LEFT" hgap="0.0" prefHeight="-1.0" prefWidth="-1.0" prefWrapLength="400.0" rowValignment="TOP" vgap="15.0">
                           <padding>
                             <Insets bottom="20.0" top="20.0" />
                           </padding>
